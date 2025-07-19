@@ -1,7 +1,8 @@
 import AddIcon from "@mui/icons-material/Add";
 
-import AccordionComponent from "@/components/accordion";
 import ButtonClient from "@/components/button-client";
+import TaskAccordion from "@/components/task-accordion";
+import { Status } from "@/types/enum";
 const page = async () => {
   await new Promise((resolve) => setTimeout(resolve, 500));
 
@@ -16,8 +17,8 @@ const page = async () => {
       </div>
 
       <div className="flex flex-col gap-4">
-        <AccordionComponent title="task 1" />
-        <AccordionComponent title="task 2" />
+        <TaskAccordion status={Status.running} title="task 1" />
+        <TaskAccordion status={Status.stopped} title="task 2" />
       </div>
     </div>
   );

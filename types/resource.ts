@@ -1,6 +1,6 @@
 // types/resource.ts
 
-import { TicketStatus } from "./enum";
+import { Status } from "./enum";
 
 export type Project = {
   id: string;
@@ -34,7 +34,7 @@ export type Ticket = {
   name: string;
   created: string;
   resourcePoolId: string;
-  status: TicketStatus;
+  status: Status;
   usage: ResourceUsage;
 };
 

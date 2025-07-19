@@ -58,6 +58,7 @@ const ResourceTable = ({
         {rows.map((row, index) => (
           <TableRow
             key={index}
+            className="hover:bg-gray-100 dark:hover:bg-gray-800 shadow-sm transition-colors duration-200"
             style={{ cursor: "pointer" }}
             onClick={() => onRowClick?.(row)}
           >

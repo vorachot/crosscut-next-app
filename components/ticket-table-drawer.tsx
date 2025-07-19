@@ -10,7 +10,7 @@ import {
 } from "@heroui/table";
 import { Chip } from "@heroui/chip";
 
-import { TicketStatus } from "@/types/enum";
+import { Status } from "@/types/enum";
 import { Ticket } from "@/types/resource";
 
 const defaultColumns = [
@@ -26,7 +26,7 @@ const defaultRows: Ticket[] = [
     name: "Ticket 1",
     created: "01 Jan 2023",
     resourcePoolId: "resource-pool-1",
-    status: TicketStatus.available,
+    status: Status.available,
     usage: { cpu: 2, gpu: 1, memory: 4 },
   },
   {
@@ -34,7 +34,7 @@ const defaultRows: Ticket[] = [
     name: "Ticket 2",
     created: "02 Jan 2023",
     resourcePoolId: "resource-pool-2",
-    status: TicketStatus.running,
+    status: Status.running,
     usage: { cpu: 1, gpu: 0, memory: 2 },
   },
   {
@@ -42,7 +42,7 @@ const defaultRows: Ticket[] = [
     name: "Ticket 1",
     created: "01 Jan 2023",
     resourcePoolId: "resource-pool-1",
-    status: TicketStatus.available,
+    status: Status.available,
     usage: { cpu: 2, gpu: 1, memory: 4 },
   },
   {
@@ -50,7 +50,7 @@ const defaultRows: Ticket[] = [
     name: "Ticket 2",
     created: "02 Jan 2023",
     resourcePoolId: "resource-pool-2",
-    status: TicketStatus.running,
+    status: Status.running,
     usage: { cpu: 1, gpu: 0, memory: 2 },
   },
   {
@@ -58,7 +58,7 @@ const defaultRows: Ticket[] = [
     name: "Ticket 1",
     created: "01 Jan 2023",
     resourcePoolId: "resource-pool-1",
-    status: TicketStatus.available,
+    status: Status.available,
     usage: { cpu: 2, gpu: 1, memory: 4 },
   },
   {
@@ -66,7 +66,7 @@ const defaultRows: Ticket[] = [
     name: "Ticket 2",
     created: "02 Jan 2023",
     resourcePoolId: "resource-pool-2",
-    status: TicketStatus.running,
+    status: Status.running,
     usage: { cpu: 1, gpu: 0, memory: 2 },
   },
   {
@@ -74,7 +74,7 @@ const defaultRows: Ticket[] = [
     name: "Ticket 1",
     created: "01 Jan 2023",
     resourcePoolId: "resource-pool-1",
-    status: TicketStatus.available,
+    status: Status.available,
     usage: { cpu: 2, gpu: 1, memory: 4 },
   },
   {
@@ -82,7 +82,7 @@ const defaultRows: Ticket[] = [
     name: "Ticket 2",
     created: "02 Jan 2023",
     resourcePoolId: "resource-pool-2",
-    status: TicketStatus.running,
+    status: Status.running,
     usage: { cpu: 1, gpu: 0, memory: 2 },
   },
   {
@@ -90,7 +90,7 @@ const defaultRows: Ticket[] = [
     name: "Ticket 1",
     created: "01 Jan 2023",
     resourcePoolId: "resource-pool-1",
-    status: TicketStatus.available,
+    status: Status.available,
     usage: { cpu: 2, gpu: 1, memory: 4 },
   },
   {
@@ -98,23 +98,7 @@ const defaultRows: Ticket[] = [
     name: "Ticket 2",
     created: "02 Jan 2023",
     resourcePoolId: "resource-pool-2",
-    status: TicketStatus.running,
-    usage: { cpu: 1, gpu: 0, memory: 2 },
-  },
-  {
-    id: "ticket-1",
-    name: "Ticket 1",
-    created: "01 Jan 2023",
-    resourcePoolId: "resource-pool-1",
-    status: TicketStatus.available,
-    usage: { cpu: 2, gpu: 1, memory: 4 },
-  },
-  {
-    id: "ticket-2",
-    name: "Ticket 2",
-    created: "02 Jan 2023",
-    resourcePoolId: "resource-pool-2",
-    status: TicketStatus.running,
+    status: Status.running,
     usage: { cpu: 1, gpu: 0, memory: 2 },
   },
 ];

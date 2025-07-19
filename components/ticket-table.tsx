@@ -8,10 +8,13 @@ import {
   TableHeader,
   TableRow,
 } from "@heroui/table";
-import { Chip } from "@heroui/chip";
 import { Button } from "@chakra-ui/react";
+import { PlaylistAdd } from "@mui/icons-material";
 
-import { TicketStatus } from "@/types/enum";
+import StatusChip from "./status-chip";
+import ResourceChip from "./resource-chip";
+
+import { ResourceType, Status } from "@/types/enum";
 import { Ticket } from "@/types/resource";
 
 const defaultColumns = [
@@ -25,18 +28,26 @@ const defaultColumns = [
 const defaultRows: Ticket[] = [
   {
     id: "ticket-1",
-    name: "Ticket 1",
-    created: "01 Jan 2023",
-    resourcePoolId: "resource-pool-1",
-    status: TicketStatus.running,
-    usage: { cpu: 2, gpu: 1, memory: 4 },
-  },
-  {
-    id: "ticket-2",
     name: "Ticket 2",
     created: "02 Jan 2023",
     resourcePoolId: "resource-pool-2",
-    status: TicketStatus.running,
+    status: Status.succeeded,
+    usage: { cpu: 1, gpu: 0, memory: 2 },
+  },
+  {
+    id: "ticket-2",
+    name: "Ticket 1",
+    created: "01 Jan 2023",
+    resourcePoolId: "resource-pool-1",
+    status: Status.running,
+    usage: { cpu: 2, gpu: 1, memory: 4 },
+  },
+  {
+    id: "ticket-3",
+    name: "Ticket 2",
+    created: "02 Jan 2023",
+    resourcePoolId: "resource-pool-2",
+    status: Status.available,
     usage: { cpu: 1, gpu: 0, memory: 2 },
   },
 ];
@@ -72,26 +83,23 @@ const TicketTable = ({
           <TableRow key={index}>
             <TableCell>{row.name}</TableCell>
             <TableCell>
-              <Chip
-                className={`status-${row.status}`}
-                color="primary"
-                variant="flat"
-              >
-                {row.status}
-              </Chip>
+              <StatusChip status={row.status} />
             </TableCell>
             <TableCell>{row.created}</TableCell>
             <TableCell className="flex flex-row gap-4">
-              <Chip>CPU: {row.usage.cpu}</Chip>
-              <Chip>GPU: {row.usage.gpu}</Chip>
-              <Chip>MEM: {row.usage.memory}</Chip>
+              <ResourceChip type={ResourceType.cpu} value={row.usage.cpu} />
+              <ResourceChip type={ResourceType.gpu} value={row.usage.gpu} />
+              <ResourceChip
+                type={ResourceType.memory}
+                value={row.usage.memory}
+              />
             </TableCell>
             <TableCell>
               <Button
                 variant="outline"
                 onClick={() => alert(`Action on ${row.name}`)}
               >
-                Edit
+                <PlaylistAdd className="!w-6 !h-6" />
               </Button>
             </TableCell>
           </TableRow>
