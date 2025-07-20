@@ -8,7 +8,7 @@ import { title, subtitle } from "@/components/primitives";
 import { GithubIcon } from "@/components/icons";
 
 export default async function Home() {
-  await new Promise((resolve) => setTimeout(resolve, 500));
+  // await new Promise((resolve) => setTimeout(resolve, 500));
 
   return (
     <section className="flex flex-col items-center justify-center gap-4 py-8 md:py-10">

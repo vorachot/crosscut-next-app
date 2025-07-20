@@ -1,7 +1,7 @@
 import TicketTableClient from "@/components/ticket-table-client";
 
 const page = async () => {
-  await new Promise((resolve) => setTimeout(resolve, 500));
+  // await new Promise((resolve) => setTimeout(resolve, 500));
 
   return (
     <div className="flex flex-col justify-center gap-5">
