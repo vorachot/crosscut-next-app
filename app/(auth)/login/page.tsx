@@ -6,6 +6,8 @@ import { Input } from "@heroui/input";
 import { useRouter } from "next/navigation";
 import { useState } from "react";
 
+import { loginUser } from "@/api/auth";
+
 const LoginPage = () => {
   const router = useRouter();
   const [isLoading, setIsLoading] = useState(false);
@@ -21,17 +23,7 @@ const LoginPage = () => {
     const password = formData.get("password") as string;
 
     try {
-      const response = await fetch("http://localhost:8080/users/login", {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/x-www-form-urlencoded",
-        },
-        credentials: "include",
-        body: new URLSearchParams({
-          username,
-          password,
-        }),
-      });
+      const response = await loginUser(username, password);
 
       if (response.ok) {
         router.push("/projects");
@@ -41,9 +33,7 @@ const LoginPage = () => {
         setError(errorText || "Login failed. Please check your credentials.");
       }
     } catch (error) {
-      setError("Network error. Please try again.");
-      // eslint-disable-next-line no-console
-      console.error("Login error:", error);
+      setError(error instanceof Error ? error.message : String(error));
     } finally {
       setIsLoading(false);
     }
