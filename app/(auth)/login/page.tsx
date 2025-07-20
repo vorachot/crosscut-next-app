@@ -3,9 +3,11 @@
 import { Button } from "@heroui/button";
 import { Form } from "@heroui/form";
 import { Input } from "@heroui/input";
+import { useRouter } from "next/navigation";
 import { useState } from "react";
 
 const LoginPage = () => {
+  const router = useRouter();
   const [isLoading, setIsLoading] = useState(false);
   const [error, setError] = useState("");
 
@@ -24,7 +26,7 @@ const LoginPage = () => {
         headers: {
           "Content-Type": "application/x-www-form-urlencoded",
         },
-        credentials: "include", // This ensures cookies are included in the request/response
+        credentials: "include",
         body: new URLSearchParams({
           username,
           password,
@@ -32,10 +34,8 @@ const LoginPage = () => {
       });
 
       if (response.ok) {
-        // Login successful, redirect to home or dashboard
-        window.location.href = "/projects";
+        router.push("/projects");
       } else {
-        // Handle login error
         const errorText = await response.text();
 
         setError(errorText || "Login failed. Please check your credentials.");
@@ -55,14 +55,12 @@ const LoginPage = () => {
       <Form className="w-80 space-y-4" onSubmit={handleSubmit}>
         <Input
           required
-          defaultValue={"arm"}
           disabled={isLoading}
           name="username"
           placeholder="Username"
         />
         <Input
           required
-          defaultValue={"12345678"}
           disabled={isLoading}
           name="password"
           placeholder="Password"
