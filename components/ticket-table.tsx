@@ -28,7 +28,7 @@ const defaultColumns = [
 const defaultRows: Ticket[] = [
   {
     id: "ticket-1",
-    name: "Ticket 2",
+    name: "Ticket 1",
     created: "02 Jan 2023",
     resourcePoolId: "resource-pool-2",
     status: Status.succeeded,
@@ -36,7 +36,7 @@ const defaultRows: Ticket[] = [
   },
   {
     id: "ticket-2",
-    name: "Ticket 1",
+    name: "Ticket 2",
     created: "01 Jan 2023",
     resourcePoolId: "resource-pool-1",
     status: Status.running,
@@ -44,7 +44,7 @@ const defaultRows: Ticket[] = [
   },
   {
     id: "ticket-3",
-    name: "Ticket 2",
+    name: "Ticket 3",
     created: "02 Jan 2023",
     resourcePoolId: "resource-pool-2",
     status: Status.available,

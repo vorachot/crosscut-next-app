@@ -3,7 +3,8 @@
 import { Button } from "@heroui/button";
 import { Card } from "@heroui/card";
 import { Form } from "@heroui/form";
-import { NumberInput } from "@heroui/number-input";
+
+import SliderInput from "./slider-input";
 
 type RequestDialogProps = {
   setOnClose?: () => void;
@@ -11,39 +12,22 @@ type RequestDialogProps = {
 
 const RequestTicketDialog = ({ setOnClose }: RequestDialogProps) => {
   return (
-    <Card className="w-[350px] px-5 py-6 bg-white dark:bg-gray-800 shadow-md border border-gray-200 dark:border-gray-700">
+    <Card className="w-[350px] px-5 py-6 bg-white dark:bg-gray-800 shadow-md border border-gray-200 dark:border-gray-700 relative">
+      <Button
+        className="absolute top-2 right-2 min-w-8 h-8 p-0 bg-transparent hover:bg-gray-100 dark:hover:bg-gray-700 text-gray-500 dark:text-gray-400 rounded-full"
+        onPress={() => {
+          if (setOnClose) setOnClose();
+        }}
+      >
+        ✕
+      </Button>
       <div className="text-xl font-bold text-gray-700 dark:text-gray-300">
         Request Resource
       </div>
-      <div className="text-sm text-gray-600 dark:text-gray-400 mt-3">
-        Project: <span>Project Name</span>
-        <br />
-        Namespace: <span>Namespace Name</span>
-        <br />
-        Resource Pool: <span>Resource Pool Name</span>
-      </div>
-      <Form>
-        <NumberInput
-          className="mt-4"
-          label="CPU"
-          max={16}
-          min={0}
-          placeholder="Enter CPU cores"
-        />
-        <NumberInput
-          className="mt-4"
-          label="GPU"
-          max={8}
-          min={0}
-          placeholder="Enter GPU units"
-        />
-        <NumberInput
-          className="mt-4"
-          label="Memory"
-          max={64}
-          min={0}
-          placeholder="Enter memory in GB"
-        />
+      <Form className="mt-4 flex flex-col gap-4">
+        <SliderInput label="CPU" maxValue={16} />
+        <SliderInput label="GPU" maxValue={8} />
+        <SliderInput label="Memory" maxValue={64} />
         <Button
           className="mt-4 w-full bg-blue-600 hover:bg-blue-700 text-white font-semibold py-2 px-4 rounded-md focus:outline-none focus:ring focus:ring-blue-500"
           type="submit"
