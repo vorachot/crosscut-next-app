@@ -2,17 +2,26 @@
 
 import { Status } from "./enum";
 
+export type Namespace = {
+  id: string;
+  urn: string;
+  project: string;
+  priority: number;
+  quota: number;
+  resource_unit_urn: string;
+};
+
 export type Project = {
   id: string;
   name: string;
   namespaces: Namespace[];
 };
 
-export type Namespace = {
-  id: string;
-  name: string;
-  resourcePools: ResourcePool[];
-};
+// export type Namespace = {
+//   id: string;
+//   name: string;
+//   resourcePools: ResourcePool[];
+// };
 
 export type ResourcePool = {
   id: string;

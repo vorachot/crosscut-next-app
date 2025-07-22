@@ -6,7 +6,7 @@ import ResourceTable from "@/components/resource-table";
 
 type ResourceTableClientProps = {
   columns?: { name: string; uid: string; sortable: boolean }[];
-  rows: any[];
+  rows?: any[];
   pathTemplate: "project-to-namespace" | "namespace-to-resourcepool";
 };
 
@@ -20,9 +20,9 @@ const ResourceTableClient = ({
   const getPath = (row: any) => {
     switch (pathTemplate) {
       case "project-to-namespace":
-        return `/projects/${row.projectId}/${row.namespaceId}`;
+        return `/projects/${row.project}/${row.id}`;
       case "namespace-to-resourcepool":
-        return `/projects/${row.projectId}/${row.namespaceId}/${row.resourcePoolId}`;
+        return `/projects/${row.project}/${row.id}/${row.id}`;
       default:
         return "/";
     }

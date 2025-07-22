@@ -1,6 +1,6 @@
 import { Card, CardBody, CardFooter, CardHeader } from "@heroui/card";
 import { Divider } from "@heroui/divider";
-import { EditCalendarOutlined, FolderOutlined } from "@mui/icons-material";
+import { FolderOutlined } from "@mui/icons-material";
 import Link from "next/link";
 
 import UsageBar from "./usagebar";
@@ -30,7 +30,6 @@ const InfoCard = ({
         </CardHeader>
         <CardBody className="py-2 justify-end">
           <div className="flex items-center gap-1">
-            {/* <EditCalendarOutlined className="!w-4 !h-4 text-gray-400" /> */}
             <span className="text-sm text-gray-600 dark:text-gray-300">
               <span className="text-gray-400">Created: </span>
               <span className="font-medium">{createdDate}</span>

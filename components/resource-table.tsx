@@ -19,6 +19,7 @@ const defaultColumns = [
 
 const defaultRows = [
   {
+    id: "bc1f5d2b-8e3a-4c0b-9f6e-7d8e9f0a1b2c",
     projectId: "project-1",
     namespaceId: "namespace-1",
     resourcePoolId: "resource-pool-1",
@@ -27,6 +28,7 @@ const defaultRows = [
     usage: { cpu: 2, gpu: 2, memory: 4 },
   },
   {
+    id: "ac48513-9f92-4c75-8218-9f53193918c7",
     projectId: "project-1",
     namespaceId: "namespace-2",
     resourcePoolId: "resource-pool-2",
@@ -62,12 +64,12 @@ const ResourceTable = ({
             style={{ cursor: "pointer" }}
             onClick={() => onRowClick?.(row)}
           >
-            <TableCell>{row.name}</TableCell>
-            <TableCell>{row.created}</TableCell>
+            <TableCell>{row.id}</TableCell>
+            <TableCell>13 Jan 2022</TableCell>
             <TableCell className="flex flex-row gap-4">
-              <UsageBar label="CPU" maxValue={4} value={row.usage.cpu} />
-              <UsageBar label="GPU" maxValue={4} value={row.usage.gpu} />
-              <UsageBar label="Memory" maxValue={8} value={row.usage.memory} />
+              <UsageBar label="CPU" maxValue={4} value={2} />
+              <UsageBar label="GPU" maxValue={4} value={2} />
+              <UsageBar label="Memory" maxValue={8} value={4} />
             </TableCell>
           </TableRow>
         ))}

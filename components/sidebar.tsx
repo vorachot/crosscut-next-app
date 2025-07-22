@@ -3,7 +3,6 @@
 import {
   Assignment,
   ConfirmationNumber,
-  Home,
   WorkRounded,
 } from "@mui/icons-material";
 import Link from "next/link";
@@ -12,7 +11,7 @@ import { ThemeSwitch } from "./theme-switch";
 
 const iconClass = "!w-6 !h-6";
 const navigationItems = [
-  { title: "Home", icon: <Home className={iconClass} />, url: "/" },
+  // { title: "Home", icon: <Home className={iconClass} />, url: "/" },
   {
     title: "Projects",
     icon: <WorkRounded className={iconClass} />,
