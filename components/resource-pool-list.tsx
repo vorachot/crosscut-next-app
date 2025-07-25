@@ -10,7 +10,7 @@ const columns = [
 
 const rows = [
   {
-    id: "default-pool",
+    id: "7fd1b94e-f17d-4a07-9802-d635e3b52b3e",
     priority: "3",
     project: "project01",
     quota: "4",
@@ -18,7 +18,7 @@ const rows = [
     urn: "urn:crosscut:namespace:project01:namespace01",
   },
   {
-    id: "default-pool-2",
+    id: "f6394f97-0aab-4972-a20f-cb317b76ff37",
     priority: "3",
     project: "project02",
     quota: "4",

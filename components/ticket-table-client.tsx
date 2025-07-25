@@ -29,7 +29,7 @@ const TicketTableClient = ({
   ) : (
     <TicketTable
       columns={columns}
-      rows={rows}
+      // rows={rows}
       selectionBehavior={selectionBehavior}
       selectionMode={selectionMode}
     />

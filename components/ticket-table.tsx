@@ -10,12 +10,15 @@ import {
 } from "@heroui/table";
 import { Button } from "@chakra-ui/react";
 import { PlaylistAdd } from "@mui/icons-material";
+import useSWR from "swr";
 
 import StatusChip from "./status-chip";
 import ResourceChip from "./resource-chip";
 
 import { ResourceType, Status } from "@/types/enum";
 import { Ticket } from "@/types/resource";
+import Loading from "@/app/loading";
+import { getTicketsByNamespaceId } from "@/api/ticket";
 
 const defaultColumns = [
   { name: "TICKET", uid: "name", sortable: true },
@@ -25,47 +28,35 @@ const defaultColumns = [
   { name: "ACTION", uid: "action", sortable: false },
 ];
 
-const defaultRows: Ticket[] = [
-  {
-    id: "ticket-1",
-    name: "Ticket 1",
-    created: "02 Jan 2023",
-    resourcePoolId: "resource-pool-2",
-    status: Status.succeeded,
-    usage: { cpu: 1, gpu: 0, memory: 2 },
-  },
-  {
-    id: "ticket-2",
-    name: "Ticket 2",
-    created: "01 Jan 2023",
-    resourcePoolId: "resource-pool-1",
-    status: Status.running,
-    usage: { cpu: 2, gpu: 1, memory: 4 },
-  },
-  {
-    id: "ticket-3",
-    name: "Ticket 3",
-    created: "02 Jan 2023",
-    resourcePoolId: "resource-pool-2",
-    status: Status.available,
-    usage: { cpu: 1, gpu: 0, memory: 2 },
-  },
-];
-
 type TicketTableProps = {
+  nsId?: string;
   columns?: typeof defaultColumns;
-  rows?: typeof defaultRows;
   selectionMode?: "multiple" | "single" | "none";
   selectionBehavior?: "replace" | "toggle";
-  onRowClick?: (row: (typeof defaultRows)[number]) => void;
+  // onRowClick?: (row: (typeof defaultRows)[number]) => void;
 };
 
 const TicketTable = ({
   columns = defaultColumns,
-  rows = defaultRows,
   selectionMode = "none",
   selectionBehavior = "replace",
+  nsId = "7fd1b94e-f17d-4a07-9802-d635e3b52b3e",
 }: TicketTableProps) => {
+  const { data, error, isLoading } = useSWR(
+    ["tickets", nsId],
+    () => getTicketsByNamespaceId(nsId),
+    { revalidateOnFocus: false },
+  );
+
+  if (isLoading) return <Loading />;
+  if (error) return <div>Error loading tickets</div>;
+
+  const tickets: Ticket[] = data?.tickets ?? [];
+
+  if (tickets.length === 0) {
+    return <div className="text-gray-500">No tickets available</div>;
+  }
+
   return (
     <Table
       // align="start"
@@ -79,25 +70,31 @@ const TicketTable = ({
         ))}
       </TableHeader>
       <TableBody>
-        {rows.map((row, index) => (
+        {tickets.map((row, index) => (
           <TableRow key={index}>
-            <TableCell>{row.name}</TableCell>
+            <TableCell>{row.id}</TableCell>
             <TableCell>
-              <StatusChip status={row.status} />
+              <StatusChip status={Status.available} />
             </TableCell>
-            <TableCell>{row.created}</TableCell>
+            <TableCell>20 Jan 2023</TableCell>
             <TableCell className="flex flex-row gap-4">
-              <ResourceChip type={ResourceType.cpu} value={row.usage.cpu} />
-              <ResourceChip type={ResourceType.gpu} value={row.usage.gpu} />
+              <ResourceChip
+                type={ResourceType.cpu}
+                value={Number(row.spec[0].resource[0].quantity)}
+              />
+              <ResourceChip
+                type={ResourceType.gpu}
+                value={Number(row.spec[0].resource[1].quantity)}
+              />
               <ResourceChip
                 type={ResourceType.memory}
-                value={row.usage.memory}
+                value={Number(row.spec[0].resource[2].quantity)}
               />
             </TableCell>
             <TableCell>
               <Button
                 variant="outline"
-                onClick={() => alert(`Action on ${row.name}`)}
+                onClick={() => alert(`Action on ${row.id}`)}
               >
                 <PlaylistAdd className="!w-6 !h-6" />
               </Button>

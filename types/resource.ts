@@ -1,7 +1,5 @@
 // types/resource.ts
 
-import { Status } from "./enum";
-
 export type Namespace = {
   id: string;
   urn: string;
@@ -38,14 +36,37 @@ export type ResourceUsage = {
   memory?: number;
 };
 
-export type Ticket = {
+type Resource = {
   id: string;
   name: string;
-  created: string;
-  resourcePoolId: string;
-  status: Status;
-  usage: ResourceUsage;
+  quantity: string;
+  unit: string;
 };
+
+type Spec = {
+  id: string;
+  type: string;
+  pool_id: string;
+  resource: Resource[];
+};
+
+export type Ticket = {
+  id: string;
+  user_id: string;
+  spec: Spec[];
+  reference_ticket_id: string;
+  redeem_timeout: string;
+  lease: string;
+  signature: string;
+};
+// export type Ticket = {
+//   id: string;
+//   name: string;
+//   created: string;
+//   resourcePoolId: string;
+//   status: Status;
+//   usage: ResourceUsage;
+// };
 
 export type Task = {
   id: string;

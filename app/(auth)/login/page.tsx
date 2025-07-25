@@ -60,7 +60,7 @@ const LoginPage = () => {
           <div className="text-red-500 text-sm text-center">{error}</div>
         )}
         <Button
-          className="w-full py-2 mt-4 text-white rounded"
+          className="w-full py-2 mt-4 text-white rounded bg-blue-600 hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-opacity-50"
           disabled={isLoading}
           type="submit"
         >

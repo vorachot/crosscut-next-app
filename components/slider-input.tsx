@@ -4,11 +4,13 @@ import { useState } from "react";
 type SliderInputProps = {
   label?: string;
   maxValue?: number;
+  onValueChange?: (value: number) => void;
 };
 
 const SliderInput = ({
   label = "default",
   maxValue = 10,
+  onValueChange,
 }: SliderInputProps) => {
   const [value, setValue] = useState(1);
   const [inputValue, setInputValue] = useState("1");
@@ -18,6 +20,9 @@ const SliderInput = ({
 
     setValue(value);
     setInputValue(value.toString());
+    if (onValueChange) {
+      onValueChange(value);
+    }
   };
 
   return (
@@ -46,6 +51,7 @@ const SliderInput = ({
 
                 setValue(clamped);
                 setInputValue(clamped.toString());
+                if (onValueChange) onValueChange(clamped);
               }
             }}
             onChange={(e) => {
@@ -70,6 +76,7 @@ const SliderInput = ({
 
                   setValue(clampedValue);
                   setInputValue(clampedValue.toString());
+                  if (onValueChange) onValueChange(clampedValue);
                 }
               }
             }}
