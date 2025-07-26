@@ -50,7 +50,7 @@ const ResourceTable = ({
   onRowClick,
 }: ResourceTableProps) => {
   return (
-    <Table removeWrapper color="primary">
+    <Table removeWrapper aria-label="Resource Usage Table" color="primary">
       <TableHeader>
         {columns.map((column) => (
           <TableColumn key={column.uid}>{column.name}</TableColumn>

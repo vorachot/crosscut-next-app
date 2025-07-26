@@ -83,6 +83,7 @@ const TicketTable = ({
     <Table
       // align="start"
       removeWrapper
+      aria-label="Ticket Table"
       selectionBehavior={selectionBehavior}
       selectionMode={selectionMode}
     >

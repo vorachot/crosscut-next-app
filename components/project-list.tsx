@@ -23,7 +23,9 @@ const ProjectList = () => {
 
         setProjects(data);
       } catch (error) {
-        // Handle error
+        // eslint-disable-next-line no-console
+        console.error("Error fetching projects:", error);
+        setProjects([]);
       } finally {
         setIsLoading(false);
       }
@@ -41,6 +43,7 @@ const ProjectList = () => {
       {projects.map((project, index) => (
         <InfoCard
           key={index}
+          aria-label={`Project ${project.name}`}
           createdDate="30 Nov 2027"
           id={project.name}
           title={project.name}

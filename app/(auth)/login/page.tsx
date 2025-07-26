@@ -7,6 +7,7 @@ import { useRouter } from "next/navigation";
 import { useState } from "react";
 
 import { loginUser } from "@/api/auth";
+import Loading from "@/app/loading";
 
 const LoginPage = () => {
   const router = useRouter();
@@ -38,6 +39,10 @@ const LoginPage = () => {
       setIsLoading(false);
     }
   };
+
+  if (isLoading) {
+    return <Loading />;
+  }
 
   return (
     <div className="flex flex-col items-center justify-center h-screen">

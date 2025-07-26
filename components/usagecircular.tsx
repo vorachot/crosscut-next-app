@@ -15,6 +15,7 @@ const UsageCircular = ({
   return (
     <div className="flex flex-col items-center justify-center gap-4">
       <CircularProgress
+        aria-label={`Usage of ${label}`}
         classNames={{
           svg: "w-48 h-48",
           // indicator: "stroke-white",
