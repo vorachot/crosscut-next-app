@@ -59,7 +59,7 @@ export async function getTicketsByNamespaceId(nsId: string): Promise<any> {
 
   return response.json();
 }
-export async function getTickets(): Promise<any[]> {
+export async function getTickets(): Promise<any> {
   const response = await fetch("http://localhost:8080/ticket/history", {
     method: "GET",
     credentials: "include",

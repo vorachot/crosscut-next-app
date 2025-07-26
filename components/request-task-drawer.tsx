@@ -9,6 +9,8 @@ import {
 } from "@heroui/drawer";
 import { Form } from "@heroui/form";
 import { Input } from "@heroui/input";
+import { Selection } from "@heroui/table";
+import { useState } from "react";
 
 import TicketTableClient from "./ticket-table-client";
 
@@ -18,6 +20,10 @@ type RequestTaskDrawerProps = {
 };
 
 const RequestTaskDrawer = ({ isOpen, onClose }: RequestTaskDrawerProps) => {
+  const [selectedKeys, setSelectedKeys] = useState<Selection>(new Set());
+
+  const hasSelectedTickets = selectedKeys !== "all" && selectedKeys.size > 0;
+
   return (
     <>
       <Drawer isOpen={isOpen} size="2xl" onOpenChange={onClose}>
@@ -48,7 +54,9 @@ const RequestTaskDrawer = ({ isOpen, onClose }: RequestTaskDrawerProps) => {
                   <div className="w-full max-h-80 overflow-y-auto">
                     <TicketTableClient
                       isDrawer={true}
+                      selectedKeys={selectedKeys}
                       selectionMode="multiple"
+                      onSelectionChange={setSelectedKeys}
                     />
                   </div>
                 </Form>
@@ -57,7 +65,11 @@ const RequestTaskDrawer = ({ isOpen, onClose }: RequestTaskDrawerProps) => {
                 <Button color="danger" variant="light" onPress={onClose}>
                   Close
                 </Button>
-                <Button color="primary" onPress={onClose}>
+                <Button
+                  color="primary"
+                  isDisabled={!hasSelectedTickets}
+                  onPress={onClose}
+                >
                   Create Task
                 </Button>
               </DrawerFooter>

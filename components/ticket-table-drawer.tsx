@@ -9,8 +9,11 @@ import {
   TableRow,
 } from "@heroui/table";
 import { Chip } from "@heroui/chip";
+import { Selection } from "@heroui/table";
+import useSWR from "swr";
 
-import { Status } from "@/types/enum";
+import Loading from "@/app/loading";
+import { getTickets } from "@/api/ticket";
 import { Ticket } from "@/types/resource";
 
 const defaultColumns = [
@@ -20,110 +23,54 @@ const defaultColumns = [
   { name: "ALLOCATED RESOURCES", uid: "usage", sortable: true },
 ];
 
-const defaultRows: Ticket[] = [
-  {
-    id: "ticket-1",
-    name: "Ticket 1",
-    created: "01 Jan 2023",
-    resourcePoolId: "resource-pool-1",
-    status: Status.available,
-    usage: { cpu: 2, gpu: 1, memory: 4 },
-  },
-  {
-    id: "ticket-2",
-    name: "Ticket 2",
-    created: "02 Jan 2023",
-    resourcePoolId: "resource-pool-2",
-    status: Status.running,
-    usage: { cpu: 1, gpu: 0, memory: 2 },
-  },
-  {
-    id: "ticket-1",
-    name: "Ticket 1",
-    created: "01 Jan 2023",
-    resourcePoolId: "resource-pool-1",
-    status: Status.available,
-    usage: { cpu: 2, gpu: 1, memory: 4 },
-  },
-  {
-    id: "ticket-2",
-    name: "Ticket 2",
-    created: "02 Jan 2023",
-    resourcePoolId: "resource-pool-2",
-    status: Status.running,
-    usage: { cpu: 1, gpu: 0, memory: 2 },
-  },
-  {
-    id: "ticket-1",
-    name: "Ticket 1",
-    created: "01 Jan 2023",
-    resourcePoolId: "resource-pool-1",
-    status: Status.available,
-    usage: { cpu: 2, gpu: 1, memory: 4 },
-  },
-  {
-    id: "ticket-2",
-    name: "Ticket 2",
-    created: "02 Jan 2023",
-    resourcePoolId: "resource-pool-2",
-    status: Status.running,
-    usage: { cpu: 1, gpu: 0, memory: 2 },
-  },
-  {
-    id: "ticket-1",
-    name: "Ticket 1",
-    created: "01 Jan 2023",
-    resourcePoolId: "resource-pool-1",
-    status: Status.available,
-    usage: { cpu: 2, gpu: 1, memory: 4 },
-  },
-  {
-    id: "ticket-2",
-    name: "Ticket 2",
-    created: "02 Jan 2023",
-    resourcePoolId: "resource-pool-2",
-    status: Status.running,
-    usage: { cpu: 1, gpu: 0, memory: 2 },
-  },
-  {
-    id: "ticket-1",
-    name: "Ticket 1",
-    created: "01 Jan 2023",
-    resourcePoolId: "resource-pool-1",
-    status: Status.available,
-    usage: { cpu: 2, gpu: 1, memory: 4 },
-  },
-  {
-    id: "ticket-2",
-    name: "Ticket 2",
-    created: "02 Jan 2023",
-    resourcePoolId: "resource-pool-2",
-    status: Status.running,
-    usage: { cpu: 1, gpu: 0, memory: 2 },
-  },
-];
-
 type TicketTableProps = {
   columns?: typeof defaultColumns;
-  rows?: typeof defaultRows;
+  // rows?: typeof defaultRows;
   selectionMode?: "multiple" | "single" | "none";
   selectionBehavior?: "replace" | "toggle";
-  onRowClick?: (row: (typeof defaultRows)[number]) => void;
+  selectedKeys?: Selection;
+  onSelectionChange?: (keys: Selection) => void;
+  // onRowClick?: (row: (typeof defaultRows)[number]) => void;
 };
 
 const TicketTableDrawer = ({
   columns = defaultColumns,
-  rows = defaultRows,
+  // rows = defaultRows,
   selectionMode = "none",
   selectionBehavior = "replace",
+  selectedKeys,
+  onSelectionChange,
 }: TicketTableProps) => {
+  const { data, error, isLoading } = useSWR(["tickets-history"], getTickets, {
+    revalidateOnFocus: false,
+    dedupingInterval: 5000,
+  });
+
+  if (isLoading) return <Loading />;
+  if (error) return <div>Error loading tickets</div>;
+  const tickets: Ticket[] = data?.tickets ?? [];
+
+  if (tickets.length === 0) {
+    return (
+      <div className="text-center py-8">
+        <div className="text-gray-500 mb-2">No tickets available</div>
+        <div className="text-sm text-amber-600 dark:text-amber-400">
+          You need to request a ticket before creating a task. Please request a
+          ticket first to allocate resources.
+        </div>
+      </div>
+    );
+  }
+
   return (
     <Table
       isHeaderSticky
       removeWrapper
       color="primary"
+      selectedKeys={selectedKeys}
       selectionBehavior={selectionBehavior}
       selectionMode={selectionMode}
+      onSelectionChange={onSelectionChange}
       // // align="start"
     >
       <TableHeader className="bg-gray-100 dark:bg-gray-700">
@@ -132,14 +79,14 @@ const TicketTableDrawer = ({
         ))}
       </TableHeader>
       <TableBody>
-        {rows.map((row, index) => (
-          <TableRow key={index}>
-            <TableCell>{row.name}</TableCell>
-            <TableCell>{row.created}</TableCell>
+        {tickets.map((ticket) => (
+          <TableRow key={ticket.id}>
+            <TableCell>{ticket.id}</TableCell>
+            <TableCell>20 Jan 2023</TableCell>
             <TableCell className="flex flex-row gap-4">
-              <Chip>CPU: {row.usage.cpu}</Chip>
-              <Chip>GPU: {row.usage.gpu}</Chip>
-              <Chip>MEM: {row.usage.memory}</Chip>
+              <Chip>CPU: {Number(ticket.spec[0].resource[0].quantity)}</Chip>
+              <Chip>GPU: {Number(ticket.spec[0].resource[1].quantity)}</Chip>
+              <Chip>MEM: {Number(ticket.spec[0].resource[2].quantity)}</Chip>
             </TableCell>
           </TableRow>
         ))}
