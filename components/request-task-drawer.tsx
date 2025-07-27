@@ -11,8 +11,11 @@ import { Form } from "@heroui/form";
 import { Input } from "@heroui/input";
 import { Selection } from "@heroui/table";
 import { useState } from "react";
+import { mutate } from "swr";
 
 import TicketTableClient from "./ticket-table-client";
+
+import { createTask } from "@/api/task";
 
 type RequestTaskDrawerProps = {
   isOpen: boolean;
@@ -23,6 +26,19 @@ const RequestTaskDrawer = ({ isOpen, onClose }: RequestTaskDrawerProps) => {
   const [selectedKeys, setSelectedKeys] = useState<Selection>(new Set());
 
   const hasSelectedTickets = selectedKeys !== "all" && selectedKeys.size > 0;
+
+  const handleCreateTask = async () => {
+    try {
+      const ticketIds = Array.from(selectedKeys);
+
+      await createTask(ticketIds);
+      console.log("Creating task with ticket IDs:", ticketIds);
+      onClose();
+      await mutate(["tasks"], undefined, { revalidate: true });
+    } catch (error) {
+      console.error("Failed to create task:", error);
+    }
+  };
 
   return (
     <>
@@ -68,7 +84,7 @@ const RequestTaskDrawer = ({ isOpen, onClose }: RequestTaskDrawerProps) => {
                 <Button
                   color="primary"
                   isDisabled={!hasSelectedTickets}
-                  onPress={onClose}
+                  onPress={handleCreateTask}
                 >
                   Create Task
                 </Button>

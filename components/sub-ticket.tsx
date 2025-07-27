@@ -3,11 +3,7 @@ import { Chip } from "@heroui/chip";
 
 type SubTicketProps = {
   name?: string;
-  resources?: {
-    cpu?: number;
-    gpu?: number;
-    memory?: number;
-  };
+  resources?: Record<string, number>;
 };
 
 const SubTicket = ({ name = "default-name", resources }: SubTicketProps) => {
@@ -24,17 +20,17 @@ const SubTicket = ({ name = "default-name", resources }: SubTicketProps) => {
         <div className="flex flex-row gap-2 mt-1">
           <Chip size="sm">
             <span className="text-gray-700 dark:text-gray-300">
-              CPU: {resources?.cpu}
+              CPU: {resources?.cpu || 0}
             </span>
           </Chip>
           <Chip size="sm">
             <span className="text-gray-700 dark:text-gray-300">
-              GPU: {resources?.gpu}
+              GPU: {resources?.gpu || 0}
             </span>
           </Chip>
           <Chip size="sm">
             <span className="text-gray-700 dark:text-gray-300">
-              MEM: {resources?.memory}
+              MEM: {resources?.memory || 0}
             </span>
           </Chip>
         </div>

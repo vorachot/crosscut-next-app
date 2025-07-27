@@ -13,17 +13,42 @@ import SubTicket from "./sub-ticket";
 
 import { ResourceType, Status } from "@/types/enum";
 
+type Ticket = {
+  id: string;
+  spec: {
+    resource: { name: string; quantity: string }[];
+  }[];
+};
+
 type AccordionProps = {
   title?: string;
   createdAt?: string;
   status?: Status;
+  tickets?: Ticket[];
 };
 
 const TaskAccordion = ({
   title = "Default Title",
   createdAt = "20 Jan 2023",
   status = Status.running,
+  tickets = [],
 }: AccordionProps) => {
+  const ticketCount = tickets.length;
+  const totalResource = tickets.reduce(
+    (acc, ticket) => {
+      ticket.spec.forEach((spec) => {
+        spec.resource.forEach((res) => {
+          const qty = Number(res.quantity);
+
+          acc[res.name] = (acc[res.name] || 0) + qty;
+        });
+      });
+
+      return acc;
+    },
+    {} as Record<string, number>,
+  );
+
   return (
     <Accordion className="w-full" variant="splitted">
       <AccordionItem
@@ -37,11 +62,12 @@ const TaskAccordion = ({
               </div>
               <div className="flex items-center gap-1">
                 <ConfirmationNumberOutlined className="!w-4 !h-4" />
-                <span>Tickets: 3</span>
+                <span>Tickets: {ticketCount}</span>
               </div>
             </div>
           </div>
         }
+        textValue="Task Item"
         title={
           <div className="flex justify-between items-center">
             <div className="flex justify-between items-center w-full">
@@ -61,9 +87,12 @@ const TaskAccordion = ({
               </h4>
             </div>
             <div className="flex gap-3">
-              <ResourceChip type={ResourceType.cpu} value={4} />
-              <ResourceChip type={ResourceType.gpu} value={1} />
-              <ResourceChip type={ResourceType.memory} value={16} />
+              <ResourceChip type={ResourceType.cpu} value={totalResource.cpu} />
+              <ResourceChip type={ResourceType.gpu} value={totalResource.gpu} />
+              <ResourceChip
+                type={ResourceType.memory}
+                value={totalResource.memory}
+              />
             </div>
 
             {/* <div className="flex gap-2">
@@ -81,18 +110,20 @@ const TaskAccordion = ({
               Tickets:
             </h4>
             <div className="flex flex-col gap-2 mt-2">
-              <SubTicket
-                name="Ticket 1"
-                resources={{ cpu: 2, gpu: 1, memory: 8 }}
-              />
-              <SubTicket
-                name="Ticket 2"
-                resources={{ cpu: 2, gpu: 0, memory: 8 }}
-              />
-              <SubTicket
-                name="Ticket 3"
-                resources={{ cpu: 0, gpu: 0, memory: 0 }}
-              />
+              {tickets?.map((ticket, index) => (
+                <SubTicket
+                  key={index}
+                  name={ticket.id}
+                  resources={ticket.spec[0].resource.reduce(
+                    (acc, res) => {
+                      acc[res.name] = Number(res.quantity);
+
+                      return acc;
+                    },
+                    {} as Record<string, number>,
+                  )}
+                />
+              ))}
             </div>
           </div>
           {status === Status.running && (

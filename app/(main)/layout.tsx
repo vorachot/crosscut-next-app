@@ -12,7 +12,7 @@ export default function MainLayout({
         {/* <Navbar /> */}
         <BreadCrumb />
         <Sidebar />
-        <main className="h-auto w-auto ml-[260px] mt-16 p-10 flex-grow">
+        <main className="h-auto w-auto md:ml-[260px] mt-16 p-10 flex-grow">
           {children}
         </main>
       </div>
