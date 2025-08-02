@@ -1,15 +1,14 @@
 "use client";
 import { Accordion, AccordionItem } from "@heroui/accordion";
-import { Button } from "@heroui/button";
 import {
   ConfirmationNumberOutlined,
   EditCalendarOutlined,
-  Stop,
 } from "@mui/icons-material";
 
 import StatusChip from "./status-chip";
 import ResourceChip from "./resource-chip";
 import SubTicket from "./sub-ticket";
+import StopButtonClient from "./stop-button-client";
 
 import { ResourceType, Status } from "@/types/enum";
 
@@ -128,12 +127,7 @@ const TaskAccordion = ({
           </div>
           {status === Status.running && (
             <div className="pt-4 pr-2 flex justify-end items-center">
-              <Button aria-label="Stop" color="danger" size="sm" variant="flat">
-                <div className="flex items-center gap-1">
-                  <Stop className="!w-5 !h-5" name="stop" />
-                  <span className="text-sm">Stop</span>
-                </div>
-              </Button>
+              <StopButtonClient taskId={title} />
             </div>
           )}
         </div>
