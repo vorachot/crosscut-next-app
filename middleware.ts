@@ -21,6 +21,10 @@ export function middleware(request: NextRequest) {
     return NextResponse.redirect(new URL("/projects", request.url));
   }
 
+  if (request.nextUrl.pathname === "/") {
+    return NextResponse.redirect(new URL("/projects", request.url));
+  }
+
   // Allow the request to continue
   return NextResponse.next();
 }

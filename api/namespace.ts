@@ -17,7 +17,9 @@ export async function getNamespaces(): Promise<{ namespace: Namespace[] }> {
 export async function getProjects(): Promise<Project[]> {
   const { namespace } = await getNamespaces();
 
-  const projectMap = namespace.reduce<Record<string, Namespace[]>>(
+  const safeNamespaces = Array.isArray(namespace) ? namespace : [];
+
+  const projectMap = safeNamespaces.reduce<Record<string, Namespace[]>>(
     (acc, ns) => {
       if (!acc[ns.project]) {
         acc[ns.project] = [];

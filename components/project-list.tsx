@@ -1,45 +1,31 @@
 "use client";
 
-import { useEffect, useState } from "react";
+import useSWR from "swr";
 
 import InfoCard from "./info-card";
 
 import { getProjects } from "@/api/namespace";
-import { Project } from "@/types/resource";
 import Loading from "@/app/loading";
 
 const ProjectList = () => {
-  const [projects, setProjects] = useState<Project[]>([]);
-  const [loading, setIsLoading] = useState(true);
+  const { data, error, isLoading } = useSWR(["projects"], () => getProjects(), {
+    revalidateOnFocus: false,
+    dedupingInterval: 5000, // Prevent duplicate requests for 5 seconds
+  });
 
-  useEffect(() => {
-    const fetchData = async () => {
-      setIsLoading(true);
-      try {
-        const [data] = await Promise.all([
-          getProjects(),
-          new Promise((res) => setTimeout(res, 500)), // artificial delay
-        ]);
+  const showLoading = isLoading;
 
-        setProjects(data);
-      } catch (error) {
-        // eslint-disable-next-line no-console
-        console.error("Error fetching projects:", error);
-        setProjects([]);
-      } finally {
-        setIsLoading(false);
-      }
-    };
+  if (showLoading) return <Loading />;
+  if (error) return <div>Error loading projects</div>;
 
-    fetchData();
-  }, []);
+  const projects: any[] = data || [];
 
-  if (loading) {
-    return <Loading />;
+  if (projects.length === 0) {
+    return <div className="text-gray-500">No projects available</div>;
   }
 
   return (
-    <div className="flex flex-row flex-wrap gap-10">
+    <div className="mt-5 flex flex-row flex-wrap gap-10">
       {projects.map((project, index) => (
         <InfoCard
           key={index}
