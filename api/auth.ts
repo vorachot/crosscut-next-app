@@ -16,3 +16,20 @@ export async function loginUser(
 
   return response;
 }
+export async function logoutUser(): Promise<Response> {
+  const response = await fetch("http://localhost:8080/users/logout", {
+    method: "GET",
+    credentials: "include",
+  });
+
+  return response;
+}
+
+export async function me(): Promise<Response> {
+  const response = await fetch("http://localhost:8080/users/me", {
+    method: "GET",
+    credentials: "include",
+  });
+
+  return response;
+}

@@ -3,8 +3,9 @@
 import React from "react";
 import { usePathname } from "next/navigation";
 import Link from "next/link";
-import { User } from "@heroui/user";
 import { SwitchAccessShortcut } from "@mui/icons-material";
+
+import { UserProfile } from "./user-profie";
 
 const Breadcrumb = () => {
   const pathname = usePathname();
@@ -87,13 +88,7 @@ const Breadcrumb = () => {
         </ol>
       </div>
       <div className="w-fit flex justify-end items-end px-4">
-        <User
-          avatarProps={{
-            radius: "lg",
-            src: "",
-          }}
-          name="vorachot.ban@gmail.com"
-        />
+        <UserProfile />
       </div>
     </nav>
   );

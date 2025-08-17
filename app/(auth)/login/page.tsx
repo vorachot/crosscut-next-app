@@ -9,9 +9,11 @@ import { Google } from "@mui/icons-material";
 
 import { loginUser } from "@/api/auth";
 import Loading from "@/app/loading";
+import { useUser } from "@/context/UserContext";
 
 const LoginPage = () => {
   const router = useRouter();
+  const { fetchUser } = useUser();
   const [isLoading, setIsLoading] = useState(false);
   const [error, setError] = useState("");
 
@@ -28,6 +30,8 @@ const LoginPage = () => {
       const response = await loginUser(username, password);
 
       if (response.ok) {
+        // Fetch user data after successful login
+        await fetchUser();
         router.push("/projects");
       } else {
         const errorText = await response.text();
