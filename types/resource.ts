@@ -61,6 +61,8 @@ export type Ticket = {
   lease: string;
   signature: string;
   status: Status;
+  created_at: string;
+  updated_at: string;
 };
 // export type Ticket = {
 //   id: string;

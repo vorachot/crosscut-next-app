@@ -28,8 +28,8 @@ type AccordionProps = {
 
 const TaskAccordion = ({
   title = "Default Title",
-  createdAt = "20 Jan 2023",
-  status = Status.running,
+  createdAt = "Default Created At",
+  status = Status.active,
   tickets = [],
 }: AccordionProps) => {
   const ticketCount = tickets.length;
@@ -125,7 +125,7 @@ const TaskAccordion = ({
               ))}
             </div>
           </div>
-          {status === Status.running && (
+          {status === Status.active && (
             <div className="pt-4 pr-2 flex justify-end items-center">
               <StopButtonClient taskId={title} />
             </div>

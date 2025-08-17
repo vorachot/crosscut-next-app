@@ -86,7 +86,9 @@ const TicketTableDrawer = ({
         {filteredTickets.map((ticket) => (
           <TableRow key={ticket.id}>
             <TableCell>{ticket.id}</TableCell>
-            <TableCell>20 Jan 2023</TableCell>
+            <TableCell>
+              {new Date(ticket.created_at).toLocaleDateString()}
+            </TableCell>
             <TableCell className="flex flex-row gap-4">
               <Chip>CPU: {Number(ticket.spec[0].resource[0].quantity)}</Chip>
               <Chip>GPU: {Number(ticket.spec[0].resource[1].quantity)}</Chip>

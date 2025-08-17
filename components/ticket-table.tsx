@@ -99,7 +99,9 @@ const TicketTable = ({
             <TableCell>
               <StatusChip status={getStatusLabel(ticket.status)} />
             </TableCell>
-            <TableCell>20 Jan 2023</TableCell>
+            <TableCell>
+              {new Date(ticket.created_at).toLocaleDateString()}
+            </TableCell>
             <TableCell className="flex flex-row gap-4">
               <ResourceChip
                 type={ResourceType.cpu}
