@@ -1,11 +1,14 @@
 export enum Status {
-  available = "AVAILABLE",
-  running = "RUNNING",
+  ready = "AVAILABLE",
+  active = "RUNNING",
   succeeded = "SUCCEEDED",
-  stopped = "STOPPED",
+  inactive = "STOPPED",
 }
 export enum ResourceType {
   cpu = "CPU",
   gpu = "GPU",
   memory = "MEMORY",
+}
+export function getStatusLabel(status: string) {
+  return Status[status as keyof typeof Status] ?? status;
 }

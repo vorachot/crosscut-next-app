@@ -1,5 +1,7 @@
 // types/resource.ts
 
+import { Status } from "./enum";
+
 export type Namespace = {
   id: string;
   urn: string;
@@ -58,6 +60,7 @@ export type Ticket = {
   redeem_timeout: string;
   lease: string;
   signature: string;
+  status: Status;
 };
 // export type Ticket = {
 //   id: string;

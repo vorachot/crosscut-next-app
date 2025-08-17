@@ -15,6 +15,7 @@ import useSWR from "swr";
 import Loading from "@/app/loading";
 import { getTickets } from "@/api/ticket";
 import { Ticket } from "@/types/resource";
+import { getStatusLabel } from "@/types/enum";
 
 const defaultColumns = [
   { name: "TICKET", uid: "name", sortable: true },
@@ -49,8 +50,11 @@ const TicketTableDrawer = ({
   if (isLoading) return <Loading />;
   if (error) return <div>Error loading tickets</div>;
   const tickets: Ticket[] = data?.tickets ?? [];
+  const filteredTickets = tickets.filter(
+    (ticket) => getStatusLabel(ticket.status) === "AVAILABLE",
+  );
 
-  if (tickets.length === 0) {
+  if (filteredTickets.length === 0) {
     return (
       <div className="text-center py-8">
         <div className="text-gray-500 mb-2">No tickets available</div>
@@ -79,7 +83,7 @@ const TicketTableDrawer = ({
         ))}
       </TableHeader>
       <TableBody>
-        {tickets.map((ticket) => (
+        {filteredTickets.map((ticket) => (
           <TableRow key={ticket.id}>
             <TableCell>{ticket.id}</TableCell>
             <TableCell>20 Jan 2023</TableCell>

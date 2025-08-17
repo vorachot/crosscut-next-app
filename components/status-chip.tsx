@@ -4,22 +4,22 @@ import { Status } from "@/types/enum";
 
 const getStatusColor = (status: Status) => {
   switch (status) {
-    case Status.available:
+    case Status.ready:
       return "success";
-    case Status.running:
+    case Status.active:
       return "primary";
     case Status.succeeded:
       return "default";
-    case Status.stopped:
+    case Status.inactive:
       return "danger";
     default:
       return "default";
   }
 };
 
-const StatusChip = ({ status }: { status: Status }) => {
+const StatusChip = ({ status }: { status: string }) => {
   return (
-    <Chip color={getStatusColor(status)} variant="flat">
+    <Chip color={getStatusColor(status as Status)} variant="flat">
       <span className="flex items-center gap-1">
         <span className="font-semibold">{status}</span>
       </span>

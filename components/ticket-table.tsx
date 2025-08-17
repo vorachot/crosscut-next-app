@@ -16,7 +16,7 @@ import { useState, useEffect } from "react";
 import StatusChip from "./status-chip";
 import ResourceChip from "./resource-chip";
 
-import { ResourceType, Status } from "@/types/enum";
+import { getStatusLabel, ResourceType } from "@/types/enum";
 import { Ticket } from "@/types/resource";
 import Loading from "@/app/loading";
 import { getTicketsByNamespaceId } from "@/api/ticket";
@@ -97,7 +97,7 @@ const TicketTable = ({
           <TableRow key={index}>
             <TableCell>{ticket.id}</TableCell>
             <TableCell>
-              <StatusChip status={Status.available} />
+              <StatusChip status={getStatusLabel(ticket.status)} />
             </TableCell>
             <TableCell>20 Jan 2023</TableCell>
             <TableCell className="flex flex-row gap-4">

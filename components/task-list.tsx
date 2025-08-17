@@ -11,12 +11,10 @@ import { getTasks } from "@/api/task";
 const TaskList = () => {
   const { data, error, isLoading } = useSWR(["tasks"], () => getTasks(), {
     revalidateOnFocus: false,
-    dedupingInterval: 5000, // Prevent duplicate requests for 5 seconds
+    dedupingInterval: 5000,
   });
 
-  const showLoading = isLoading;
-
-  if (showLoading) return <Loading />;
+  if (isLoading) return <Loading />;
   if (error) return <div>Error loading tasks</div>;
 
   const tasks: any[] = data?.Tasks ?? [];
@@ -31,7 +29,7 @@ const TaskList = () => {
         <TaskAccordion
           key={index}
           createdAt={new Date(task.created_at).toLocaleDateString()}
-          status={Status.running}
+          status={Status.active}
           tickets={task.ticket}
           title={task.id}
         />
