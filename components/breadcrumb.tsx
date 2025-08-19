@@ -51,7 +51,7 @@ const Breadcrumb = () => {
   return (
     <nav
       aria-label="Breadcrumb"
-      className="h-16 bg-gray-100 fixed top-0 w-full dark:bg-gray-800 py-2 shadow-md z-40 border-b border-gray-200 dark:border-gray-700 flex justify-between items-center"
+      className="h-16 bg-gray-100 fixed top-0 w-full dark:bg-gray-800 py-2 z-40 flex justify-between items-center"
     >
       <div className="w-fit flex-1 px-4">
         <ol className="container py-4 flex items-center text-gray-700 dark:text-gray-300 text-sm">

@@ -6,6 +6,7 @@ import {
   WorkRounded,
 } from "@mui/icons-material";
 import Link from "next/link";
+import { usePathname } from "next/navigation";
 
 import { ThemeSwitch } from "./theme-switch";
 
@@ -26,16 +27,22 @@ const navigationItems = [
 ];
 
 const Sidebar = () => {
+  const pathname = usePathname();
+
   return (
     <aside
       aria-label="Sidebar navigation"
-      className="hidden md:flex w-[260px] px-4 py-4 bg-white dark:bg-gray-800 shadow-md fixed top-16 left-0 h-[calc(100vh-4rem)] flex-col border-r border-gray-200 dark:border-gray-700 z-30 overflow-y-auto"
+      className="hidden md:flex w-[260px] px-4 py-4 bg-gray-100 dark:bg-gray-800 fixed top-16 left-0 h-[calc(100vh-4rem)] flex-col dark:border-gray-700 z-30 overflow-y-auto"
     >
       <div className="flex-1 flex flex-col gap-1">
         {navigationItems.map((item, index) => (
           <Link
             key={index}
-            className="flex items-center gap-4 py-3 px-3 rounded-2xl text-[14px] font-semibold text-gray-700 hover:bg-gray-200 dark:text-gray-300 dark:hover:bg-gray-700 transition-colors"
+            className={`flex items-center gap-4 py-3 px-3 rounded-3xl text-[14px] font-semibold transition-colors ${
+              pathname === item.url
+                ? "bg-blue-100 dark:bg-blue-900 dark:bg-opacity-30"
+                : "text-gray-700 hover:bg-gray-200 dark:text-gray-300 dark:hover:bg-gray-700"
+            }`}
             href={item.url}
           >
             {item.icon}
