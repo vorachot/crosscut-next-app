@@ -51,7 +51,7 @@ const RequestTaskDrawer = ({ isOpen, onClose }: RequestTaskDrawerProps) => {
               </DrawerHeader>
               <DrawerBody className="">
                 <Form className="space-y-4">
-                  <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                  <div className="flex gap-4 w-full">
                     <Input
                       isRequired
                       label="Task Name"

@@ -28,12 +28,13 @@ const page = async ({
         <ResourceCard />
         <div className="flex flex-row justify-between gap-2">
           <div className="text-3xl">Tickets</div>
-          <ButtonClient>
+          <ButtonClient mode="tickets">
             <AddIcon />
             Ticket
           </ButtonClient>
         </div>
         <TicketTableClient
+          nsId={namespaceId}
           pathTemplate="resourcepool-to-ticket"
           selectionMode="none"
         />

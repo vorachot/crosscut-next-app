@@ -9,9 +9,14 @@ import {
   TableRow,
 } from "@heroui/table";
 import { Button } from "@chakra-ui/react";
-import { PlaylistAdd } from "@mui/icons-material";
 import useSWR from "swr";
-import { useState, useEffect } from "react";
+import {
+  Dropdown,
+  DropdownItem,
+  DropdownMenu,
+  DropdownTrigger,
+} from "@heroui/dropdown";
+import { MoreVert } from "@mui/icons-material";
 
 import StatusChip from "./status-chip";
 import ResourceChip from "./resource-chip";
@@ -19,7 +24,7 @@ import ResourceChip from "./resource-chip";
 import { getStatusLabel, ResourceType } from "@/types/enum";
 import { Ticket } from "@/types/resource";
 import Loading from "@/app/loading";
-import { getTicketsByNamespaceId } from "@/api/ticket";
+import { getTickets, getTicketsByNamespaceId } from "@/api/ticket";
 
 const defaultColumns = [
   { name: "TICKET", uid: "name", sortable: true },
@@ -41,36 +46,20 @@ const TicketTable = ({
   columns = defaultColumns,
   selectionMode = "none",
   selectionBehavior = "replace",
-  nsId = "7fd1b94e-f17d-4a07-9802-d635e3b52b3e",
+  nsId,
 }: TicketTableProps) => {
-  const [debouncedNsId, setDebouncedNsId] = useState(nsId);
-  const [isDelayedLoading, setIsDelayedLoading] = useState(false);
-
-  // Debounce the nsId to prevent rapid API calls
-  useEffect(() => {
-    setIsDelayedLoading(true);
-    const timer = setTimeout(() => {
-      setDebouncedNsId(nsId);
-      setIsDelayedLoading(false);
-    }, 500); // 500ms delay
-
-    return () => {
-      clearTimeout(timer);
-    };
-  }, [nsId]);
+  const shouldFetchByNs = Boolean(nsId);
 
   const { data, error, isLoading } = useSWR(
-    ["tickets", debouncedNsId],
-    () => getTicketsByNamespaceId(debouncedNsId),
+    shouldFetchByNs ? ["tickets", nsId] : ["tickets-history"],
+    () => (shouldFetchByNs ? getTicketsByNamespaceId(nsId!) : getTickets()),
     {
       revalidateOnFocus: false,
-      dedupingInterval: 5000, // Prevent duplicate requests for 5 seconds
+      dedupingInterval: 5000,
     },
   );
 
-  const showLoading = isLoading || isDelayedLoading;
-
-  if (showLoading) return <Loading />;
+  if (isLoading) return <Loading />;
   if (error) return <div>Error loading tickets</div>;
 
   const tickets: Ticket[] = data?.tickets ?? [];
@@ -117,12 +106,20 @@ const TicketTable = ({
               />
             </TableCell>
             <TableCell>
-              <Button
-                variant="outline"
-                onClick={() => alert(`Action on ${ticket.id}`)}
-              >
-                <PlaylistAdd className="!w-6 !h-6" />
-              </Button>
+              <div className="relative flex gap-2">
+                <Dropdown className="dark:bg-gray-900">
+                  <DropdownTrigger className="!w-8 !h-8">
+                    <Button className="hover:bg-gray-100 dark:hover:bg-gray-800 shadow-sm transition-colors duration-200 rounded-full">
+                      <MoreVert />
+                    </Button>
+                  </DropdownTrigger>
+                  <DropdownMenu>
+                    <DropdownItem key="view">View</DropdownItem>
+                    <DropdownItem key="edit">Edit</DropdownItem>
+                    <DropdownItem key="delete">Delete</DropdownItem>
+                  </DropdownMenu>
+                </Dropdown>
+              </div>
             </TableCell>
           </TableRow>
         ))}

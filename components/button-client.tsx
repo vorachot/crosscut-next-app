@@ -11,7 +11,7 @@ type ButtonClientProps = {
   mode?: "tasks" | "tickets";
 };
 
-const ButtonClient = ({ children, mode = "tickets" }: ButtonClientProps) => {
+const ButtonClient = ({ children, mode }: ButtonClientProps) => {
   const { isOpen, onOpen, onClose } = useDisclosure();
   const handleClick = () => {
     if (isOpen) {

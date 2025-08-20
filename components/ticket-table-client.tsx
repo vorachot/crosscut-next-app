@@ -8,6 +8,7 @@ import TicketTableDrawer from "./ticket-table-drawer";
 type TicketTableClientProps = {
   columns?: { name: string; uid: string; sortable: boolean }[];
   // rows?: any[];
+  nsId?: string;
   isDrawer?: boolean;
   pathTemplate?: "resourcepool-to-ticket" | "ticket-to-resourcepool";
   selectionMode?: "multiple" | "single" | "none";
@@ -24,6 +25,7 @@ const TicketTableClient = ({
   isDrawer = false,
   selectedKeys,
   onSelectionChange,
+  nsId,
 }: TicketTableClientProps) => {
   return isDrawer ? (
     <TicketTableDrawer
@@ -37,7 +39,7 @@ const TicketTableClient = ({
   ) : (
     <TicketTable
       columns={columns}
-      // rows={rows}
+      nsId={nsId}
       selectionBehavior={selectionBehavior}
       selectionMode={selectionMode}
     />

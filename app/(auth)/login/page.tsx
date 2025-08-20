@@ -65,7 +65,7 @@ const LoginPage = () => {
           Continue with Google
         </div>
       </Button>
-      <div className="my-2">or</div>
+      <div className="text-sm my-2">OR</div>
       <Form className="w-80 space-y-4" onSubmit={handleSubmit}>
         <Input
           required

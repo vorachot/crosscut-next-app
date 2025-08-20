@@ -9,10 +9,12 @@ const page = async () => {
     <div className="flex flex-col justify-center gap-5">
       <div className="flex flex-row justify-between gap-2">
         <h1 className="text-5xl">Your Tasks</h1>
-        <ButtonClient mode="tasks">
-          <AddIcon />
-          Tasks
-        </ButtonClient>
+        <div className="flex items-center">
+          <ButtonClient mode="tasks">
+            <AddIcon />
+            Task
+          </ButtonClient>
+        </div>
       </div>
 
       <TaskList />
