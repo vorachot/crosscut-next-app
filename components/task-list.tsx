@@ -1,6 +1,7 @@
 "use client";
 
 import useSWR from "swr";
+import { Assignment as TaskIcon } from "@mui/icons-material";
 
 import TaskAccordion from "./task-accordion";
 
@@ -21,7 +22,14 @@ const TaskList = () => {
   const tasks: any[] = data?.Tasks ?? [];
 
   if (tasks.length === 0) {
-    return <div className="text-gray-500">No tasks available</div>;
+    return (
+      <div className="h-[500px] flex flex-col justify-center items-center text-center opacity-50">
+        <TaskIcon className="!w-16 !h-16 mx-auto mb-4 text-gray-400" />
+        <h3 className="text-lg font-medium text-gray-900 dark:text-white">
+          No Running Tasks
+        </h3>
+      </div>
+    );
   }
 
   return (

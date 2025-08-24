@@ -16,8 +16,9 @@ const page = async () => {
           </ButtonClient>
         </div>
       </div>
-
-      <TaskList />
+      <div className="h-full">
+        <TaskList />
+      </div>
     </div>
   );
 };

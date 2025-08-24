@@ -34,7 +34,6 @@ type AccordionProps = {
 const TaskAccordion = ({
   id = "Default ID",
   title = "Default Title",
-  description = "Lorem ipsum dolor sit amet, consectetur adipiscing elit.",
   createdAt = "Default Created At",
   status = Status.active,
   tickets = [],

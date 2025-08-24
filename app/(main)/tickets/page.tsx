@@ -17,7 +17,9 @@ const page = async () => {
           </ButtonClient>
         </div>
       </div>
-      <TicketTableClient pathTemplate="resourcepool-to-ticket" />
+      <div className="h-full">
+        <TicketTableClient pathTemplate="resourcepool-to-ticket" />
+      </div>
     </div>
   );
 };

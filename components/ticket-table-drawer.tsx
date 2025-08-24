@@ -11,6 +11,7 @@ import {
 import { Chip } from "@heroui/chip";
 import { Selection } from "@heroui/table";
 import useSWR from "swr";
+import { ConfirmationNumber as TicketIcon } from "@mui/icons-material";
 
 import Loading from "@/app/loading";
 import { getTickets } from "@/api/ticket";
@@ -56,11 +57,16 @@ const TicketTableDrawer = ({
 
   if (filteredTickets.length === 0) {
     return (
-      <div className="text-center py-8">
-        <div className="text-gray-500 mb-2">No tickets available</div>
-        <div className="text-sm text-amber-600 dark:text-amber-400">
-          You need to request a ticket before creating a task. Please request a
-          ticket first to allocate resources.
+      <div className="text-center py-12">
+        <TicketIcon className="!w-12 !h-12 mx-auto mb-4 text-gray-400" />
+        <div className="space-y-2">
+          <h3 className="text-lg font-medium text-gray-900 dark:text-white">
+            No Available Tickets
+          </h3>
+          <p className="text-gray-500 dark:text-gray-400 max-w-md mx-auto">
+            You need to request a ticket before creating a task. Please request
+            a ticket first to allocate resources.
+          </p>
         </div>
       </div>
     );
@@ -75,7 +81,7 @@ const TicketTableDrawer = ({
       selectionBehavior={selectionBehavior}
       selectionMode={selectionMode}
       onSelectionChange={onSelectionChange}
-      // // align="start"
+      // align="start"
     >
       <TableHeader>
         {columns.map((column) => (
@@ -85,18 +91,26 @@ const TicketTableDrawer = ({
       <TableBody>
         {filteredTickets.map((ticket) => (
           <TableRow key={ticket.id}>
-            <TableCell>{ticket.id.slice(0, 12)}...</TableCell>
-            <TableCell>
+            <TableCell className="text-xs">
+              {ticket.id.slice(0, 7)}...
+            </TableCell>
+            <TableCell className="text-xs">
               {new Date(ticket.created_at).toLocaleDateString("en-GB", {
                 day: "2-digit",
                 month: "short",
                 year: "numeric",
               })}
             </TableCell>
-            <TableCell className="flex flex-row gap-4">
-              <Chip>CPU: {Number(ticket.spec[0].resource[0].quantity)}</Chip>
-              <Chip>GPU: {Number(ticket.spec[0].resource[1].quantity)}</Chip>
-              <Chip>MEM: {Number(ticket.spec[0].resource[2].quantity)}</Chip>
+            <TableCell className="flex flex-wrap gap-2">
+              <Chip color="primary" size="sm" variant="flat">
+                CPU: {Number(ticket.spec[0].resource[0].quantity)}
+              </Chip>
+              <Chip color="secondary" size="sm" variant="flat">
+                GPU: {Number(ticket.spec[0].resource[1].quantity)}
+              </Chip>
+              <Chip color="success" size="sm" variant="flat">
+                MEM: {Number(ticket.spec[0].resource[2].quantity)}
+              </Chip>
             </TableCell>
           </TableRow>
         ))}

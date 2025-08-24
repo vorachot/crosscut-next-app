@@ -4,7 +4,9 @@ const page = async () => {
   return (
     <div className="flex flex-col justify-center gap-7">
       <h1 className="text-5xl">Your Projects</h1>
-      <ProjectList />
+      <div className="h-full">
+        <ProjectList />
+      </div>
     </div>
   );
 };

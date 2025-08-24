@@ -17,6 +17,7 @@ import {
   DropdownTrigger,
 } from "@heroui/dropdown";
 import { MoreVert } from "@mui/icons-material";
+import { ConfirmationNumber as TicketIcon } from "@mui/icons-material";
 
 import StatusChip from "./status-chip";
 import ResourceChip from "./resource-chip";
@@ -66,7 +67,14 @@ const TicketTable = ({
   const tickets: Ticket[] = data?.tickets ?? [];
 
   if (tickets.length === 0) {
-    return <div className="text-gray-500">No tickets available</div>;
+    return (
+      <div className="h-[500px] flex flex-col justify-center items-center text-center opacity-50">
+        <TicketIcon className="!w-16 !h-16 mx-auto mb-4 text-gray-400" />
+        <h3 className="text-lg font-medium text-gray-900 dark:text-white">
+          No Available Tickets
+        </h3>
+      </div>
+    );
   }
 
   return (
