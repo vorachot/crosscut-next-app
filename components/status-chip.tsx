@@ -21,7 +21,7 @@ const StatusChip = ({ status }: { status: string }) => {
   return (
     <Chip color={getStatusColor(status as Status)} variant="flat">
       <span className="flex items-center gap-1">
-        <span className="font-semibold">{status}</span>
+        <span className="text-xs font-semibold">{status}</span>
       </span>
     </Chip>
   );

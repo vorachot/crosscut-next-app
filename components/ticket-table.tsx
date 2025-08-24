@@ -83,7 +83,10 @@ const TicketTable = ({
       </TableHeader>
       <TableBody>
         {tickets.map((ticket, index) => (
-          <TableRow key={index}>
+          <TableRow
+            key={index}
+            className="hover:bg-gray-100 dark:hover:bg-gray-800 shadow-sm transition-colors duration-200"
+          >
             <TableCell>{ticket.id}</TableCell>
             <TableCell>
               <StatusChip status={getStatusLabel(ticket.status)} />

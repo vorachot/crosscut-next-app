@@ -12,7 +12,6 @@ type InfoCardProps = {
 };
 
 const InfoCard = ({
-  id = "default-id",
   title = "Default Title",
   createdDate = "Default Created Date",
 }: InfoCardProps) => {
@@ -21,7 +20,10 @@ const InfoCard = ({
       className="no-underline"
       href={`/projects/${title.toLowerCase().replace(/\s+/g, "-")}`}
     >
-      <Card className="w-[300px] h-[285px] px-4 py-6 bg-white dark:bg-gray-800 shadow-md border border-gray-200 dark:border-gray-700 cursor-pointer">
+      <Card
+        className="w-[300px] h-[285px] px-4 py-6 bg-white dark:bg-gray-800 shadow-md border border-gray-200 dark:border-gray-700 cursor-pointer  transition-all duration-300 ease-in-out 
+  hover:shadow-xl hover:scale-[1.02]"
+      >
         <CardHeader className="flex gap-3 py-0 items-start">
           <div className="flex-shrink-0">
             <FolderOutlined className="!w-8 !h-8 text-gray-700 dark:text-gray-300" />

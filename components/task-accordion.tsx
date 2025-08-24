@@ -20,14 +20,18 @@ type Ticket = {
 };
 
 type AccordionProps = {
+  id?: string;
   title?: string;
+  description?: string;
   createdAt?: string;
   status?: Status;
   tickets?: Ticket[];
 };
 
 const TaskAccordion = ({
+  id = "Default ID",
   title = "Default Title",
+  description = "Lorem ipsum dolor sit amet, consectetur adipiscing elit.",
   createdAt = "Default Created At",
   status = Status.active,
   tickets = [],
@@ -53,7 +57,10 @@ const TaskAccordion = ({
       <AccordionItem
         className="w-full bg-white dark:bg-gray-800 border border-gray-200 dark:border-gray-700 hover:shadow-lg transition-shadow duration-300"
         subtitle={
-          <div className="mt-2 text-sm text-gray-500">
+          <div className="flex justify-between mt-2 text-sm text-gray-500">
+            <div>
+              <span className="font-medium">ID:</span> {id}
+            </div>
             <div className="flex flex-col sm:flex-row sm:items-center gap-1 sm:gap-4 text-sm text-gray-500">
               <div className="flex items-center gap-1">
                 <EditCalendarOutlined className="!w-4 !h-4" />
@@ -70,7 +77,7 @@ const TaskAccordion = ({
         title={
           <div className="flex justify-between items-center">
             <div className="flex justify-between items-center w-full">
-              <div className="font-semibold text-lg text-gray-800 dark:text-white">
+              <div className="font-semibold text-md text-gray-800 dark:text-white">
                 {title}
               </div>
               <StatusChip status={status} />
@@ -79,6 +86,14 @@ const TaskAccordion = ({
         }
       >
         <div className="p-3 space-y-4 border-t border-gray-200 dark:border-gray-700">
+          {/* <div className="flex gap-2">
+            <h4 className="text-sm font-semibold text-gray-800 dark:text-gray-200">
+              Description:
+            </h4>
+            <p className=" text-sm text-gray-600 dark:text-gray-400 leading-relaxed">
+              {description}
+            </p>
+          </div> */}
           <div className="flex flex-col gap-2">
             <div className="flex gap-2">
               <h4 className="text-sm font-semibold text-gray-800 dark:text-gray-200">
@@ -93,22 +108,13 @@ const TaskAccordion = ({
                 value={totalResource.memory}
               />
             </div>
-
-            {/* <div className="flex gap-2">
-              <h4 className="text-sm font-semibold text-gray-800 dark:text-gray-200">
-                Description:
-              </h4>
-              <p className=" text-sm text-gray-600 dark:text-gray-400 leading-relaxed">
-                {defaultContent}
-              </p>
-            </div> */}
           </div>
 
           <div className="flex flex-col gap-2">
             <h4 className="text-sm font-semibold text-gray-800 dark:text-gray-200">
               Tickets:
             </h4>
-            <div className="flex flex-col gap-2 mt-2">
+            <div className="flex flex-col gap-1 mt-2">
               {tickets?.map((ticket, index) => (
                 <SubTicket
                   key={index}

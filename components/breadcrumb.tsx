@@ -19,13 +19,13 @@ const Breadcrumb = () => {
       <li key={href} className="inline-flex items-center">
         {!isLast ? (
           <Link
-            className="text-[18px] hover:text-blue-600 hover:underline"
+            className="capitalize text-[18px] hover:text-blue-600 hover:underline"
             href={href}
           >
             {decodeURIComponent(seg)}
           </Link>
         ) : (
-          <span className="text-[18px] text-gray-500 dark:text-gray-400 cursor-default">
+          <span className="capitalize text-[18px] text-gray-500 dark:text-gray-400 cursor-default">
             {decodeURIComponent(seg)}
           </span>
         )}

@@ -18,7 +18,7 @@ const page = async ({
       namespace_id={namespaceId}
       namespace_urn={`urn:crosscut:namespace:${namespaceId}`}
     >
-      <div className="flex flex-col justify-center gap-6">
+      <div className="flex flex-col justify-center gap-7">
         <div className="flex flex-col items-start gap-2">
           <div className="text-4xl">Project: {projectId}</div>
           <div className="text-4xl">Namespace: {namespaceId}</div>

@@ -25,7 +25,7 @@ const ProjectList = () => {
   }
 
   return (
-    <div className="mt-5 flex flex-row flex-wrap gap-10">
+    <div className="flex flex-row flex-wrap gap-10">
       {projects.map((project, index) => (
         <InfoCard
           key={index}

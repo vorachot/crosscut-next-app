@@ -6,7 +6,7 @@ const page = async () => {
   // await new Promise((resolve) => setTimeout(resolve, 500));
 
   return (
-    <div className="flex flex-col justify-center gap-5">
+    <div className="flex flex-col justify-center gap-7">
       <div className="flex flex-row justify-between gap-2">
         <h1 className="text-5xl">Your Tasks</h1>
         <div className="flex items-center">

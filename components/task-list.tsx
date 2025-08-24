@@ -37,9 +37,10 @@ const TaskList = () => {
             second: "2-digit",
             hour12: false, // 24-hour format
           })}
+          id={task.id}
           status={Status.active}
           tickets={task.ticket}
-          title={task.id}
+          // title={task.id}
         />
       ))}
     </div>
