@@ -67,7 +67,7 @@ const RequestTaskDrawer = ({ isOpen, onClose }: RequestTaskDrawerProps) => {
                     />
                   </div>
 
-                  <div className="w-full max-h-80 overflow-y-auto">
+                  <div className="w-full max-h-96 overflow-y-auto">
                     <TicketTableClient
                       isDrawer={true}
                       selectedKeys={selectedKeys}

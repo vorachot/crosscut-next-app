@@ -77,7 +77,7 @@ const TicketTableDrawer = ({
       onSelectionChange={onSelectionChange}
       // // align="start"
     >
-      <TableHeader className="bg-gray-100 dark:bg-gray-700">
+      <TableHeader>
         {columns.map((column) => (
           <TableColumn key={column.uid}>{column.name}</TableColumn>
         ))}
@@ -85,9 +85,13 @@ const TicketTableDrawer = ({
       <TableBody>
         {filteredTickets.map((ticket) => (
           <TableRow key={ticket.id}>
-            <TableCell>{ticket.id}</TableCell>
+            <TableCell>{ticket.id.slice(0, 12)}...</TableCell>
             <TableCell>
-              {new Date(ticket.created_at).toLocaleDateString()}
+              {new Date(ticket.created_at).toLocaleDateString("en-GB", {
+                day: "2-digit",
+                month: "short",
+                year: "numeric",
+              })}
             </TableCell>
             <TableCell className="flex flex-row gap-4">
               <Chip>CPU: {Number(ticket.spec[0].resource[0].quantity)}</Chip>

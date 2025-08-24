@@ -31,7 +31,7 @@ const defaultColumns = [
   { name: "STATUS", uid: "status", sortable: true },
   { name: "CREATED", uid: "created", sortable: true },
   { name: "ALLOCATED RESOURCES", uid: "usage", sortable: true },
-  { name: "ACTION", uid: "action", sortable: false },
+  { name: "ACTIONS", uid: "actions", sortable: false },
 ];
 
 type TicketTableProps = {
@@ -89,7 +89,15 @@ const TicketTable = ({
               <StatusChip status={getStatusLabel(ticket.status)} />
             </TableCell>
             <TableCell>
-              {new Date(ticket.created_at).toLocaleDateString()}
+              {new Date(ticket.created_at).toLocaleDateString("en-GB", {
+                day: "2-digit",
+                month: "short",
+                year: "numeric",
+                hour: "2-digit",
+                minute: "2-digit",
+                second: "2-digit",
+                hour12: false, // 24-hour format
+              })}
             </TableCell>
             <TableCell className="flex flex-row gap-4">
               <ResourceChip
@@ -108,7 +116,7 @@ const TicketTable = ({
             <TableCell>
               <div className="relative flex gap-2">
                 <Dropdown className="dark:bg-gray-900">
-                  <DropdownTrigger className="!w-8 !h-8">
+                  <DropdownTrigger className="!w-9 !h-9">
                     <Button className="hover:bg-gray-100 dark:hover:bg-gray-800 shadow-sm transition-colors duration-200 rounded-full">
                       <MoreVert />
                     </Button>
