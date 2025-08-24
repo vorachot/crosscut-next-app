@@ -15,7 +15,7 @@ import useSWR from "swr";
 import Loading from "@/app/loading";
 import { getTickets } from "@/api/ticket";
 import { Ticket } from "@/types/resource";
-import { getStatusLabel } from "@/types/enum";
+import { getStatusLabel } from "@/utils/helper";
 
 const defaultColumns = [
   { name: "TICKET", uid: "name", sortable: true },

@@ -9,6 +9,3 @@ export enum ResourceType {
   gpu = "GPU",
   memory = "MEMORY",
 }
-export function getStatusLabel(status: string) {
-  return Status[status as keyof typeof Status] ?? status;
-}

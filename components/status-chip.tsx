@@ -1,21 +1,7 @@
 import { Chip } from "@heroui/chip";
 
 import { Status } from "@/types/enum";
-
-const getStatusColor = (status: Status) => {
-  switch (status) {
-    case Status.ready:
-      return "success";
-    case Status.active:
-      return "primary";
-    case Status.succeeded:
-      return "default";
-    case Status.inactive:
-      return "danger";
-    default:
-      return "default";
-  }
-};
+import { getStatusColor } from "@/utils/helper";
 
 const StatusChip = ({ status }: { status: string }) => {
   return (

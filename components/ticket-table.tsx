@@ -21,10 +21,11 @@ import { MoreVert } from "@mui/icons-material";
 import StatusChip from "./status-chip";
 import ResourceChip from "./resource-chip";
 
-import { getStatusLabel, ResourceType } from "@/types/enum";
+import { ResourceType } from "@/types/enum";
 import { Ticket } from "@/types/resource";
 import Loading from "@/app/loading";
 import { getTickets, getTicketsByNamespaceId } from "@/api/ticket";
+import { formatDate, getStatusLabel } from "@/utils/helper";
 
 const defaultColumns = [
   { name: "TICKET", uid: "name", sortable: true },
@@ -91,17 +92,7 @@ const TicketTable = ({
             <TableCell>
               <StatusChip status={getStatusLabel(ticket.status)} />
             </TableCell>
-            <TableCell>
-              {new Date(ticket.created_at).toLocaleDateString("en-GB", {
-                day: "2-digit",
-                month: "short",
-                year: "numeric",
-                hour: "2-digit",
-                minute: "2-digit",
-                second: "2-digit",
-                hour12: false, // 24-hour format
-              })}
-            </TableCell>
+            <TableCell>{formatDate(ticket.created_at)}</TableCell>
             <TableCell className="flex flex-row gap-4">
               <ResourceChip
                 type={ResourceType.cpu}

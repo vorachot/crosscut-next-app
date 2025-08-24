@@ -7,6 +7,7 @@ import TaskAccordion from "./task-accordion";
 import { Status } from "@/types/enum";
 import Loading from "@/app/loading";
 import { getTasks } from "@/api/task";
+import { formatDate } from "@/utils/helper";
 
 const TaskList = () => {
   const { data, error, isLoading } = useSWR(["tasks"], () => getTasks(), {
@@ -28,15 +29,7 @@ const TaskList = () => {
       {tasks.map((task, index) => (
         <TaskAccordion
           key={index}
-          createdAt={new Date(task.created_at).toLocaleDateString("en-GB", {
-            day: "2-digit",
-            month: "short",
-            year: "numeric",
-            hour: "2-digit",
-            minute: "2-digit",
-            second: "2-digit",
-            hour12: false, // 24-hour format
-          })}
+          createdAt={formatDate(task.created_at)}
           id={task.id}
           status={Status.active}
           tickets={task.ticket}
