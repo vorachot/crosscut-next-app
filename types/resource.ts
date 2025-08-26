@@ -1,5 +1,7 @@
 // types/resource.ts
 
+import { Key } from "react";
+
 import { Status } from "./enum";
 
 export type Namespace = {
@@ -72,6 +74,11 @@ export type Ticket = {
 //   status: Status;
 //   usage: ResourceUsage;
 // };
+export type TaskReq = {
+  title: string;
+  description?: string;
+  tickets: Key[];
+};
 
 export type Task = {
   id: string;

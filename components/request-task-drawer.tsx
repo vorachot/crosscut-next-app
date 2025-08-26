@@ -68,8 +68,13 @@ const RequestTaskDrawer = ({ isOpen, onClose }: RequestTaskDrawerProps) => {
     setIsCreating(true);
     try {
       const ticketIds = Array.from(selectedKeys);
+      const taskData = {
+        title: taskName,
+        description,
+        tickets: ticketIds,
+      };
 
-      await createTask(ticketIds);
+      await createTask(taskData);
 
       // Reset form
       setTaskName("");

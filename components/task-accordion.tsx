@@ -32,15 +32,15 @@ type AccordionProps = {
 };
 
 const TaskAccordion = ({
-  id = "Default ID",
-  title = "Default Title",
-  createdAt = "Default Created At",
+  id,
+  title,
+  createdAt,
   status = Status.active,
   tickets = [],
 }: AccordionProps) => {
   const ticketCount = tickets.length;
   const statusIndicator = getStatusIndicator(status);
-  const formattedDate = formatDate(createdAt);
+  const formattedDate = formatDate(createdAt!);
 
   const totalResource = tickets.reduce(
     (acc, ticket) => {
@@ -90,14 +90,14 @@ const TaskAccordion = ({
         title={
           <div className="flex items-center justify-between py-1">
             <div className="flex items-center gap-3">
-              <div className={`p-2 rounded-full ${statusIndicator.bgColor}`}>
+              <div className={`p-2 rounded-full`}>
                 <statusIndicator.icon
                   className={`!w-5 !h-5 ${statusIndicator.color}`}
                 />
               </div>
               <div>
                 <h3 className="font-bold text-lg text-gray-900 dark:text-white">
-                  {title}
+                  {title == "" ? "Default Title" : title}
                 </h3>
               </div>
             </div>
@@ -172,7 +172,7 @@ const TaskAccordion = ({
                 <div className="text-xs text-gray-500 dark:text-gray-400">
                   Task is currently running
                 </div>
-                <StopButtonClient taskId={title} />
+                <StopButtonClient taskId={id!} />
               </div>
             </>
           )}

@@ -1,13 +1,13 @@
-import { Key } from "react";
+import { TaskReq } from "@/types/resource";
 
-export async function createTask(ticketIds: Key[]): Promise<any> {
+export async function createTask(taskReq: TaskReq): Promise<any> {
   const response = await fetch("http://localhost:8080/ticket/useTickets", {
     method: "POST",
     headers: {
       "Content-Type": "application/json",
     },
     credentials: "include",
-    body: JSON.stringify(ticketIds),
+    body: JSON.stringify(taskReq),
   });
 
   if (!response.ok) {

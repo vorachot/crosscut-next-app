@@ -39,9 +39,9 @@ const TaskList = () => {
           key={index}
           createdAt={formatDate(task.created_at)}
           id={task.id}
-          status={Status.active}
+          status={Status.succeeded}
           tickets={task.ticket}
-          // title={task.id}
+          title={task.title}
         />
       ))}
     </div>
