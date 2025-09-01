@@ -1,6 +1,7 @@
 "use client";
 
 import { useEffect, useState } from "react";
+import { Chip } from "@heroui/chip";
 
 import ResourceTableClient from "./resource-table-client";
 
@@ -29,7 +30,7 @@ const NamespaceList = ({ projectId }: { projectId: string }) => {
         const { namespace } = data;
 
         setNamespaces(namespace);
-      } catch (error) {
+      } catch {
         // Handle error
       } finally {
         setIsLoading(false);
@@ -48,16 +49,21 @@ const NamespaceList = ({ projectId }: { projectId: string }) => {
   }
 
   return (
-    <>
-      <div className="flex flex-col items-start gap-2">
-        <div className="text-3xl">Namespaces</div>
+    <div className="flex flex-col gap-4">
+      <div className="flex gap-4 items-center">
+        <h2 className="text-2xl font-semibold text-gray-900 dark:text-white">
+          Namespaces
+        </h2>
+        <Chip color="primary" size="sm" variant="flat">
+          {filteredNamespaces.length} namespaces
+        </Chip>
       </div>
       <ResourceTableClient
         columns={columns}
         pathTemplate="project-to-namespace"
         rows={filteredNamespaces}
       />
-    </>
+    </div>
   );
 };
 

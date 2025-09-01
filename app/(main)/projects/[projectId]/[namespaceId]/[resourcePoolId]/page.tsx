@@ -18,26 +18,44 @@ const page = async ({
       namespace_id={namespaceId}
       namespace_urn={`urn:crosscut:namespace:${namespaceId}`}
     >
-      <div className="flex flex-col justify-center gap-7">
-        <div className="flex flex-col items-start gap-2">
-          <div className="text-4xl">Project: {projectId}</div>
-          <div className="text-4xl">Namespace: {namespaceId}</div>
-          <div className="text-4xl">Resource Pool: {resourcePoolId}</div>
-          <div className="text-gray-500">Created: 01 Jan 2023</div>
+      <div className="flex flex-col gap-6">
+        {/* Header Section */}
+        <div className="flex flex-col gap-4">
+          <div className="flex flex-col">
+            <h1 className="text-3xl font-bold text-gray-900 dark:text-white">
+              {resourcePoolId}
+            </h1>
+            <p className="text-lg text-gray-600 dark:text-gray-400">
+              Resource pool in namespace{" "}
+              <span className="font-medium text-blue-600 dark:text-blue-400">
+                {namespaceId}
+              </span>{" "}
+            </p>
+          </div>
         </div>
+
+        {/* Resource Usage Overview */}
         <ResourceCard />
-        <div className="flex flex-row justify-between gap-2">
-          <div className="text-3xl">Tickets</div>
-          <ButtonClient mode="tickets">
-            <AddIcon />
-            Ticket
-          </ButtonClient>
+
+        {/* Tickets Section */}
+        <div className="space-y-3">
+          <div className="flex items-center justify-between">
+            <div className="flex gap-4 items-center">
+              <h2 className="text-2xl font-semibold text-gray-900 dark:text-white">
+                Tickets
+              </h2>
+            </div>
+            <ButtonClient mode="tickets">
+              <AddIcon className="mr-2" />
+              Ticket
+            </ButtonClient>
+          </div>
+          <TicketTableClient
+            nsId={namespaceId}
+            pathTemplate="resourcepool-to-ticket"
+            selectionMode="none"
+          />
         </div>
-        <TicketTableClient
-          nsId={namespaceId}
-          pathTemplate="resourcepool-to-ticket"
-          selectionMode="none"
-        />
       </div>
     </NamespaceProvider>
   );

@@ -1,5 +1,5 @@
-import ResourceCard from "@/components/resource-card";
 import ResourcePoolList from "@/components/resource-pool-list";
+import ResourceCard from "@/components/resource-card";
 
 const page = async ({
   params,
@@ -9,13 +9,26 @@ const page = async ({
   const { projectId, namespaceId } = await params;
 
   return (
-    <div className="flex flex-col justify-center gap-7">
-      <div className="flex flex-col items-start gap-2">
-        <div className="text-4xl">Project: {projectId}</div>
-        <div className="text-4xl">Namespace: {namespaceId}</div>
-        <div className="text-gray-500">Created: 01 Jan 2023</div>
+    <div className="flex flex-col gap-6">
+      {/* Header Section */}
+      <div className="flex flex-col gap-4">
+        <div className="flex flex-col">
+          <h1 className="text-3xl font-bold text-gray-900 dark:text-white">
+            {namespaceId}
+          </h1>
+          <p className="text-gray-600 dark:text-gray-400 text-lg">
+            Namespace in project{" "}
+            <span className="font-medium text-blue-600 dark:text-blue-400">
+              {projectId}
+            </span>
+          </p>
+        </div>
       </div>
+
+      {/* Resource Quota Overview */}
       <ResourceCard />
+
+      {/* Resource Pools Section */}
       <ResourcePoolList />
     </div>
   );

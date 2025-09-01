@@ -1,5 +1,7 @@
 "use client";
 
+import { Chip } from "@heroui/chip";
+
 import ResourceTableClient from "./resource-table-client";
 
 const columns = [
@@ -29,16 +31,21 @@ const rows = [
 
 const ResourcePoolList = () => {
   return (
-    <>
-      <div className="flex flex-col items-start gap-2">
-        <div className="text-3xl">Resource Pools</div>
+    <div className="flex flex-col gap-4">
+      <div className="flex gap-4 items-center">
+        <h2 className="text-2xl font-semibold text-gray-900 dark:text-white">
+          Resource Pools
+        </h2>
+        <Chip color="primary" size="sm" variant="flat">
+          {rows.length} pools
+        </Chip>
       </div>
       <ResourceTableClient
         columns={columns}
         pathTemplate="namespace-to-resourcepool"
         rows={rows}
       />
-    </>
+    </div>
   );
 };
 

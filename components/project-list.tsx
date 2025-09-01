@@ -3,7 +3,7 @@
 import useSWR from "swr";
 import { WorkRounded as ProjectIcon } from "@mui/icons-material";
 
-import InfoCard from "./info-card";
+import InfoCard from "./project-card";
 
 import { getProjects } from "@/api/namespace";
 import Loading from "@/app/loading";

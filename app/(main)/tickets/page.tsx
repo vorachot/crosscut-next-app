@@ -9,7 +9,9 @@ const page = async () => {
   return (
     <div className="flex flex-col justify-center gap-7">
       <div className="flex flex-row justify-between gap-2">
-        <h1 className="text-5xl">Your Tickets</h1>
+        <h1 className="text-4xl font-semibold text-gray-900 dark:text-white">
+          Your Tickets
+        </h1>
         <div className="flex items-center">
           <ButtonClient>
             <AddIcon />
