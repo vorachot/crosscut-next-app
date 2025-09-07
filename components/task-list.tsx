@@ -39,7 +39,7 @@ const TaskList = () => {
           key={index}
           createdAt={formatDate(task.created_at)}
           id={task.id}
-          status={Status.succeeded}
+          status={Status.active}
           tickets={task.ticket}
           title={task.title}
         />

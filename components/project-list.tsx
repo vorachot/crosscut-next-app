@@ -1,7 +1,7 @@
 "use client";
 
 import useSWR from "swr";
-import { WorkRounded as ProjectIcon } from "@mui/icons-material";
+import { FolderCopy as ProjectIcon } from "@mui/icons-material";
 
 import InfoCard from "./project-card";
 

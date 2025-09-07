@@ -76,7 +76,6 @@ const ResourceCardEnhanced = ({
       <CardBody className={`${sizeClasses[size]} space-y-2`}>
         <div className="flex items-center justify-between">
           <div className="flex items-center gap-2">
-            {config.icon}
             <span className="font-medium text-sm">{config.label}</span>
           </div>
           <Chip color={config.color} size="sm" variant="flat">

@@ -15,6 +15,19 @@ const getResourceLabel = (type: ResourceType) => {
   }
 };
 
+const color = (type: ResourceType) => {
+  switch (type) {
+    case ResourceType.cpu:
+      return "primary";
+    case ResourceType.gpu:
+      return "secondary";
+    case ResourceType.memory:
+      return "success";
+    default:
+      return "default";
+  }
+};
+
 const ResourceChip = ({
   type,
   value = 0,
@@ -23,7 +36,12 @@ const ResourceChip = ({
   value?: number;
 }) => {
   return (
-    <Chip className="flex items-center gap-1">
+    <Chip
+      className="flex items-center gap-1"
+      color={color(type)}
+      size="sm"
+      variant="flat"
+    >
       <span className="flex items-center gap-1">
         <span className="">{getResourceLabel(type)}: </span>
         <span className="font-semibold">{value}</span>

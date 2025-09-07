@@ -1,6 +1,6 @@
 import { Card, CardBody, CardFooter, CardHeader } from "@heroui/card";
 import { Divider } from "@heroui/divider";
-import { FolderOutlined } from "@mui/icons-material";
+import { Folder } from "@mui/icons-material";
 import Link from "next/link";
 
 import UsageBar from "./usagebar";
@@ -26,7 +26,7 @@ const ProjectCard = ({
       >
         <CardHeader className="flex gap-3 py-0 items-start">
           <div className="flex-shrink-0">
-            <FolderOutlined className="!w-8 !h-8 text-gray-700 dark:text-gray-300" />
+            <Folder className="!w-8 !h-8 text-gray-700 dark:text-gray-300" />
           </div>
           <p className="text-[22px] font-medium">{title}</p>
         </CardHeader>

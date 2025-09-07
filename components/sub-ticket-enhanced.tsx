@@ -1,11 +1,6 @@
 import { Card } from "@heroui/card";
 import { Chip } from "@heroui/chip";
 import { Progress } from "@heroui/progress";
-import {
-  Storage as MemoryIcon,
-  Memory as CpuIcon,
-  GraphicEq as GpuIcon,
-} from "@mui/icons-material";
 
 type SubTicketEnhancedProps = {
   name?: string;
@@ -14,19 +9,6 @@ type SubTicketEnhancedProps = {
   status?: string;
   showProgress?: boolean;
   layout?: "horizontal" | "vertical";
-};
-
-const getResourceIcon = (resourceKey: string) => {
-  switch (resourceKey.toLowerCase()) {
-    case "cpu":
-      return <CpuIcon className="w-3 h-3" />;
-    case "gpu":
-      return <GpuIcon className="w-3 h-3" />;
-    case "memory":
-      return <MemoryIcon className="w-3 h-3" />;
-    default:
-      return null;
-  }
 };
 
 const getResourceColor = (resourceKey: string) => {
@@ -92,7 +74,6 @@ const SubTicketEnhanced = ({
                 <div key={key} className="space-y-1">
                   <div className="flex items-center justify-between text-xs">
                     <div className="flex items-center gap-1">
-                      {getResourceIcon(key)}
                       <span className="uppercase font-medium">{key}</span>
                     </div>
                     <span className="text-gray-600 dark:text-gray-400">
@@ -138,9 +119,6 @@ const SubTicketEnhanced = ({
 
         <div className="flex flex-wrap gap-2">
           {resourceEntries.map(([key, value]) => {
-            const unit = getResourceUnit(key);
-            const maxValue = maxResources?.[key];
-
             return (
               <Chip
                 key={key}
@@ -152,8 +130,6 @@ const SubTicketEnhanced = ({
                   {/* {getResourceIcon(key)} */}
                   <span className="text-xs">
                     {key.toUpperCase()}: {value}
-                    {/* {unit} */}
-                    {maxValue && `/${maxValue}${unit}`}
                   </span>
                 </div>
               </Chip>

@@ -3,7 +3,7 @@
 import {
   Assignment,
   ConfirmationNumber,
-  WorkRounded,
+  FolderCopy,
 } from "@mui/icons-material";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
@@ -15,7 +15,7 @@ const navigationItems = [
   // { title: "Home", icon: <Home className={iconClass} />, url: "/" },
   {
     title: "Projects",
-    icon: <WorkRounded className={iconClass} />,
+    icon: <FolderCopy className={iconClass} />,
     url: "/projects",
   },
   {
