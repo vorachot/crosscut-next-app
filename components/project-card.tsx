@@ -12,14 +12,12 @@ type ProjectCardProps = {
 };
 
 const ProjectCard = ({
+  id = "default-id",
   title = "Default Title",
   createdDate = "Default Created Date",
 }: ProjectCardProps) => {
   return (
-    <Link
-      className="no-underline"
-      href={`/projects/${title.toLowerCase().replace(/\s+/g, "-")}`}
-    >
+    <Link className="no-underline" href={`/projects/${id}`}>
       <Card
         className="w-[300px] h-[285px] px-4 py-6 bg-white dark:bg-gray-800 shadow-md border border-gray-200 dark:border-gray-700 cursor-pointer  transition-all duration-300 ease-in-out 
   hover:shadow-xl hover:scale-[1.02]"

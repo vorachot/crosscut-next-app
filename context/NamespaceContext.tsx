@@ -3,9 +3,9 @@
 import React, { createContext, useContext } from "react";
 
 type NamespaceContextType = {
-  namespace_urn: string;
   glidelet_urn: string;
   namespace_id: string;
+  quota_id: string;
 };
 
 const NamespaceContext = createContext<NamespaceContextType | undefined>(
@@ -14,14 +14,12 @@ const NamespaceContext = createContext<NamespaceContextType | undefined>(
 
 export const NamespaceProvider = ({
   children,
-  namespace_urn,
+  quota_id,
   glidelet_urn,
   namespace_id,
 }: NamespaceContextType & { children: React.ReactNode }) => {
   return (
-    <NamespaceContext.Provider
-      value={{ namespace_urn, glidelet_urn, namespace_id }}
-    >
+    <NamespaceContext.Provider value={{ quota_id, glidelet_urn, namespace_id }}>
       {children}
     </NamespaceContext.Provider>
   );

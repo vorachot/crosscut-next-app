@@ -16,7 +16,7 @@ const page = async ({
     <NamespaceProvider
       glidelet_urn={`urn:crosscut:glidelet:${projectId}`}
       namespace_id={namespaceId}
-      namespace_urn={`urn:crosscut:namespace:${namespaceId}`}
+      quota_id={resourcePoolId}
     >
       <div className="flex flex-col gap-6">
         {/* Header Section */}

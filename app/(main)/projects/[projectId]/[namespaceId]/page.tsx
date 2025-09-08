@@ -29,7 +29,7 @@ const page = async ({
       <ResourceCard />
 
       {/* Resource Pools Section */}
-      <ResourcePoolList />
+      <ResourcePoolList namespaceId={namespaceId} />
     </div>
   );
 };

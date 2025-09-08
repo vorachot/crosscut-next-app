@@ -1,13 +1,13 @@
 "use client";
 
-import { useEffect, useState } from "react";
 import { Chip } from "@heroui/chip";
+import useSWR from "swr";
 
 import ResourceTableClient from "./resource-table-client";
 
-import { Namespace } from "@/types/resource";
-import { getNamespaces } from "@/api/namespace";
 import Loading from "@/app/loading";
+import { getNamespacesByProjectIdFromCH } from "@/api/namespace";
+import { Namespace } from "@/types/resource";
 
 const columns = [
   { name: "NAMESPACE", uid: "namespace", sortable: true },
@@ -16,37 +16,18 @@ const columns = [
 ];
 
 const NamespaceList = ({ projectId }: { projectId: string }) => {
-  const [namespaces, setNamespaces] = useState<Namespace[]>([]);
-  const [loading, setIsLoading] = useState(true);
-
-  useEffect(() => {
-    const fetchData = async () => {
-      setIsLoading(true);
-      try {
-        const [data] = await Promise.all([
-          getNamespaces(),
-          new Promise((res) => setTimeout(res, 500)), // artificial delay
-        ]);
-        const { namespace } = data;
-
-        setNamespaces(namespace);
-      } catch {
-        // Handle error
-      } finally {
-        setIsLoading(false);
-      }
-    };
-
-    fetchData();
-  }, []);
-
-  const filteredNamespaces: Namespace[] = namespaces.filter(
-    (ns) => ns.project === projectId,
+  const { data, error, isLoading } = useSWR(
+    ["namespaces", projectId],
+    () => getNamespacesByProjectIdFromCH(projectId),
+    {
+      revalidateOnFocus: false,
+      dedupingInterval: 5000, // Prevent duplicate requests for 5 seconds
+    },
   );
+  const namespaces: Namespace[] = data || [];
 
-  if (loading) {
-    return <Loading />;
-  }
+  if (isLoading) return <Loading />;
+  if (error) return <div>Error loading namespaces</div>;
 
   return (
     <div className="flex flex-col gap-4">
@@ -55,13 +36,13 @@ const NamespaceList = ({ projectId }: { projectId: string }) => {
           Namespaces
         </h2>
         <Chip color="primary" size="sm" variant="flat">
-          {filteredNamespaces.length} namespaces
+          {namespaces.length} namespaces
         </Chip>
       </div>
       <ResourceTableClient
         columns={columns}
         pathTemplate="project-to-namespace"
-        rows={filteredNamespaces}
+        rows={namespaces}
       />
     </div>
   );

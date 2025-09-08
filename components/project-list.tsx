@@ -5,21 +5,26 @@ import { FolderCopy as ProjectIcon } from "@mui/icons-material";
 
 import InfoCard from "./project-card";
 
-import { getProjects } from "@/api/namespace";
+import { getProjectsFromCH } from "@/api/namespace";
 import Loading from "@/app/loading";
+import { Project } from "@/types/resource";
 
 const ProjectList = () => {
-  const { data, error, isLoading } = useSWR(["projects"], () => getProjects(), {
-    revalidateOnFocus: false,
-    dedupingInterval: 5000, // Prevent duplicate requests for 5 seconds
-  });
+  const { data, error, isLoading } = useSWR(
+    ["projects"],
+    () => getProjectsFromCH(),
+    {
+      revalidateOnFocus: false,
+      dedupingInterval: 5000, // Prevent duplicate requests for 5 seconds
+    },
+  );
 
   const showLoading = isLoading;
 
   if (showLoading) return <Loading />;
   if (error) return <div>Error loading projects</div>;
 
-  const projects: any[] = data || [];
+  const projects: Project[] = data || [];
 
   if (projects.length === 0) {
     return (
@@ -39,7 +44,7 @@ const ProjectList = () => {
           key={index}
           aria-label={`Project ${project.name}`}
           createdDate="30 Nov 2027"
-          id={project.name}
+          id={project.id}
           title={project.name}
         />
       ))}

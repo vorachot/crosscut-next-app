@@ -3,14 +3,17 @@
 import { useRouter } from "next/navigation";
 
 import ResourceTable from "@/components/resource-table";
+import { Namespace, Quota } from "@/types/resource";
 
 type ResourceTableClientProps = {
+  parentId?: string;
   columns?: { name: string; uid: string; sortable: boolean }[];
-  rows?: any[];
+  rows?: (Namespace | Quota)[];
   pathTemplate: "project-to-namespace" | "namespace-to-resourcepool";
 };
 
 const ResourceTableClient = ({
+  parentId,
   columns,
   rows,
   pathTemplate,
@@ -20,9 +23,9 @@ const ResourceTableClient = ({
   const getPath = (row: any) => {
     switch (pathTemplate) {
       case "project-to-namespace":
-        return `/projects/${row.project}/${row.id}`;
+        return `/projects/${row.project_id}/${row.id}`;
       case "namespace-to-resourcepool":
-        return `/projects/${row.project}/${row.id}/${row.resource_unit_urn}`;
+        return `/projects/${row.project_id}/${parentId}/${row.id}`;
       default:
         return "/";
     }

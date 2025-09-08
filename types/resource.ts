@@ -6,19 +6,64 @@ import { Status } from "./enum";
 
 export type Namespace = {
   id: string;
-  urn: string;
-  project: string;
-  priority: number;
-  quota: number;
-  resource_unit_urn: string;
+  name: string;
+  description: string;
+  credit: number;
+  project_id: string;
+  quotas: Quota[];
+  namespace_members: any;
 };
 
 export type Project = {
   id: string;
   name: string;
+  description: string;
+  organization_id: string;
   namespaces: Namespace[];
+  quotas: Quota[];
+  project_members: any[];
+  project_admins: any[];
 };
 
+export type Quota = {
+  id: string;
+  name: string;
+  description: string;
+  project_id: string;
+  project_quota_id: string;
+  resource_pool_id: string;
+  resources: Resource[];
+};
+
+type Resource = {
+  id: string;
+  namespace_quota_id: string;
+  quantity: number;
+  resource_property_id: string;
+  resource_prop: ResourceProp;
+};
+
+type ResourceProp = {
+  id: string;
+  resource_id: string;
+  price: number;
+  max_duration: number;
+};
+
+export type ResourceDetail = {
+  id: string;
+  name: string;
+  quantity: number;
+  resource_type_id: string;
+  resource_type: ResourceType;
+  resource_pool_id: string;
+};
+
+type ResourceType = {
+  id: string;
+  name: string;
+  unit: string;
+};
 // export type Namespace = {
 //   id: string;
 //   name: string;
@@ -38,13 +83,6 @@ export type ResourceUsage = {
   cpu?: number;
   gpu?: number;
   memory?: number;
-};
-
-type Resource = {
-  id: string;
-  name: string;
-  quantity: string;
-  unit: string;
 };
 
 type Spec = {
