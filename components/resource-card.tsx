@@ -2,7 +2,9 @@ import { Card, CardBody, CardHeader } from "@heroui/card";
 
 import UsageCircular from "./usagecircular";
 
-const ResourceCard = ({}) => {
+import { ResourceUsage } from "@/types/resource";
+
+const ResourceCard = ({ usageData }: { usageData?: ResourceUsage[] }) => {
   return (
     <Card className="w-full bg-white dark:bg-gray-800 shadow-lg hover:shadow-xl transition-shadow duration-300 border-0 ring-1 ring-gray-200 dark:ring-gray-700">
       <CardHeader className="pb-4 px-6 pt-6">
@@ -21,15 +23,20 @@ const ResourceCard = ({}) => {
 
       <CardBody className="px-6 pb-6 pt-2">
         <div className="grid grid-cols-1 md:grid-cols-3 gap-6 justify-items-center">
-          <div className="group hover:scale-105 transition-transform duration-200">
-            <UsageCircular label="CPU" maxValue={12} value={6} />
-          </div>
-          <div className="group hover:scale-105 transition-transform duration-200">
-            <UsageCircular label="GPU" maxValue={12} value={6} />
-          </div>
-          <div className="group hover:scale-105 transition-transform duration-200">
-            <UsageCircular label="Memory" maxValue={24} value={14} />
-          </div>
+          {usageData &&
+            usageData.map((item) => (
+              <div
+                key={item.type_id}
+                className="group hover:scale-105 transition-transform duration-200"
+              >
+                <UsageCircular
+                  key={item.type_id}
+                  label={item.type}
+                  maxValue={item.quota}
+                  value={item.usage}
+                />
+              </div>
+            ))}
         </div>
       </CardBody>
     </Card>

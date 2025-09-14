@@ -13,7 +13,7 @@ const color = (label: string) => {
       return "primary";
     case "GPU":
       return "secondary";
-    case "Memory":
+    case "RAM":
       return "success";
     default:
       return "primary";
@@ -31,9 +31,6 @@ const UsageCircular = ({
         aria-label={`Usage of ${label}`}
         classNames={{
           svg: "w-32 h-32",
-          // indicator: "stroke-white",
-          // track: "stroke-white/10",
-          // value: "text-3xl font-semibold text-white",
         }}
         color={color(label)}
         maxValue={maxValue}

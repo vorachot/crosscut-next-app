@@ -2,8 +2,13 @@ import { Card, CardBody, CardFooter, CardHeader } from "@heroui/card";
 import { Divider } from "@heroui/divider";
 import { Folder } from "@mui/icons-material";
 import Link from "next/link";
+import useSWR from "swr";
 
 import UsageBar from "./usagebar";
+
+import { getProjectUsageByProjectIdFromCH } from "@/api/namespace";
+import Loading from "@/app/loading";
+import { ResourceUsage } from "@/types/resource";
 
 type ProjectCardProps = {
   id?: string;
@@ -16,6 +21,19 @@ const ProjectCard = ({
   title = "Default Title",
   createdDate = "Default Created Date",
 }: ProjectCardProps) => {
+  const { data, error, isLoading } = useSWR(
+    ["project-usage"],
+    () => getProjectUsageByProjectIdFromCH(id),
+    {
+      revalidateOnFocus: false,
+      dedupingInterval: 5000,
+    },
+  );
+
+  if (isLoading) return <Loading />;
+  if (error) return <div>Error loading projects</div>;
+  const usageData: ResourceUsage[] = data.usage || [];
+
   return (
     <Link className="no-underline" href={`/projects/${id}`}>
       <Card
@@ -38,9 +56,14 @@ const ProjectCard = ({
         </CardBody>
         <Divider />
         <CardFooter className="flex flex-col gap-2">
-          <UsageBar label="CPU" maxValue={2} value={1} />
-          <UsageBar label="GPU" maxValue={4} value={2} />
-          <UsageBar label="MEM" maxValue={4} value={1} />
+          {usageData.map((item) => (
+            <UsageBar
+              key={item.type_id}
+              label={item.type}
+              maxValue={item.quota}
+              value={item.usage}
+            />
+          ))}
         </CardFooter>
       </Card>
     </Link>

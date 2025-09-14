@@ -22,11 +22,13 @@ import { RequestTicketPayload } from "@/types/payload";
 // }
 
 export async function getTicketsByNamespaceId(nsId: string): Promise<any> {
-  const response = await fetch(`http://localhost:8080/ticket/getticket`, {
-    method: "POST",
-    credentials: "include",
-    body: JSON.stringify({ namespace_id: nsId }),
-  });
+  const response = await fetch(
+    `http://localhost:8080/ticket/getTickets/${nsId}`,
+    {
+      method: "GET",
+      credentials: "include",
+    },
+  );
 
   if (!response.ok) {
     const errorText = await response.text();

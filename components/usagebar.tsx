@@ -14,6 +14,7 @@ const color = (label: string) => {
       return "secondary";
     case "MEM":
     case "Memory":
+    case "RAM":
       return "success";
     default:
       return "primary";

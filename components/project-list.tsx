@@ -19,9 +19,7 @@ const ProjectList = () => {
     },
   );
 
-  const showLoading = isLoading;
-
-  if (showLoading) return <Loading />;
+  if (isLoading) return <Loading />;
   if (error) return <div>Error loading projects</div>;
 
   const projects: Project[] = data || [];

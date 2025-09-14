@@ -7,13 +7,18 @@ import { SwitchAccessShortcut } from "@mui/icons-material";
 
 import { UserProfile } from "./user-profie";
 
+import { useBreadcrumb } from "@/context/BreadCrumbContext";
+import { getDisplayName } from "@/utils/helper";
+
 const Breadcrumb = () => {
   const pathname = usePathname();
+  const { breadcrumbData } = useBreadcrumb();
   const segments = pathname.split("/").filter(Boolean);
 
   const crumbs = segments.map((seg, i) => {
     const href = "/" + segments.slice(0, i + 1).join("/");
     const isLast = i === segments.length - 1;
+    const displayName = getDisplayName(seg, breadcrumbData);
 
     return (
       <li key={href} className="inline-flex items-center">
@@ -22,11 +27,11 @@ const Breadcrumb = () => {
             className="capitalize text-[18px] hover:text-blue-600 hover:underline"
             href={href}
           >
-            {decodeURIComponent(seg)}
+            {displayName}
           </Link>
         ) : (
           <span className="capitalize text-[18px] text-gray-500 dark:text-gray-400 cursor-default">
-            {decodeURIComponent(seg)}
+            {displayName}
           </span>
         )}
         {!isLast && (

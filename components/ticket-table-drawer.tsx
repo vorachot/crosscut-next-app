@@ -92,10 +92,11 @@ const TicketTableDrawer = ({
         {filteredTickets.map((ticket) => (
           <TableRow key={ticket.id}>
             <TableCell className="text-xs">
-              {ticket.id.slice(0, 7)}...
+              {/* {ticket.id.slice(0, 7)}... */}
+              {ticket.name}
             </TableCell>
             <TableCell className="text-xs">
-              {new Date(ticket.created_at).toLocaleDateString("en-GB", {
+              {new Date(ticket.start_time).toLocaleDateString("en-GB", {
                 day: "2-digit",
                 month: "short",
                 year: "numeric",
@@ -103,13 +104,13 @@ const TicketTableDrawer = ({
             </TableCell>
             <TableCell className="flex flex-wrap gap-2">
               <Chip color="primary" size="sm" variant="flat">
-                CPU: {Number(ticket.spec[0].resource[0].quantity)}
+                CPU: {0}
               </Chip>
               <Chip color="secondary" size="sm" variant="flat">
-                GPU: {Number(ticket.spec[0].resource[1].quantity)}
+                GPU: {0}
               </Chip>
               <Chip color="success" size="sm" variant="flat">
-                MEM: {Number(ticket.spec[0].resource[2].quantity)}
+                MEM: {0}
               </Chip>
             </TableCell>
           </TableRow>

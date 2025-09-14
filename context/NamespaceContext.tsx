@@ -3,7 +3,7 @@
 import React, { createContext, useContext } from "react";
 
 type NamespaceContextType = {
-  glidelet_urn: string;
+  glidelet_urn?: string;
   namespace_id: string;
   quota_id: string;
 };

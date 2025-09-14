@@ -23,7 +23,7 @@ const TaskList = () => {
 
   if (tasks.length === 0) {
     return (
-      <div className="h-[500px] flex flex-col justify-center items-center text-center opacity-50">
+      <div className="h-[300px] flex flex-col justify-center items-center text-center opacity-50">
         <TaskIcon className="!w-16 !h-16 mx-auto mb-4 text-gray-400" />
         <h3 className="text-lg font-medium text-gray-900 dark:text-white">
           No Running Tasks

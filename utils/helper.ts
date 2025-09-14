@@ -67,3 +67,8 @@ export const formatDate = (dateString: string) => {
     return dateString;
   }
 };
+
+export const getDisplayName = (segment: string, breadcrumbData: any) => {
+  // Check if this segment is an ID that we have a name for
+  return breadcrumbData[segment] || decodeURIComponent(segment);
+};

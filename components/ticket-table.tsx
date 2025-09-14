@@ -31,7 +31,8 @@ import { formatDate, getStatusLabel } from "@/utils/helper";
 const defaultColumns = [
   { name: "TICKET", uid: "name", sortable: true },
   { name: "STATUS", uid: "status", sortable: true },
-  { name: "CREATED", uid: "created", sortable: true },
+  { name: "STARTED", uid: "started", sortable: true },
+  { name: "ENDED", uid: "ended", sortable: true },
   { name: "ALLOCATED RESOURCES", uid: "usage", sortable: true },
   { name: "ACTIONS", uid: "actions", sortable: false },
 ];
@@ -48,7 +49,7 @@ const TicketTable = ({
   columns = defaultColumns,
   selectionMode = "none",
   selectionBehavior = "replace",
-  nsId,
+  nsId = "b8c138af-1c2a-47ca-ab5b-e3a78141446c",
 }: TicketTableProps) => {
   const shouldFetchByNs = Boolean(nsId);
 
@@ -64,11 +65,11 @@ const TicketTable = ({
   if (isLoading) return <Loading />;
   if (error) return <div>Error loading tickets</div>;
 
-  const tickets: Ticket[] = data?.tickets ?? [];
+  const tickets: Ticket[] = data ?? [];
 
   if (tickets.length === 0) {
     return (
-      <div className="h-[500px] flex flex-col justify-center items-center text-center opacity-50">
+      <div className="h-[300px] flex flex-col justify-center items-center text-center opacity-50">
         <TicketIcon className="!w-16 !h-16 mx-auto mb-4 text-gray-400" />
         <h3 className="text-lg font-medium text-gray-900 dark:text-white">
           No Available Tickets
@@ -96,24 +97,16 @@ const TicketTable = ({
             key={index}
             className="hover:bg-gray-100 dark:hover:bg-gray-800 shadow-sm transition-colors duration-200"
           >
-            <TableCell>{ticket.id}</TableCell>
+            <TableCell>{ticket.name}</TableCell>
             <TableCell>
               <StatusChip status={getStatusLabel(ticket.status)} />
             </TableCell>
-            <TableCell>{formatDate(ticket.created_at)}</TableCell>
+            <TableCell>{formatDate(ticket.start_time)}</TableCell>
+            <TableCell>{formatDate(ticket.end_time)}</TableCell>
             <TableCell className="flex flex-row gap-4">
-              <ResourceChip
-                type={ResourceType.cpu}
-                value={Number(ticket.spec[0].resource[0].quantity)}
-              />
-              <ResourceChip
-                type={ResourceType.gpu}
-                value={Number(ticket.spec[0].resource[1].quantity)}
-              />
-              <ResourceChip
-                type={ResourceType.memory}
-                value={Number(ticket.spec[0].resource[2].quantity)}
-              />
+              <ResourceChip type={ResourceType.cpu} value={0} />
+              <ResourceChip type={ResourceType.gpu} value={0} />
+              <ResourceChip type={ResourceType.memory} value={0} />
             </TableCell>
             <TableCell>
               <div className="relative flex gap-2">

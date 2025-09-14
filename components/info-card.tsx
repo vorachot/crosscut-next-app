@@ -6,13 +6,18 @@ import {
   FolderOpenOutlined,
 } from "@mui/icons-material";
 
+import { getDisplayName } from "@/utils/helper";
+import { useBreadcrumb } from "@/context/BreadCrumbContext";
+
 type InfoCardProps = {
-  name?: string;
+  projectId?: string;
   createdAt?: string;
   updatedAt?: string;
 };
 
-const InfoCard = ({ name, createdAt, updatedAt }: InfoCardProps) => {
+const InfoCard = ({ projectId, createdAt, updatedAt }: InfoCardProps) => {
+  const { breadcrumbData } = useBreadcrumb();
+
   const InfoItem = ({
     label,
     value,
@@ -70,7 +75,7 @@ const InfoCard = ({ name, createdAt, updatedAt }: InfoCardProps) => {
           <InfoItem
             icon={<FolderOpenOutlined className="!w-4 !h-4" />}
             label="Project Name"
-            value={name}
+            value={getDisplayName(projectId!, breadcrumbData)}
           />
 
           <InfoItem
