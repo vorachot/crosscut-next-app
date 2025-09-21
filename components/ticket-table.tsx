@@ -23,16 +23,17 @@ import StatusChip from "./status-chip";
 import ResourceChip from "./resource-chip";
 
 import { ResourceType } from "@/types/enum";
-import { Ticket } from "@/types/resource";
 import Loading from "@/app/loading";
-import { getTicketFromCH, getTickets } from "@/api/ticket";
-import { formatDate, getStatusLabel } from "@/utils/helper";
+import { getTicketByNamespaceId, getUserTickets } from "@/api/ticket";
+import { formatDate, getDisplayName, getStatusLabel } from "@/utils/helper";
+import { UserTicketResponse } from "@/types/ticket";
+import { useBreadcrumb } from "@/context/BreadCrumbContext";
 
 const defaultColumns = [
   { name: "TICKET", uid: "name", sortable: true },
+  { name: "NAMESPACE", uid: "namespace", sortable: true },
   { name: "STATUS", uid: "status", sortable: true },
-  { name: "STARTED", uid: "started", sortable: true },
-  { name: "ENDED", uid: "ended", sortable: true },
+  { name: "CREATED", uid: "created", sortable: true },
   { name: "ALLOCATED RESOURCES", uid: "usage", sortable: true },
   { name: "ACTIONS", uid: "actions", sortable: false },
 ];
@@ -49,13 +50,14 @@ const TicketTable = ({
   columns = defaultColumns,
   selectionMode = "none",
   selectionBehavior = "replace",
-  nsId = "b8c138af-1c2a-47ca-ab5b-e3a78141446c",
+  nsId,
 }: TicketTableProps) => {
   const shouldFetchByNs = Boolean(nsId);
+  const { breadcrumbData } = useBreadcrumb();
 
   const { data, error, isLoading } = useSWR(
     shouldFetchByNs ? ["tickets", nsId] : ["tickets-history"],
-    () => (shouldFetchByNs ? getTicketFromCH(nsId!) : getTickets()),
+    () => (shouldFetchByNs ? getTicketByNamespaceId(nsId!) : getUserTickets()),
     {
       revalidateOnFocus: false,
       dedupingInterval: 5000,
@@ -65,7 +67,7 @@ const TicketTable = ({
   if (isLoading) return <Loading />;
   if (error) return <div>Error loading tickets</div>;
 
-  const tickets: Ticket[] = data ?? [];
+  const tickets: UserTicketResponse[] = data ?? [];
 
   if (tickets.length === 0) {
     return (
@@ -99,10 +101,12 @@ const TicketTable = ({
           >
             <TableCell>{ticket.name}</TableCell>
             <TableCell>
+              {getDisplayName(ticket.ticket.namespace_urn, breadcrumbData)}
+            </TableCell>
+            <TableCell>
               <StatusChip status={getStatusLabel(ticket.status)} />
             </TableCell>
-            <TableCell>{formatDate(ticket.start_time)}</TableCell>
-            <TableCell>{formatDate(ticket.end_time)}</TableCell>
+            <TableCell>{formatDate(ticket.ticket.created_at)}</TableCell>
             <TableCell className="flex flex-row gap-4">
               <ResourceChip type={ResourceType.cpu} value={0} />
               <ResourceChip type={ResourceType.gpu} value={0} />

@@ -6,7 +6,7 @@ import useSWR from "swr";
 
 import TicketForm from "./ticketForm";
 
-import { createTicketToCH } from "@/api/ticket";
+import { requestTicketToCH } from "@/api/ticket";
 import { useNamespace } from "@/context/NamespaceContext";
 import Loading from "@/app/loading";
 import { Quota } from "@/types/resource";
@@ -46,7 +46,7 @@ const RequestTicketDialog = ({ setOnClose }: RequestDialogProps) => {
         Request Resource
       </div>
       <TicketForm
-        createTicketToCH={createTicketToCH}
+        createTicketToCH={requestTicketToCH}
         namespace_id={namespace_id}
         quota={quota!}
         quota_id={quota_id}

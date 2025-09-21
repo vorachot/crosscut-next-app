@@ -1,7 +1,5 @@
 // types/resource.ts
 
-import { Key } from "react";
-
 export type Namespace = {
   id: string;
   name: string;
@@ -63,91 +61,9 @@ type ResourceType = {
   unit: string;
 };
 
-type TicketResource = {
-  resource_id: string;
-  quantity: number;
-};
-
-export type Ticket = {
-  id: string;
-  name: string;
-  status: string;
-  start_time: string;
-  end_time: string;
-  duration: number;
-  price: number;
-  owner_id: string;
-  namespace_id: string;
-  resource_pool_id: string;
-  quota_id: string;
-  resources: TicketResource[];
-};
-
 export type ResourceUsage = {
   type_id: string;
   type: string;
   quota: number;
   usage: number;
 };
-
-// export type Namespace = {
-//   id: string;
-//   name: string;
-//   resourcePools: ResourcePool[];
-// };
-
-// export type ResourcePool = {
-//   id: string;
-//   name: string;
-//   created: string;
-//   usage?: ResourceUsage;
-//   maxUsage?: ResourceUsage;
-//   tickets: Ticket[];
-// };
-
-// export type ResourceUsage = {
-//   cpu?: number;
-//   gpu?: number;
-//   memory?: number;
-// };
-
-// type Spec = {
-//   id: string;
-//   type: string;
-//   pool_id: string;
-//   resource: Resource[];
-// };
-
-// export type Ticket = {
-//   id: string;
-//   user_id: string;
-//   spec: Spec[];
-//   reference_ticket_id: string;
-//   redeem_timeout: string;
-//   lease: string;
-//   signature: string;
-//   status: Status;
-//   created_at: string;
-//   updated_at: string;
-// };
-// export type Ticket = {
-//   id: string;
-//   name: string;
-//   created: string;
-//   resourcePoolId: string;
-//   status: Status;
-//   usage: ResourceUsage;
-// };
-export type TaskReq = {
-  title: string;
-  description?: string;
-  tickets: Key[];
-};
-
-// export type Task = {
-//   id: string;
-//   name: string;
-//   created: string;
-//   ticketIds: string[];
-//   description?: string;
-// };

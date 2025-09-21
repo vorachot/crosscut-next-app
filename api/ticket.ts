@@ -1,29 +1,8 @@
 import { RequestTicketPayload } from "@/types/payload";
 
-// export async function requestTicket(
-//   payload: RequestTicketPayload,
-// ): Promise<any> {
-//   const response = await fetch("http://localhost:8080/ticket/handleticket", {
-//     method: "POST",
-//     headers: {
-//       "Content-Type": "application/json",
-//     },
-//     credentials: "include",
-//     body: JSON.stringify(payload),
-//   });
-
-//   if (!response.ok) {
-//     const errorText = await response.text();
-
-//     throw new Error(errorText || "Failed to request ticket");
-//   }
-
-//   return response.json();
-// }
-
-export async function getTicketsByNamespaceId(nsId: string): Promise<any> {
+export async function getTicketByNamespaceId(nsId: string): Promise<any> {
   const response = await fetch(
-    `http://localhost:8080/ticket/getTickets/${nsId}`,
+    `${process.env.NEXT_PUBLIC_NAMESPACE_MANAGER_URL}/ticket/getTickets/${nsId}`,
     {
       method: "GET",
       credentials: "include",
@@ -33,37 +12,42 @@ export async function getTicketsByNamespaceId(nsId: string): Promise<any> {
   if (!response.ok) {
     const errorText = await response.text();
 
-    return errorText;
+    throw new Error(errorText || "Failed to fetch ticket");
   }
 
   return response.json();
 }
-export async function getTickets(): Promise<any> {
-  const response = await fetch("http://localhost:8080/ticket/history", {
-    method: "GET",
-    credentials: "include",
-  });
+export async function getUserTickets(): Promise<any> {
+  const response = await fetch(
+    `${process.env.NEXT_PUBLIC_NAMESPACE_MANAGER_URL}/ticket/getUserTickets`,
+    {
+      method: "GET",
+      credentials: "include",
+    },
+  );
 
   if (!response.ok) {
     const errorText = await response.text();
 
-    throw new Error(errorText || "Failed to fetch tickets");
+    throw new Error(errorText || "Failed to fetch user tickets");
   }
 
   return response.json();
 }
-
-export async function createTicketToCH(
+export async function requestTicketToCH(
   ticketPayload: RequestTicketPayload,
 ): Promise<any> {
-  const response = await fetch("http://localhost:8090/tickets", {
-    method: "POST",
-    headers: {
-      "Content-Type": "application/json",
+  const response = await fetch(
+    `${process.env.NEXT_PUBLIC_NAMESPACE_MANAGER_URL}/ticket/requestTicketToCH`,
+    {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      credentials: "include",
+      body: JSON.stringify(ticketPayload),
     },
-    credentials: "include",
-    body: JSON.stringify(ticketPayload),
-  });
+  );
 
   if (!response.ok) {
     const errorText = await response.text();

@@ -14,9 +14,9 @@ import useSWR from "swr";
 import { ConfirmationNumber as TicketIcon } from "@mui/icons-material";
 
 import Loading from "@/app/loading";
-import { getTickets } from "@/api/ticket";
-import { Ticket } from "@/types/resource";
+import { getUserTickets } from "@/api/ticket";
 import { getStatusLabel } from "@/utils/helper";
+import { UserTicketResponse } from "@/types/ticket";
 
 const defaultColumns = [
   { name: "TICKET", uid: "name", sortable: true },
@@ -43,14 +43,18 @@ const TicketTableDrawer = ({
   selectedKeys,
   onSelectionChange,
 }: TicketTableProps) => {
-  const { data, error, isLoading } = useSWR(["tickets-history"], getTickets, {
-    revalidateOnFocus: false,
-    dedupingInterval: 5000,
-  });
+  const { data, error, isLoading } = useSWR(
+    ["tickets-history"],
+    getUserTickets,
+    {
+      revalidateOnFocus: false,
+      dedupingInterval: 5000,
+    },
+  );
 
   if (isLoading) return <Loading />;
   if (error) return <div>Error loading tickets</div>;
-  const tickets: Ticket[] = data?.tickets ?? [];
+  const tickets: UserTicketResponse[] = data?.tickets ?? [];
   const filteredTickets = tickets.filter(
     (ticket) => getStatusLabel(ticket.status) === "AVAILABLE",
   );
@@ -96,7 +100,7 @@ const TicketTableDrawer = ({
               {ticket.name}
             </TableCell>
             <TableCell className="text-xs">
-              {new Date(ticket.start_time).toLocaleDateString("en-GB", {
+              {new Date(ticket.ticket.created_at).toLocaleDateString("en-GB", {
                 day: "2-digit",
                 month: "short",
                 year: "numeric",
