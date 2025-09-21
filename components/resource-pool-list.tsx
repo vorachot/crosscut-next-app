@@ -5,15 +5,9 @@ import useSWR from "swr";
 
 import ResourceTableClient from "./resource-table-client";
 
-import { getQuotasByNamespaceIdFromCH } from "@/api/namespace";
+import { getQuotasByNamespaceIdFromCH } from "@/api/quota";
 import Loading from "@/app/loading";
 import { Quota } from "@/types/resource";
-
-const columns = [
-  { name: "RESOURCE POOL", uid: "resource_pool", sortable: true },
-  { name: "CREATED", uid: "created", sortable: true },
-  { name: "RESOURCE USAGE", uid: "usage", sortable: true },
-];
 
 const ResourcePoolList = ({ namespaceId }: { namespaceId: string }) => {
   const { data, error, isLoading } = useSWR(
@@ -24,10 +18,10 @@ const ResourcePoolList = ({ namespaceId }: { namespaceId: string }) => {
       dedupingInterval: 5000, // Prevent duplicate requests for 5 seconds
     },
   );
-  const quotas: Quota[] = data || [];
 
   if (isLoading) return <Loading />;
   if (error) return <div>Error loading quotas</div>;
+  const quotas: Quota[] = data.quotas || [];
 
   return (
     <div className="flex flex-col gap-4">
@@ -40,7 +34,6 @@ const ResourcePoolList = ({ namespaceId }: { namespaceId: string }) => {
         </Chip>
       </div>
       <ResourceTableClient
-        columns={columns}
         parentId={namespaceId}
         pathTemplate="namespace-to-resourcepool"
         rows={quotas}

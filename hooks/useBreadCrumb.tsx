@@ -3,6 +3,8 @@
 import { useEffect, useRef } from "react";
 
 import { useBreadcrumb } from "@/context/BreadCrumbContext";
+import { getProjectDetailFromCH } from "@/api/project";
+import { getNamespaceDetailFromCH } from "@/api/namespace";
 
 interface UseBreadcrumbDataProps {
   projectId?: string;
@@ -27,44 +29,22 @@ export const useBreadcrumbData = ({
           !fetchedIds.current.has(projectId)
         ) {
           fetchedIds.current.add(projectId);
-          console.log("Fetching project data for:", projectId);
 
-          const projectResponse = await fetch(
-            `http://localhost:8090/projects/${projectId}`,
-          );
+          const { project } = await getProjectDetailFromCH(projectId);
 
-          if (projectResponse.ok) {
-            const project = await projectResponse.json();
-
-            console.log("Project data:", project);
-            updateBreadcrumbItem(projectId, project.name);
-          } else {
-            console.error("Failed to fetch project:", projectResponse.status);
-            fetchedIds.current.delete(projectId); // Remove from cache on error
-          }
+          updateBreadcrumbItem(projectId, project.name);
         }
-
         if (
           namespaceId &&
           !breadcrumbData[namespaceId] &&
           !fetchedIds.current.has(namespaceId)
         ) {
           fetchedIds.current.add(namespaceId);
-          console.log("Fetching namespace data for:", namespaceId);
 
-          const namespaceResponse = await fetch(
-            `http://localhost:8090/namespaces/${namespaceId}`,
-          );
+          const { namespace } = await getNamespaceDetailFromCH(namespaceId);
 
-          if (namespaceResponse.ok) {
-            const namespace = await namespaceResponse.json();
-
-            updateBreadcrumbItem(namespaceId, namespace.name);
-          } else {
-            fetchedIds.current.delete(namespaceId);
-          }
+          updateBreadcrumbItem(namespaceId, namespace.name);
         }
-
         // Fetch resource pool data if resourcePoolId exists
         // if (resourcePoolId) {
         //   const resourcePoolResponse = await fetch(

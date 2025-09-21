@@ -19,21 +19,19 @@ const defaultColumns = [
   { name: "RESOURCE USAGE", uid: "usage", sortable: true },
 ];
 
-type ResourceTableProps = {
-  columns?: typeof defaultColumns;
+type ResourcePoolTableProps = {
   rows?: (Namespace | Quota)[];
   onRowClick?: (row: any) => void;
 };
 
-const ResourceTable = ({
-  columns = defaultColumns,
+const ResourcePoolTable = ({
   rows = [],
   onRowClick,
-}: ResourceTableProps) => {
+}: ResourcePoolTableProps) => {
   return (
     <Table removeWrapper aria-label="Resource Usage Table" color="primary">
       <TableHeader>
-        {columns.map((column) => (
+        {defaultColumns.map((column) => (
           <TableColumn key={column.uid}>{column.name}</TableColumn>
         ))}
       </TableHeader>
@@ -59,4 +57,4 @@ const ResourceTable = ({
   );
 };
 
-export default ResourceTable;
+export default ResourcePoolTable;

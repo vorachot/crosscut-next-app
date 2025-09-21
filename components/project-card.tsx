@@ -6,7 +6,7 @@ import useSWR from "swr";
 
 import UsageBar from "./usagebar";
 
-import { getProjectUsageByProjectIdFromCH } from "@/api/namespace";
+import { getProjectUsageByProjectIdFromCH } from "@/api/project";
 import Loading from "@/app/loading";
 import { ResourceUsage } from "@/types/resource";
 
@@ -32,7 +32,7 @@ const ProjectCard = ({
 
   if (isLoading) return <Loading />;
   if (error) return <div>Error loading projects</div>;
-  const usageData: ResourceUsage[] = data.usage || [];
+  const usageData: ResourceUsage[] = data.projectUsage.usage || [];
 
   return (
     <Link className="no-underline" href={`/projects/${id}`}>

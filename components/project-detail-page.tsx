@@ -10,7 +10,7 @@ import { useBreadcrumbData } from "@/hooks/useBreadCrumb";
 import NamespaceList from "@/components/namespace-list";
 import { formatDate } from "@/utils/helper";
 import Loading from "@/app/loading";
-import { getProjectUsageByProjectIdFromCH } from "@/api/namespace";
+import { getProjectUsageByProjectIdFromCH } from "@/api/project";
 import { ResourceUsage } from "@/types/resource";
 
 const ProjectDetailPage = () => {
@@ -30,7 +30,7 @@ const ProjectDetailPage = () => {
 
   if (isLoading) return <Loading />;
   if (error) return <div>Error loading tickets</div>;
-  const usageData: ResourceUsage[] = data.usage || [];
+  const usageData: ResourceUsage[] = data.projectUsage.usage || [];
 
   return (
     <div className="flex flex-col justify-center gap-7">

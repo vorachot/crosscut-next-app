@@ -9,12 +9,6 @@ import Loading from "@/app/loading";
 import { getNamespacesByProjectIdFromCH } from "@/api/namespace";
 import { Namespace } from "@/types/resource";
 
-const columns = [
-  { name: "NAMESPACE", uid: "namespace", sortable: true },
-  { name: "CREATED", uid: "created", sortable: true },
-  { name: "RESOURCE USAGE", uid: "usage", sortable: true },
-];
-
 const NamespaceList = ({ projectId }: { projectId: string }) => {
   const { data, error, isLoading } = useSWR(
     ["namespaces", projectId],
@@ -24,10 +18,10 @@ const NamespaceList = ({ projectId }: { projectId: string }) => {
       dedupingInterval: 5000, // Prevent duplicate requests for 5 seconds
     },
   );
-  const namespaces: Namespace[] = data || [];
 
   if (isLoading) return <Loading />;
   if (error) return <div>Error loading namespaces</div>;
+  const namespaces: Namespace[] = data.namespaces || [];
 
   return (
     <div className="flex flex-col gap-4">
@@ -40,7 +34,6 @@ const NamespaceList = ({ projectId }: { projectId: string }) => {
         </Chip>
       </div>
       <ResourceTableClient
-        columns={columns}
         pathTemplate="project-to-namespace"
         rows={namespaces}
       />

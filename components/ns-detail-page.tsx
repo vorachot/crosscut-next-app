@@ -1,5 +1,6 @@
 "use client";
 import { useParams } from "next/navigation";
+import useSWR from "swr";
 
 import ResourceCard from "./resource-card";
 import ResourcePoolList from "./resource-pool-list";
@@ -7,6 +8,9 @@ import ResourcePoolList from "./resource-pool-list";
 import { useBreadcrumbData } from "@/hooks/useBreadCrumb";
 import { useBreadcrumb } from "@/context/BreadCrumbContext";
 import { getDisplayName } from "@/utils/helper";
+import { getNamespaceUsageByNamespaceIdFromCH } from "@/api/namespace";
+import Loading from "@/app/loading";
+import { ResourceUsage } from "@/types/resource";
 
 const NamespaceDetailPage = () => {
   const params = useParams();
@@ -16,6 +20,19 @@ const NamespaceDetailPage = () => {
   useBreadcrumbData({ projectId, namespaceId });
 
   const { breadcrumbData } = useBreadcrumb();
+
+  const { data, error, isLoading } = useSWR(
+    ["namespace-usage", namespaceId],
+    () => getNamespaceUsageByNamespaceIdFromCH(namespaceId),
+    {
+      revalidateOnFocus: false,
+      dedupingInterval: 5000,
+    },
+  );
+
+  if (isLoading) return <Loading />;
+  if (error) return <div>Error loading tickets</div>;
+  const usageData: ResourceUsage[] = data.namespaceUsage.usage || [];
 
   return (
     <div className="flex flex-col gap-6">
@@ -35,7 +52,7 @@ const NamespaceDetailPage = () => {
       </div>
 
       {/* Resource Quota Overview */}
-      <ResourceCard usageData={[]} />
+      <ResourceCard usageData={usageData} />
 
       {/* Resource Pools Section */}
       <ResourcePoolList namespaceId={namespaceId} />

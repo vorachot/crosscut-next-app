@@ -5,7 +5,7 @@ import { FolderCopy as ProjectIcon } from "@mui/icons-material";
 
 import InfoCard from "./project-card";
 
-import { getProjectsFromCH } from "@/api/namespace";
+import { getProjectsFromCH } from "@/api/project";
 import Loading from "@/app/loading";
 import { Project } from "@/types/resource";
 
@@ -22,7 +22,7 @@ const ProjectList = () => {
   if (isLoading) return <Loading />;
   if (error) return <div>Error loading projects</div>;
 
-  const projects: Project[] = data || [];
+  const projects: Project[] = data.projects || [];
 
   if (projects.length === 0) {
     return (

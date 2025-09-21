@@ -17,10 +17,10 @@ export type Project = {
   name: string;
   description: string;
   organization_id: string;
-  namespaces: Namespace[];
-  quotas: Quota[];
-  project_members: any[];
-  project_admins: any[];
+  // namespaces: Namespace[];
+  // quotas: Quota[];
+  // project_members: any[];
+  // project_admins: any[];
 };
 
 export type Quota = {

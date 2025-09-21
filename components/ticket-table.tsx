@@ -25,7 +25,7 @@ import ResourceChip from "./resource-chip";
 import { ResourceType } from "@/types/enum";
 import { Ticket } from "@/types/resource";
 import Loading from "@/app/loading";
-import { getTickets, getTicketsByNamespaceId } from "@/api/ticket";
+import { getTicketFromCH, getTickets } from "@/api/ticket";
 import { formatDate, getStatusLabel } from "@/utils/helper";
 
 const defaultColumns = [
@@ -55,7 +55,7 @@ const TicketTable = ({
 
   const { data, error, isLoading } = useSWR(
     shouldFetchByNs ? ["tickets", nsId] : ["tickets-history"],
-    () => (shouldFetchByNs ? getTicketsByNamespaceId(nsId!) : getTickets()),
+    () => (shouldFetchByNs ? getTicketFromCH(nsId!) : getTickets()),
     {
       revalidateOnFocus: false,
       dedupingInterval: 5000,

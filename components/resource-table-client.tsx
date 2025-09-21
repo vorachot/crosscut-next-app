@@ -2,19 +2,19 @@
 
 import { useRouter } from "next/navigation";
 
-import ResourceTable from "@/components/resource-table";
+import NamespaceResourceTable from "./ns-resource-table";
+
+import ResourcePoolTable from "@/components/resource-pool-table";
 import { Namespace, Quota } from "@/types/resource";
 
 type ResourceTableClientProps = {
   parentId?: string;
-  columns?: { name: string; uid: string; sortable: boolean }[];
   rows?: (Namespace | Quota)[];
   pathTemplate: "project-to-namespace" | "namespace-to-resourcepool";
 };
 
 const ResourceTableClient = ({
   parentId,
-  columns,
   rows,
   pathTemplate,
 }: ResourceTableClientProps) => {
@@ -32,13 +32,21 @@ const ResourceTableClient = ({
   };
 
   return (
-    <ResourceTable
-      columns={columns}
-      rows={rows}
-      onRowClick={(row) => {
-        router.push(getPath(row));
-      }}
-    />
+    <>
+      {pathTemplate === "project-to-namespace" ? (
+        <NamespaceResourceTable
+          rows={rows}
+          onRowClick={(row) => router.push(getPath(row))}
+        />
+      ) : (
+        <ResourcePoolTable
+          rows={rows}
+          onRowClick={(row) => {
+            router.push(getPath(row));
+          }}
+        />
+      )}
+    </>
   );
 };
 

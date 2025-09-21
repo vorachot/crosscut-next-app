@@ -8,8 +8,8 @@ import { mutate } from "swr";
 import SliderInput from "./slider-input";
 
 import { RequestTicketPayload } from "@/types/payload";
-import { getResourceDetailByResourceIdFromCH } from "@/api/namespace";
 import { Quota } from "@/types/resource";
+import { getResourceDetailByResourceIdFromCH } from "@/api/resource";
 
 type TicketFormProps = {
   namespace_id: string;
@@ -92,7 +92,7 @@ const TicketForm = ({
       {resourceDetails.map((res) => (
         <SliderInput
           key={res.resource_prop.resource_id}
-          label={`${res.detail.resource_type.name} (${res.detail.name})`}
+          label={`${res.detail.resource.resource_type.name} (${res.detail.resource.name})`}
           maxValue={res.quantity}
           onValueChange={(val) =>
             handleValueChange(res.resource_prop.resource_id, val)
