@@ -31,7 +31,12 @@ const ButtonClient = ({ children, mode }: ButtonClientProps) => {
       {isOpen && mode === "tasks" && (
         <RequestTaskDrawer isOpen={isOpen} onClose={onClose} />
       )}
-      <Button color="primary" radius="md" onPress={handleClick}>
+      <Button
+        className="gap-0"
+        color="primary"
+        radius="md"
+        onPress={handleClick}
+      >
         {children}
       </Button>
     </>

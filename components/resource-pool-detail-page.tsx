@@ -55,8 +55,8 @@ const ResourcePoolDetailPage = () => {
               </h2>
             </div>
             <ButtonClient mode="tickets">
-              <AddIcon className="mr-2" />
-              Ticket
+              <AddIcon className="" />
+              <div>Ticket</div>
             </ButtonClient>
           </div>
           <TicketTableClient

@@ -1,8 +1,8 @@
 "use client";
 
-import { Button } from "@heroui/button";
-import { Card } from "@heroui/card";
+import { Modal, ModalContent, ModalHeader, ModalBody } from "@heroui/modal";
 import useSWR from "swr";
+import { Divider } from "@heroui/divider";
 
 import TicketForm from "./ticketForm";
 
@@ -35,24 +35,27 @@ const RequestTicketDialog = ({ setOnClose }: RequestDialogProps) => {
   console.log("quota from dialog:", quota);
 
   return (
-    <Card className="w-[350px] px-5 py-6 bg-white dark:bg-gray-800 shadow-md border border-gray-200 dark:border-gray-700 relative">
-      <Button
-        className="absolute top-2 right-2 min-w-8 h-8 p-0 bg-transparent hover:bg-gray-100 dark:hover:bg-gray-700 text-gray-500 dark:text-gray-400 rounded-full"
-        onPress={() => setOnClose && setOnClose()}
-      >
-        ✕
-      </Button>
-      <div className="text-xl font-bold text-gray-700 dark:text-gray-300">
-        Request Resource
-      </div>
-      <TicketForm
-        createTicketToCH={requestTicketToCH}
-        namespace_id={namespace_id}
-        quota={quota!}
-        quota_id={quota_id}
-        setOnClose={setOnClose}
-      />
-    </Card>
+    <Modal isOpen={true} scrollBehavior="inside" size="sm" onClose={setOnClose}>
+      <ModalContent>
+        <ModalHeader className="flex flex-col gap-1">
+          <div className="flex flex-col w-full">
+            <h2 className="text-xl font-semibold text-gray-700 gap-2 dark:text-gray-300">
+              New Ticket
+            </h2>
+          </div>
+        </ModalHeader>
+        <Divider />
+        <ModalBody className="px-1 pt-5">
+          <TicketForm
+            createTicketToCH={requestTicketToCH}
+            namespace_id={namespace_id}
+            quota={quota!}
+            quota_id={quota_id}
+            setOnClose={setOnClose}
+          />
+        </ModalBody>
+      </ModalContent>
+    </Modal>
   );
 };
 
