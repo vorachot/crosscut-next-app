@@ -10,13 +10,14 @@ import { Card, CardBody } from "@heroui/card";
 import SliderInput from "./slider-input";
 
 import { RequestTicketPayload } from "@/types/payload";
-import { Quota } from "@/types/resource";
+import { Quota, ResourceUsage } from "@/types/resource";
 import { getResourceDetailByResourceIdFromCH } from "@/api/resource";
 
 type TicketFormProps = {
   namespace_id: string;
   quota_id: string;
   quota: Quota;
+  usageQuota?: ResourceUsage[];
   createTicketToCH: (payload: RequestTicketPayload) => Promise<any>;
   setOnClose?: () => void;
 };
@@ -27,6 +28,7 @@ const TicketForm = ({
   quota,
   createTicketToCH,
   setOnClose,
+  usageQuota,
 }: TicketFormProps) => {
   const [resourceDetails, setResourceDetails] = useState<any[]>([]);
   const [resourceValues, setResourceValues] = useState<Record<string, number>>(
@@ -70,9 +72,26 @@ const TicketForm = ({
     }
   };
 
-  // const getTotalResourcesSelected = () => {
-  //   return Object.values(resourceValues).reduce((sum, val) => sum + val, 0);
-  // };
+  const getTotalResourcesSelected = () => {
+    return Object.values(resourceValues).reduce((sum, val) => sum + val, 0);
+  };
+
+  const getAvailableQuantity = (
+    resourceType: string,
+    originalQuantity: number,
+  ) => {
+    if (!usageQuota) return originalQuantity;
+
+    const usageData = usageQuota.find((u) => u.type === resourceType);
+
+    if (!usageData) return originalQuantity;
+
+    // Calculate available quantity: quota - usage
+    const available = usageData.quota - usageData.usage;
+
+    // Return the minimum of original quantity and available quantity
+    return Math.min(originalQuantity, Math.max(0, available));
+  };
 
   useEffect(() => {
     const fetchDetails = async () => {
@@ -128,29 +147,36 @@ const TicketForm = ({
           </h3>
 
           <div className="space-y-4">
-            {resourceDetails.map((res) => (
-              <Card
-                key={res.resource_prop.resource_id}
-                className="border border-gray-200 dark:border-gray-700"
-              >
-                <CardBody className="p-4">
-                  <SliderInput
-                    label={`${res.detail.resource.resource_type.name} (${res.detail.resource.name})`}
-                    maxValue={res.quantity}
-                    onValueChange={(val) =>
-                      handleValueChange(res.resource_prop.resource_id, val)
-                    }
-                  />
-                  <div className="mt-1 flex justify-between text-xs text-gray-500">
-                    <span>Available: {res.quantity}</span>
-                    <span>
-                      Selected:{" "}
-                      {resourceValues[res.resource_prop.resource_id] || 0}
-                    </span>
-                  </div>
-                </CardBody>
-              </Card>
-            ))}
+            {resourceDetails.map((res) => {
+              const availableQuantity = getAvailableQuantity(
+                res.detail.resource.resource_type.name,
+                res.quantity,
+              );
+
+              return (
+                <Card
+                  key={res.resource_prop.resource_id}
+                  className="border border-gray-200 dark:border-gray-700"
+                >
+                  <CardBody className="p-4">
+                    <SliderInput
+                      label={`${res.detail.resource.resource_type.name} (${res.detail.resource.name})`}
+                      maxValue={availableQuantity}
+                      onValueChange={(val) =>
+                        handleValueChange(res.resource_prop.resource_id, val)
+                      }
+                    />
+                    <div className="mt-1 flex justify-between text-xs text-gray-500">
+                      <span>Available: {availableQuantity}</span>
+                      <span>
+                        Selected:{" "}
+                        {resourceValues[res.resource_prop.resource_id] || 0}
+                      </span>
+                    </div>
+                  </CardBody>
+                </Card>
+              );
+            })}
           </div>
         </div>
         {/* Submit Section */}
@@ -158,7 +184,7 @@ const TicketForm = ({
           <Button
             className="w-24"
             color="primary"
-            isDisabled={!ticketName.trim()}
+            isDisabled={!ticketName.trim() || getTotalResourcesSelected() === 0}
             isLoading={isSubmitting}
             type="submit"
           >

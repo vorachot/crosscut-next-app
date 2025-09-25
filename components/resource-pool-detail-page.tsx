@@ -1,6 +1,7 @@
 "use client";
 import AddIcon from "@mui/icons-material/Add";
 import { useParams } from "next/navigation";
+import useSWR from "swr";
 
 import ResourceCard from "./resource-card";
 import ButtonClient from "./button-client";
@@ -10,6 +11,9 @@ import { useBreadcrumbData } from "@/hooks/useBreadCrumb";
 import { useBreadcrumb } from "@/context/BreadCrumbContext";
 import { getDisplayName } from "@/utils/helper";
 import { NamespaceProvider } from "@/context/NamespaceContext";
+import { getQuotaUsageByNamespaceIdFromCH } from "@/api/quota";
+import Loading from "@/app/loading";
+import { ResourceUsage } from "@/types/resource";
 
 const ResourcePoolDetailPage = () => {
   const params = useParams();
@@ -17,9 +21,22 @@ const ResourcePoolDetailPage = () => {
   const namespaceId = params.namespaceId as string;
   const resourcePoolId = params.resourcePoolId as string;
 
-  useBreadcrumbData({ projectId, namespaceId });
+  useBreadcrumbData({ projectId, namespaceId, resourcePoolId });
 
   const { breadcrumbData } = useBreadcrumb();
+
+  const { data, error, isLoading } = useSWR(
+    ["quota-usage", namespaceId, resourcePoolId],
+    () => getQuotaUsageByNamespaceIdFromCH(resourcePoolId, namespaceId),
+    {
+      revalidateOnFocus: false,
+      dedupingInterval: 5000,
+    },
+  );
+
+  if (isLoading) return <Loading />;
+  if (error) return <div>Error loading tickets</div>;
+  const usageData: ResourceUsage[] = data.quotaUsage.usage || [];
 
   return (
     <NamespaceProvider
@@ -44,7 +61,7 @@ const ResourcePoolDetailPage = () => {
         </div>
 
         {/* Resource Usage Overview */}
-        <ResourceCard usageData={[]} />
+        <ResourceCard usageData={usageData} />
 
         {/* Tickets Section */}
         <div className="space-y-3">

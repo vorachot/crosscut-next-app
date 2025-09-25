@@ -3,36 +3,57 @@
 import { Modal, ModalContent, ModalHeader, ModalBody } from "@heroui/modal";
 import useSWR from "swr";
 import { Divider } from "@heroui/divider";
+import { useParams } from "next/navigation";
 
 import TicketForm from "./ticketForm";
 
 import { requestTicketToCH } from "@/api/ticket";
-import { useNamespace } from "@/context/NamespaceContext";
 import Loading from "@/app/loading";
-import { Quota } from "@/types/resource";
-import { getQuotasByNamespaceIdFromCH } from "@/api/quota";
+import { Quota, ResourceUsage } from "@/types/resource";
+import {
+  getQuotasByNamespaceIdFromCH,
+  getQuotaUsageByNamespaceIdFromCH,
+} from "@/api/quota";
 
 type RequestDialogProps = {
   setOnClose?: () => void;
 };
 
 const RequestTicketDialog = ({ setOnClose }: RequestDialogProps) => {
-  const { quota_id, namespace_id } = useNamespace();
-  const { data, error, isLoading } = useSWR(
-    ["quotas", namespace_id],
-    () => getQuotasByNamespaceIdFromCH(namespace_id),
+  const params = useParams();
+  const namespaceId = params.namespaceId as string;
+  const resourcePoolId = params.resourcePoolId as string;
+  const {
+    data: quotasData,
+    error: quotasError,
+    isLoading: quotasLoading,
+  } = useSWR(
+    ["quotas", namespaceId],
+    () => getQuotasByNamespaceIdFromCH(namespaceId),
     {
       revalidateOnFocus: false,
       dedupingInterval: 5000, // Prevent duplicate requests for 5 seconds
     },
   );
+  const {
+    data: quotaUsageData,
+    error: quotaUsageError,
+    isLoading: quotaUsageLoading,
+  } = useSWR(
+    ["quota-usage", resourcePoolId, namespaceId],
+    () => getQuotaUsageByNamespaceIdFromCH(resourcePoolId, namespaceId),
+    {
+      revalidateOnFocus: false,
+      dedupingInterval: 5000,
+    },
+  );
 
-  if (isLoading) return <Loading />;
-  if (error) return <div>Error loading quotas</div>;
-  const quotas: Quota[] = data.quotas || [];
-  const quota = quotas.find((q) => q.id === quota_id);
+  if (quotasLoading || quotaUsageLoading) return <Loading />;
+  if (quotasError || quotaUsageError) return <div>Error loading quotas</div>;
+  const quotas: Quota[] = quotasData.quotas || [];
+  const quota = quotas.find((q) => q.id === resourcePoolId);
 
-  console.log("quota from dialog:", quota);
+  const usageQuota: ResourceUsage[] = quotaUsageData.quotaUsage.usage || [];
 
   return (
     <Modal isOpen={true} scrollBehavior="inside" size="sm" onClose={setOnClose}>
@@ -48,10 +69,11 @@ const RequestTicketDialog = ({ setOnClose }: RequestDialogProps) => {
         <ModalBody className="px-1 pt-5">
           <TicketForm
             createTicketToCH={requestTicketToCH}
-            namespace_id={namespace_id}
+            namespace_id={namespaceId}
             quota={quota!}
-            quota_id={quota_id}
+            quota_id={resourcePoolId}
             setOnClose={setOnClose}
+            usageQuota={usageQuota}
           />
         </ModalBody>
       </ModalContent>

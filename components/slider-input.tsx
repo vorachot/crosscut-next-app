@@ -12,8 +12,8 @@ const SliderInput = ({
   maxValue = 10,
   onValueChange,
 }: SliderInputProps) => {
-  const [value, setValue] = useState(1);
-  const [inputValue, setInputValue] = useState("1");
+  const [value, setValue] = useState(0);
+  const [inputValue, setInputValue] = useState("0");
 
   const handleChange = (value: any) => {
     if (isNaN(Number(value))) return;
