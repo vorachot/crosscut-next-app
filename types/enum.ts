@@ -8,5 +8,5 @@ export enum Status {
 export enum ResourceType {
   cpu = "CPU",
   gpu = "GPU",
-  memory = "MEMORY",
+  memory = "RAM",
 }

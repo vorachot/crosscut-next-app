@@ -18,7 +18,7 @@ type GliderTicket = {
 type GliderSpec = {
   type: string;
   pool_id: string;
-  resources: SpecResource[];
+  resource: SpecResource[];
 };
 type SpecResource = {
   resource_id: string;
