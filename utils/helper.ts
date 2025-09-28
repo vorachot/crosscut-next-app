@@ -17,8 +17,8 @@ export const getStatusColor = (status: Status) => {
     case Status.active:
       return "primary";
     case Status.succeeded:
-      return "default";
     case Status.cancelled:
+      return "default";
     case Status.inactive:
       return "danger";
     default:
