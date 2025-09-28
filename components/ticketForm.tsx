@@ -65,6 +65,9 @@ const TicketForm = ({
       await createTicketToCH(requestTicketPayload);
       if (setOnClose) setOnClose();
       await mutate(["tickets", namespace_id], undefined, { revalidate: true });
+      await mutate(["quota-usage", namespace_id, quota_id], undefined, {
+        revalidate: true,
+      });
     } catch {
       // Handle error
     } finally {

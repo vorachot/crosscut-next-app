@@ -57,3 +57,20 @@ export async function requestTicketToCH(
 
   return response.json();
 }
+export async function cancelTicket(ticketId: string): Promise<any> {
+  const response = await fetch(
+    `${process.env.NEXT_PUBLIC_NAMESPACE_MANAGER_URL}/ticket/cancelTicket/${ticketId}`,
+    {
+      method: "GET",
+      credentials: "include",
+    },
+  );
+
+  if (!response.ok) {
+    const errorText = await response.text();
+
+    throw new Error(errorText || "Failed to cancel ticket");
+  }
+
+  return response.json();
+}

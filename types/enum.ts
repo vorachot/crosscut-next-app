@@ -1,5 +1,6 @@
 export enum Status {
   ready = "AVAILABLE",
+  cancelled = "CANCELLED",
   active = "RUNNING",
   succeeded = "SUCCEEDED",
   inactive = "STOPPED",

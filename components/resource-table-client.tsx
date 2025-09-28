@@ -35,12 +35,12 @@ const ResourceTableClient = ({
     <>
       {pathTemplate === "project-to-namespace" ? (
         <NamespaceResourceTable
-          rows={rows}
+          rows={rows! as Namespace[]}
           onRowClick={(row) => router.push(getPath(row))}
         />
       ) : (
         <ResourcePoolTable
-          rows={rows}
+          rows={rows! as Quota[]}
           onRowClick={(row) => {
             router.push(getPath(row));
           }}

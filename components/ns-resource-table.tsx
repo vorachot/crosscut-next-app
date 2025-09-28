@@ -10,7 +10,7 @@ import useSWR from "swr";
 
 import UsageBar from "./usagebar";
 
-import { Namespace, Quota } from "@/types/resource";
+import { Namespace } from "@/types/resource";
 import Loading from "@/app/loading";
 import { getNamespaceUsageByNamespaceIdFromCH } from "@/api/namespace";
 
@@ -27,12 +27,14 @@ type NamespaceUsageResponse = {
 
 const defaultColumns = [
   { name: "NAME", uid: "name", sortable: true },
+  { name: "DESCRIPTION", uid: "description", sortable: true },
+  { name: "CREDIT", uid: "credit", sortable: true },
   { name: "CREATED", uid: "created", sortable: true },
   { name: "RESOURCE USAGE", uid: "usage", sortable: true },
 ];
 
 type NamespaceResourceTableProps = {
-  rows?: (Namespace | Quota)[];
+  rows?: Namespace[];
   onRowClick?: (row: any) => void;
 };
 
@@ -97,6 +99,8 @@ const NamespaceResourceTable = ({
               onClick={() => onRowClick?.(row)}
             >
               <TableCell>{row.name}</TableCell>
+              <TableCell>{row.description}</TableCell>
+              <TableCell>{row.credit}</TableCell>
               <TableCell>13 Jan 2022</TableCell>
               <TableCell className="flex flex-row gap-4">
                 <UsageBar
@@ -110,7 +114,7 @@ const NamespaceResourceTable = ({
                   value={gpu?.usage ?? 0}
                 />
                 <UsageBar
-                  label="Memory"
+                  label="RAM"
                   maxValue={ram?.quota ?? 0}
                   value={ram?.usage ?? 0}
                 />

@@ -21,7 +21,7 @@ const Breadcrumb = () => {
     const displayName = getDisplayName(seg, breadcrumbData);
 
     return (
-      <li key={href} className="inline-flex items-center">
+      <li key={href} className="inline-flex items-center font-medium">
         {!isLast ? (
           <Link
             className="capitalize text-[18px] hover:text-blue-600 hover:underline"

@@ -9,7 +9,7 @@ const getResourceLabel = (type: ResourceType) => {
     case ResourceType.gpu:
       return "GPU";
     case ResourceType.memory:
-      return "MEM";
+      return "RAM";
     default:
       return "resource";
   }
@@ -39,7 +39,7 @@ const ResourceChip = ({
     <Chip
       className="flex items-center gap-1"
       color={color(type)}
-      size="sm"
+      size="md"
       variant="flat"
     >
       <span className="flex items-center gap-1">

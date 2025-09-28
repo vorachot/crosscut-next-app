@@ -78,6 +78,7 @@ const ResourcePoolDetailPage = () => {
           </div>
           <TicketTableClient
             nsId={namespaceId}
+            resourcePoolId={resourcePoolId}
             pathTemplate="resourcepool-to-ticket"
             selectionMode="none"
           />

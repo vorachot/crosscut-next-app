@@ -30,6 +30,7 @@ type QuotaUsageResponse = {
 
 const defaultColumns = [
   { name: "NAME", uid: "name", sortable: true },
+  { name: "DESCRIPTION", uid: "description", sortable: true },
   { name: "CREATED", uid: "created", sortable: true },
   { name: "RESOURCE USAGE", uid: "usage", sortable: true },
 ];
@@ -98,6 +99,7 @@ const ResourcePoolTable = ({
               onClick={() => onRowClick?.(row)}
             >
               <TableCell>{row.name}</TableCell>
+              <TableCell>{row.description}</TableCell>
               <TableCell>13 Jan 2022</TableCell>
               <TableCell className="flex flex-row gap-4">
                 <UsageBar
