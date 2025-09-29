@@ -31,15 +31,17 @@ const color = (type: ResourceType) => {
 const ResourceChip = ({
   type,
   value = 0,
+  size = "md",
 }: {
   type: ResourceType;
   value?: number;
+  size?: "sm" | "md" | "lg";
 }) => {
   return (
     <Chip
       className="flex items-center gap-1"
       color={color(type)}
-      size="md"
+      size={size}
       variant="flat"
     >
       <span className="flex items-center gap-1">

@@ -19,7 +19,7 @@ const TaskList = () => {
   if (isLoading) return <Loading />;
   if (error) return <div>Error loading tasks</div>;
 
-  const tasks: any[] = data?.Tasks ?? [];
+  const tasks: any[] = data?.tasks ?? [];
 
   if (tasks.length === 0) {
     return (
@@ -39,8 +39,8 @@ const TaskList = () => {
           key={index}
           createdAt={formatDate(task.created_at)}
           id={task.id}
-          status={Status.active}
-          tickets={task.ticket}
+          status={Status.redeemed}
+          tickets={task.tickets}
           title={task.title}
         />
       ))}

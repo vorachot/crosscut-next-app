@@ -2,6 +2,14 @@
 import AddIcon from "@mui/icons-material/Add";
 import { useParams } from "next/navigation";
 import useSWR from "swr";
+import {
+  Dropdown,
+  DropdownItem,
+  DropdownMenu,
+  DropdownTrigger,
+} from "@heroui/dropdown";
+import { Button } from "@heroui/button";
+import { SVGProps } from "react";
 
 import ResourceCard from "./resource-card";
 import ButtonClient from "./button-client";
@@ -14,6 +22,42 @@ import { NamespaceProvider } from "@/context/NamespaceContext";
 import { getQuotaUsageByNamespaceIdFromCH } from "@/api/quota";
 import Loading from "@/app/loading";
 import { ResourceUsage } from "@/types/resource";
+
+export const statusOptions = [
+  { name: "Available", uid: "available" },
+  { name: "Cancelled", uid: "cancelled" },
+  { name: "Stopped", uid: "stopped" },
+  { name: "Running", uid: "running" },
+];
+export type IconSvgProps = SVGProps<SVGSVGElement> & {
+  size?: number;
+};
+export const ChevronDownIcon = ({
+  strokeWidth = 1.5,
+  ...otherProps
+}: IconSvgProps) => {
+  return (
+    <svg
+      aria-hidden="true"
+      fill="none"
+      focusable="false"
+      height="1em"
+      role="presentation"
+      viewBox="0 0 24 24"
+      width="1em"
+      {...otherProps}
+    >
+      <path
+        d="m19.92 8.95-6.52 6.52c-.77.77-2.03.77-2.8 0L4.08 8.95"
+        stroke="currentColor"
+        strokeLinecap="round"
+        strokeLinejoin="round"
+        strokeMiterlimit={10}
+        strokeWidth={strokeWidth}
+      />
+    </svg>
+  );
+};
 
 const ResourcePoolDetailPage = () => {
   const params = useParams();
@@ -71,15 +115,42 @@ const ResourcePoolDetailPage = () => {
                 Tickets
               </h2>
             </div>
-            <ButtonClient mode="tickets">
-              <AddIcon className="" />
-              <div>Ticket</div>
-            </ButtonClient>
+            <div className="flex gap-2">
+              <Dropdown>
+                <DropdownTrigger className="hidden sm:flex">
+                  <Button
+                    endContent={<ChevronDownIcon className="text-small" />}
+                    size="md"
+                    variant="flat"
+                  >
+                    Status
+                  </Button>
+                </DropdownTrigger>
+                <DropdownMenu
+                  disallowEmptySelection
+                  aria-label="Status"
+                  closeOnSelect={false}
+                  // selectedKeys={statusFilter}
+                  // selectionMode="multiple"
+                  // onSelectionChange={setStatusFilter}
+                >
+                  {statusOptions.map((status) => (
+                    <DropdownItem key={status.uid} className="capitalize">
+                      {status.name}
+                    </DropdownItem>
+                  ))}
+                </DropdownMenu>
+              </Dropdown>
+              <ButtonClient mode="tickets">
+                <AddIcon className="" />
+                <div>Add Ticket</div>
+              </ButtonClient>
+            </div>
           </div>
           <TicketTableClient
             nsId={namespaceId}
-            resourcePoolId={resourcePoolId}
             pathTemplate="resourcepool-to-ticket"
+            resourcePoolId={resourcePoolId}
             selectionMode="none"
           />
         </div>

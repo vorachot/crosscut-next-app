@@ -1,14 +1,17 @@
-import { TaskReq } from "@/types/resource";
+import { TaskReq } from "@/types/task";
 
 export async function createTask(taskReq: TaskReq): Promise<any> {
-  const response = await fetch("http://localhost:8080/ticket/useTickets", {
-    method: "POST",
-    headers: {
-      "Content-Type": "application/json",
+  const response = await fetch(
+    `${process.env.NEXT_PUBLIC_NAMESPACE_MANAGER_URL}/ticket/useTickets`,
+    {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      credentials: "include",
+      body: JSON.stringify(taskReq),
     },
-    credentials: "include",
-    body: JSON.stringify(taskReq),
-  });
+  );
 
   if (!response.ok) {
     const errorText = await response.text();
@@ -20,10 +23,13 @@ export async function createTask(taskReq: TaskReq): Promise<any> {
 }
 
 export async function getTasks(): Promise<any> {
-  const response = await fetch("http://localhost:8080/ticket/tasks", {
-    method: "GET",
-    credentials: "include",
-  });
+  const response = await fetch(
+    `${process.env.NEXT_PUBLIC_NAMESPACE_MANAGER_URL}/ticket/tasks`,
+    {
+      method: "GET",
+      credentials: "include",
+    },
+  );
 
   if (!response.ok) {
     const errorText = await response.text();
@@ -35,14 +41,17 @@ export async function getTasks(): Promise<any> {
 }
 
 export async function stopTask(taskId: string): Promise<any> {
-  const response = await fetch(`http://localhost:8080/ticket/stopTask`, {
-    method: "DELETE",
-    headers: {
-      "Content-Type": "application/json",
+  const response = await fetch(
+    `${process.env.NEXT_PUBLIC_NAMESPACE_MANAGER_URL}/ticket/stopTask`,
+    {
+      method: "DELETE",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      credentials: "include",
+      body: JSON.stringify({ task_id: taskId }),
     },
-    credentials: "include",
-    body: JSON.stringify({ task_id: taskId }),
-  });
+  );
 
   if (!response.ok) {
     const errorText = await response.text();

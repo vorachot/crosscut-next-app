@@ -34,7 +34,6 @@ type RequestTaskDrawerProps = {
 const RequestTaskDrawer = ({ isOpen, onClose }: RequestTaskDrawerProps) => {
   const [selectedKeys, setSelectedKeys] = useState<Selection>(new Set());
   const [taskName, setTaskName] = useState("");
-  const [description, setDescription] = useState("");
   const [isCreating, setIsCreating] = useState(false);
   const [errors, setErrors] = useState<{ taskName?: string; tickets?: string }>(
     {},
@@ -70,7 +69,6 @@ const RequestTaskDrawer = ({ isOpen, onClose }: RequestTaskDrawerProps) => {
       const ticketIds = Array.from(selectedKeys);
       const taskData = {
         title: taskName,
-        description,
         tickets: ticketIds,
       };
 
@@ -78,7 +76,6 @@ const RequestTaskDrawer = ({ isOpen, onClose }: RequestTaskDrawerProps) => {
 
       // Reset form
       setTaskName("");
-      setDescription("");
       setSelectedKeys(new Set());
       setErrors({});
       onClose();
@@ -93,14 +90,13 @@ const RequestTaskDrawer = ({ isOpen, onClose }: RequestTaskDrawerProps) => {
 
   const handleClose = () => {
     setTaskName("");
-    setDescription("");
     setSelectedKeys(new Set());
     setErrors({});
     onClose();
   };
 
   return (
-    <Drawer isOpen={isOpen} size="xl" onOpenChange={handleClose}>
+    <Drawer isOpen={isOpen} size="lg" onOpenChange={handleClose}>
       <DrawerContent className="bg-white dark:bg-gray-800">
         <DrawerHeader className="flex items-center gap-3 pb-3 border-b border-gray-200 dark:border-gray-700">
           <div className="p-2 bg-blue-100 dark:bg-blue-900/30 rounded-lg">
@@ -118,23 +114,17 @@ const RequestTaskDrawer = ({ isOpen, onClose }: RequestTaskDrawerProps) => {
 
         <DrawerBody className="px-6 py-5">
           {/* Task Configuration Section */}
-          <div className="space-y-4">
-            <div className="flex items-center gap-2 mb-3">
-              <h3 className="text-lg font-medium text-gray-900 dark:text-white">
-                Task Configuration
-              </h3>
-            </div>
-
-            <Form className="space-y-4">
-              <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                <div className="space-y-2">
+          <div className="space-y-4 w-full">
+            <Form className="space-y-4 w-full">
+              <div>
+                <div className="space-y-2 w-full">
                   <Input
                     isRequired
                     errorMessage={errors.taskName}
                     isInvalid={!!errors.taskName}
                     label="Task Name"
                     labelPlacement="outside"
-                    placeholder="Enter task name"
+                    placeholder="e.g. My First Task"
                     value={taskName}
                     variant="bordered"
                     onChange={(e) => {
@@ -145,16 +135,16 @@ const RequestTaskDrawer = ({ isOpen, onClose }: RequestTaskDrawerProps) => {
                     }}
                   />
                 </div>
-                <div className="space-y-2">
+                {/* <div className="space-y-2">
                   <Input
                     label="Description (Optional)"
                     labelPlacement="outside"
-                    placeholder="Enter task description"
+                    placeholder="e.g. This task involves..."
                     value={description}
                     variant="bordered"
                     onChange={(e) => setDescription(e.target.value)}
                   />
-                </div>
+                </div> */}
               </div>
             </Form>
           </div>
@@ -163,9 +153,9 @@ const RequestTaskDrawer = ({ isOpen, onClose }: RequestTaskDrawerProps) => {
 
           {/* Ticket Selection Section */}
           <div className="space-y-2">
-            <div className="flex items-center justify-between">
+            <div className="flex items-center justify-between h-8">
               <div className="flex items-center gap-2">
-                <h3 className="text-lg font-medium text-gray-900 dark:text-white">
+                <h3 className="text-sm font-semibold text-gray-700 flex items-center gap-2 dark:text-gray-300">
                   Select Tickets
                 </h3>
                 {hasSelectedTickets && (
@@ -183,7 +173,7 @@ const RequestTaskDrawer = ({ isOpen, onClose }: RequestTaskDrawerProps) => {
               )}
             </div>
 
-            <div className="bg-gray-50 dark:bg-gray-800/50 rounded-lg p-4">
+            <div className="bg-gray-50 dark:bg-gray-800/50 rounded-lg">
               <div className="flex items-center gap-2 mb-3">
                 <InfoIcon className="!w-4 !h-4 text-blue-500" />
                 <span className="text-sm text-gray-600 dark:text-gray-400">
@@ -216,7 +206,7 @@ const RequestTaskDrawer = ({ isOpen, onClose }: RequestTaskDrawerProps) => {
             ) : (
               <>
                 <InfoIcon className="!w-4 !h-4" />
-                <span>Please select tickets to create a task</span>
+                <span>Please select ticket</span>
               </>
             )}
           </div>

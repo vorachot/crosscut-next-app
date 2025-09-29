@@ -8,15 +8,19 @@ import {
   TableHeader,
   TableRow,
 } from "@heroui/table";
-import { Chip } from "@heroui/chip";
 import { Selection } from "@heroui/table";
 import useSWR from "swr";
 import { ConfirmationNumber as TicketIcon } from "@mui/icons-material";
+import { useEffect, useState } from "react";
+
+import ResourceChip from "./resource-chip";
 
 import Loading from "@/app/loading";
 import { getUserTickets } from "@/api/ticket";
-import { getStatusLabel } from "@/utils/helper";
 import { UserTicketResponse } from "@/types/ticket";
+import { ResourceType } from "@/types/enum";
+import { getResourceDetailByResourceIdFromCH } from "@/api/resource";
+import { ResourceDetail } from "@/types/resource";
 
 const defaultColumns = [
   { name: "TICKET", uid: "name", sortable: true },
@@ -43,6 +47,10 @@ const TicketTableDrawer = ({
   selectedKeys,
   onSelectionChange,
 }: TicketTableProps) => {
+  const [ticketsWithResourceDetails, setTicketsWithResourceDetails] = useState<
+    any[]
+  >([]);
+  const [resourceDetailsLoading, setResourceDetailsLoading] = useState(false);
   const { data, error, isLoading } = useSWR(
     ["tickets-history"],
     getUserTickets,
@@ -51,12 +59,86 @@ const TicketTableDrawer = ({
       dedupingInterval: 5000,
     },
   );
+  const getResourceValueByType = (
+    resourceDetails: any[],
+    resourceType: ResourceType,
+  ) => {
+    if (!resourceDetails || resourceDetails.length === 0) return 0;
+
+    return resourceDetails.reduce((sum, resource) => {
+      const resourceTypeName = resource.detail?.resource?.resource_type?.name;
+
+      if (!resourceTypeName) return sum;
+
+      // More robust type matching
+      const normalizedResourceType = resourceTypeName.toLowerCase().trim();
+      const normalizedTargetType = resourceType.toLowerCase().trim();
+
+      if (normalizedResourceType === normalizedTargetType) {
+        return sum + (resource.quantity || 0);
+      }
+
+      return sum;
+    }, 0);
+  };
+
+  useEffect(() => {
+    const fetchResourceDetailsForTickets = async () => {
+      if (!data || data.length === 0) return;
+
+      setResourceDetailsLoading(true);
+      try {
+        const ticketsWithDetails = await Promise.all(
+          data.map(async (ticket: UserTicketResponse) => {
+            if (
+              !ticket.ticket.spec.resource ||
+              ticket.ticket.spec.resource.length === 0
+            ) {
+              return { ...ticket, resourceDetails: [] };
+            }
+
+            const resourceDetails = await Promise.all(
+              ticket.ticket.spec.resource.map((resource) =>
+                getResourceDetailByResourceIdFromCH(resource.resource_id),
+              ),
+            );
+
+            const resourcesWithDetails = ticket.ticket.spec.resource.map(
+              (resource, i) => ({
+                ...resource,
+                detail: resourceDetails[i],
+              }),
+            );
+
+            return { ...ticket, resourceDetails: resourcesWithDetails };
+          }),
+        );
+
+        setTicketsWithResourceDetails(ticketsWithDetails);
+      } catch (error) {
+        console.error("Error fetching resource details:", error);
+        setTicketsWithResourceDetails(data || []);
+      } finally {
+        setResourceDetailsLoading(false);
+      }
+    };
+
+    fetchResourceDetailsForTickets();
+  }, [data]);
 
   if (isLoading) return <Loading />;
   if (error) return <div>Error loading tickets</div>;
-  const tickets: UserTicketResponse[] = data?.tickets ?? [];
+  const tickets =
+    ticketsWithResourceDetails.length > 0
+      ? ticketsWithResourceDetails
+      : (data ?? []);
+
   const filteredTickets = tickets.filter(
-    (ticket) => getStatusLabel(ticket.status) === "AVAILABLE",
+    (
+      ticket: UserTicketResponse & {
+        resourceDetails: ResourceDetail[];
+      },
+    ) => ticket.status === "ready",
   );
 
   if (filteredTickets.length === 0) {
@@ -93,32 +175,77 @@ const TicketTableDrawer = ({
         ))}
       </TableHeader>
       <TableBody>
-        {filteredTickets.map((ticket) => (
-          <TableRow key={ticket.id}>
-            <TableCell className="text-xs">
-              {/* {ticket.id.slice(0, 7)}... */}
-              {ticket.name}
-            </TableCell>
-            <TableCell className="text-xs">
-              {new Date(ticket.ticket.created_at).toLocaleDateString("en-GB", {
-                day: "2-digit",
-                month: "short",
-                year: "numeric",
-              })}
-            </TableCell>
-            <TableCell className="flex flex-wrap gap-2">
-              <Chip color="primary" size="sm" variant="flat">
-                CPU: {0}
-              </Chip>
-              <Chip color="secondary" size="sm" variant="flat">
-                GPU: {0}
-              </Chip>
-              <Chip color="success" size="sm" variant="flat">
-                MEM: {0}
-              </Chip>
-            </TableCell>
-          </TableRow>
-        ))}
+        {filteredTickets.map(
+          (
+            ticket: UserTicketResponse & {
+              resourceDetails: ResourceDetail[];
+            },
+          ) => (
+            <TableRow key={ticket.id} className="hover:cursor-pointer">
+              <TableCell className="text-xs">
+                {/* {ticket.id.slice(0, 7)}... */}
+                {ticket.name}
+              </TableCell>
+              <TableCell className="text-xs">
+                {new Date(ticket.ticket.created_at).toLocaleDateString(
+                  "en-GB",
+                  {
+                    day: "2-digit",
+                    month: "short",
+                    year: "numeric",
+                  },
+                )}
+              </TableCell>
+              <TableCell className="flex flex-row gap-2 items-center">
+                {resourceDetailsLoading ? (
+                  <span className="text-sm text-gray-500">Loading...</span>
+                ) : (
+                  <>
+                    {getResourceValueByType(
+                      ticket.resourceDetails || [],
+                      ResourceType.cpu,
+                    ) > 0 && (
+                      <ResourceChip
+                        size="sm"
+                        type={ResourceType.cpu}
+                        value={getResourceValueByType(
+                          ticket.resourceDetails || [],
+                          ResourceType.cpu,
+                        )}
+                      />
+                    )}
+                    {getResourceValueByType(
+                      ticket.resourceDetails || [],
+                      ResourceType.gpu,
+                    ) > 0 && (
+                      <ResourceChip
+                        size="sm"
+                        type={ResourceType.gpu}
+                        value={getResourceValueByType(
+                          ticket.resourceDetails || [],
+                          ResourceType.gpu,
+                        )}
+                      />
+                    )}
+                    {getResourceValueByType(
+                      ticket.resourceDetails || [],
+                      ResourceType.memory,
+                    ) > 0 && (
+                      <ResourceChip
+                        size="sm"
+                        type={ResourceType.memory}
+                        value={getResourceValueByType(
+                          ticket.resourceDetails || [],
+                          ResourceType.memory,
+                        )}
+                      />
+                    )}
+                  </>
+                )}
+              </TableCell>
+            </TableRow>
+          ),
+        )}
       </TableBody>
     </Table>
   );

@@ -2,7 +2,6 @@ import { Key } from "react";
 
 export type TaskReq = {
   title: string;
-  description?: string;
   tickets: Key[];
 };
 

@@ -14,7 +14,7 @@ export const getStatusColor = (status: Status) => {
   switch (status) {
     case Status.ready:
       return "success";
-    case Status.active:
+    case Status.redeemed:
       return "primary";
     case Status.succeeded:
     case Status.cancelled:
@@ -28,12 +28,12 @@ export const getStatusColor = (status: Status) => {
 
 export const getStatusIndicator = (status: Status) => {
   switch (status) {
-    case Status.active:
-      return {
-        icon: RunningIcon,
-        color: "text-green-500",
-        bgColor: "bg-green-50 dark:bg-green-900/20",
-      };
+    // case Status.redeemed:
+    //   return {
+    //     icon: RunningIcon,
+    //     color: "text-green-500",
+    //     bgColor: "bg-green-50 dark:bg-green-900/20",
+    //   };
     case Status.succeeded:
       return {
         icon: CompletedIcon,
