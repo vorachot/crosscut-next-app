@@ -1,5 +1,4 @@
 import { Card, CardBody } from "@heroui/card";
-import { Progress } from "@heroui/progress";
 import { Chip } from "@heroui/chip";
 import {
   Storage as MemoryIcon,
@@ -23,23 +22,23 @@ const getResourceConfig = (type: ResourceType) => {
     case ResourceType.cpu:
       return {
         label: "CPU",
-        icon: <CpuIcon className="w-4 h-4" />,
+        icon: <CpuIcon className="!w-6 !h-6" />,
         color: "primary" as const,
-        defaultUnit: "cores",
+        defaultUnit: "Cores",
       };
     case ResourceType.gpu:
       return {
         label: "GPU",
-        icon: <GpuIcon className="w-4 h-4" />,
+        icon: <GpuIcon className="!w-6 !h-6" />,
         color: "secondary" as const,
-        defaultUnit: "units",
+        defaultUnit: "GiB",
       };
     case ResourceType.memory:
       return {
-        label: "Memory",
-        icon: <MemoryIcon className="w-4 h-4" />,
+        label: "RAM",
+        icon: <MemoryIcon className="!w-5 !h-5" />,
         color: "success" as const,
-        defaultUnit: "GB",
+        defaultUnit: "GiB",
       };
     default:
       return {
@@ -56,12 +55,10 @@ const ResourceCardEnhanced = ({
   used,
   total,
   unit,
-  showProgress = false,
   size = "md",
 }: ResourceCardEnhancedProps) => {
   const config = getResourceConfig(type);
   const displayUnit = unit || config.defaultUnit;
-  const usagePercentage = total ? (used / total) * 100 : 0;
 
   const sizeClasses = {
     sm: "p-2",
@@ -71,20 +68,23 @@ const ResourceCardEnhanced = ({
 
   return (
     <Card
-      className={`bg-white dark:bg-gray-800 border border-gray-200 dark:border-gray-700`}
+      className="bg-white dark:bg-gray-800 border border-gray-200 dark:border-gray-700"
+      shadow="none"
     >
-      <CardBody className={`${sizeClasses[size]} space-y-2`}>
+      <CardBody className={`${sizeClasses[size]} px-4 space-y-2`}>
         <div className="flex items-center justify-between">
           <div className="flex items-center gap-2">
+            {config.icon}
             <span className="font-medium text-sm">{config.label}</span>
           </div>
-          <Chip color={config.color} size="sm" variant="flat">
-            {used}
-            {total && ` / ${total} ${displayUnit}`}
+          <Chip color={config.color} size="lg" variant="flat">
+            <span className="font-medium text-lg">{used}</span>{" "}
+            <span className="font-medium text-xs">{displayUnit}</span>
+            {/* {total && ` / ${total} ${displayUnit}`} */}
           </Chip>
         </div>
 
-        {showProgress && total && (
+        {/* {showProgress && total && (
           <div className="space-y-1">
             <Progress
               className="w-full"
@@ -96,7 +96,7 @@ const ResourceCardEnhanced = ({
               {usagePercentage.toFixed(1)}% used
             </div>
           </div>
-        )}
+        )} */}
       </CardBody>
     </Card>
   );

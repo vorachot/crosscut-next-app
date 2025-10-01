@@ -1,6 +1,6 @@
-import { TaskReq } from "@/types/task";
+import { RequestTaskPayload } from "@/types/task";
 
-export async function createTask(taskReq: TaskReq): Promise<any> {
+export async function createTask(taskReq: RequestTaskPayload): Promise<any> {
   const response = await fetch(
     `${process.env.NEXT_PUBLIC_NAMESPACE_MANAGER_URL}/ticket/useTickets`,
     {

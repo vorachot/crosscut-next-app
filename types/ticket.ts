@@ -20,7 +20,7 @@ type GliderSpec = {
   pool_id: string;
   resource: SpecResource[];
 };
-type SpecResource = {
+export type SpecResource = {
   resource_id: string;
   name: string;
   quantity: number;

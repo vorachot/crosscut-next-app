@@ -1,103 +1,54 @@
 import { Card } from "@heroui/card";
 import { Chip } from "@heroui/chip";
-import { Progress } from "@heroui/progress";
+import { useEffect, useState } from "react";
+
+import ResourceChip from "./resource-chip";
+
+import { SpecResource } from "@/types/ticket";
+import { getResourceDetailByResourceIdFromCH } from "@/api/resource";
+import { ResourceType } from "@/types/enum";
 
 type SubTicketEnhancedProps = {
   name?: string;
-  resources?: Record<string, number>;
-  maxResources?: Record<string, number>;
+  resources?: SpecResource[];
   status?: string;
-  showProgress?: boolean;
-  layout?: "horizontal" | "vertical";
-};
-
-const getResourceColor = (resourceKey: string) => {
-  switch (resourceKey.toLowerCase()) {
-    case "cpu":
-      return "primary";
-    case "gpu":
-      return "secondary";
-    case "memory":
-      return "success";
-    default:
-      return "default";
-  }
-};
-
-const getResourceUnit = (resourceKey: string) => {
-  switch (resourceKey.toLowerCase()) {
-    case "cpu":
-      return "cores";
-    case "gpu":
-      return "units";
-    case "memory":
-      return "GB";
-    default:
-      return "";
-  }
 };
 
 const SubTicketEnhanced = ({
   name = "default-name",
-  resources = {},
-  maxResources,
+  resources,
   status,
-  showProgress = false,
-  layout = "horizontal",
 }: SubTicketEnhancedProps) => {
-  const resourceEntries = Object.entries(resources).filter(
-    ([, value]) => value > 0,
-  );
+  const [resourcesWithDetails, setResourcesWithDetails] = useState<any[]>([]);
+  const [resourceDetailsLoading, setResourceDetailsLoading] = useState(false);
 
-  if (layout === "vertical") {
-    return (
-      <Card className="bg-white dark:bg-gray-800 border border-gray-200 dark:border-gray-700 hover:bg-gray-50 dark:hover:bg-gray-750">
-        <div className="p-4 space-y-3">
-          <div className="flex items-center justify-between">
-            <div className="text-sm font-medium text-gray-700 dark:text-gray-300">
-              {name}
-            </div>
-            {status && (
-              <Chip size="sm" variant="dot">
-                {status}
-              </Chip>
-            )}
-          </div>
+  useEffect(() => {
+    const fetchResourceDetailsForTickets = async () => {
+      if (!resources || resources.length === 0) return;
 
-          <div className="space-y-2">
-            {resourceEntries.map(([key, value]) => {
-              const unit = getResourceUnit(key);
-              const maxValue = maxResources?.[key];
-              const percentage = maxValue ? (value / maxValue) * 100 : 0;
+      setResourceDetailsLoading(true);
+      try {
+        const resourceDetails = await Promise.all(
+          resources.map(async (resource: SpecResource) => {
+            const resourceDetail = await getResourceDetailByResourceIdFromCH(
+              resource.resource_id,
+            );
 
-              return (
-                <div key={key} className="space-y-1">
-                  <div className="flex items-center justify-between text-xs">
-                    <div className="flex items-center gap-1">
-                      <span className="uppercase font-medium">{key}</span>
-                    </div>
-                    <span className="text-gray-600 dark:text-gray-400">
-                      {value}
-                      {unit}
-                      {maxValue && ` / ${maxValue}${unit}`}
-                    </span>
-                  </div>
-                  {showProgress && maxValue && (
-                    <Progress
-                      className="w-full"
-                      color={getResourceColor(key) as any}
-                      size="sm"
-                      value={percentage}
-                    />
-                  )}
-                </div>
-              );
-            })}
-          </div>
-        </div>
-      </Card>
-    );
-  }
+            return { ...resource, resourceDetail };
+          }),
+        );
+
+        setResourcesWithDetails(resourceDetails);
+      } catch (error) {
+        console.error("Error fetching resource details:", error);
+        setResourcesWithDetails(resources || []);
+      } finally {
+        setResourceDetailsLoading(false);
+      }
+    };
+
+    fetchResourceDetailsForTickets();
+  }, [resources]);
 
   return (
     <Card
@@ -118,23 +69,51 @@ const SubTicketEnhanced = ({
         </div>
 
         <div className="flex flex-wrap gap-2">
-          {resourceEntries.map(([key, value]) => {
-            return (
-              <Chip
-                key={key}
-                color={getResourceColor(key) as any}
-                size="sm"
-                variant="flat"
-              >
-                <div className="flex items-center gap-1">
-                  {/* {getResourceIcon(key)} */}
-                  <span className="text-xs">
-                    {key.toUpperCase()}: {value}
-                  </span>
+          {resourcesWithDetails.map(
+            (
+              resource: SpecResource & {
+                resourceDetail: any;
+              },
+            ) => {
+              return (
+                <div
+                  key={resource.resource_id}
+                  className="flex items-center gap-2"
+                >
+                  {resourceDetailsLoading ? (
+                    <span className="text-sm text-gray-500">Loading...</span>
+                  ) : (
+                    <>
+                      {resource.resourceDetail.resource.resource_type.name ===
+                        "CPU" && (
+                        <ResourceChip
+                          size="sm"
+                          type={ResourceType.cpu}
+                          value={resource.quantity}
+                        />
+                      )}
+                      {resource.resourceDetail.resource.resource_type.name ===
+                        "GPU" && (
+                        <ResourceChip
+                          size="sm"
+                          type={ResourceType.gpu}
+                          value={resource.quantity}
+                        />
+                      )}
+                      {resource.resourceDetail.resource.resource_type.name ===
+                        "RAM" && (
+                        <ResourceChip
+                          size="sm"
+                          type={ResourceType.memory}
+                          value={resource.quantity}
+                        />
+                      )}
+                    </>
+                  )}
                 </div>
-              </Chip>
-            );
-          })}
+              );
+            },
+          )}
         </div>
       </div>
     </Card>

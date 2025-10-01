@@ -1,9 +1,5 @@
 import { Card, CardBody } from "@heroui/card";
-import { Chip } from "@heroui/chip";
-import {
-  TrendingUp as TrendingUpIcon,
-  BarChart as BarChartIcon,
-} from "@mui/icons-material";
+import { BarChart as BarChartIcon } from "@mui/icons-material";
 
 import ResourceCardEnhanced from "./resource-card-enhanced";
 
@@ -23,9 +19,9 @@ const ResourceSummary = ({
   resourceLimits,
 }: ResourceSummaryProps) => {
   const resourceTypes = [
-    { type: ResourceType.cpu, key: "cpu", unit: "cores" },
-    { type: ResourceType.gpu, key: "gpu", unit: "units" },
-    { type: ResourceType.memory, key: "memory", unit: "GB" },
+    { type: ResourceType.cpu, key: "AMD", unit: "Cores" },
+    { type: ResourceType.gpu, key: "A200", unit: "GiB" },
+    { type: ResourceType.memory, key: "RAMMY", unit: "GiB" },
   ];
 
   const hasAnyResources = resourceTypes.some(
@@ -47,7 +43,7 @@ const ResourceSummary = ({
 
   return (
     <div className="bg-white dark:bg-gray-800">
-      <div className="pb-2">
+      {/* <div className="pb-2">
         <div className="flex items-center justify-between w-full">
           <div className="flex items-center gap-2">
             <TrendingUpIcon className="w-5 h-5 text-blue-500" />
@@ -55,12 +51,9 @@ const ResourceSummary = ({
               Resource Usage Summary
             </h4>
           </div>
-          <Chip color="primary" size="sm" variant="flat">
-            {ticketCount} tickets
-          </Chip>
         </div>
-      </div>
-      <div className="pt-4">
+      </div> */}
+      <div className="pt-1">
         <div className="grid grid-cols-1 sm:grid-cols-3 gap-3">
           {resourceTypes.map(({ type, key, unit }) => (
             <ResourceCardEnhanced
@@ -77,7 +70,7 @@ const ResourceSummary = ({
 
         {showBreakdown && (
           <div className="mt-4 pt-3 border-t border-gray-200 dark:border-gray-700">
-            <div className="grid grid-cols-3 gap-4 text-xs text-gray-600 dark:text-gray-400">
+            <div className="grid grid-cols-3 gap-4 text-sm text-gray-600 dark:text-gray-400">
               {resourceTypes.map(({ key, unit }) => {
                 const avgPerTicket =
                   ticketCount > 0

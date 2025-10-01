@@ -1,26 +1,19 @@
 "use client";
 import { Accordion, AccordionItem } from "@heroui/accordion";
-import { Divider } from "@heroui/divider";
 import {
   ConfirmationNumberOutlined,
   EditCalendarOutlined,
-  Assignment as TaskIcon,
 } from "@mui/icons-material";
+import { Chip } from "@heroui/chip";
 
 import StatusChip from "./status-chip";
+import StopButtonClient from "./stop-button-client";
 import ResourceSummary from "./resource-summary";
 import SubTicketEnhanced from "./sub-ticket-enhanced";
-import StopButtonClient from "./stop-button-client";
 
 import { Status } from "@/types/enum";
 import { formatDate, getStatusIndicator } from "@/utils/helper";
-
-type Ticket = {
-  id: string;
-  spec: {
-    resource: { name: string; quantity: string }[];
-  }[];
-};
+import { UserTicketResponse } from "@/types/ticket";
 
 type AccordionProps = {
   id?: string;
@@ -28,28 +21,28 @@ type AccordionProps = {
   description?: string;
   createdAt?: string;
   status?: Status;
-  tickets?: Ticket[];
+  tickets?: UserTicketResponse[];
 };
 
 const TaskAccordion = ({
   id,
   title,
   createdAt,
-  status = Status.active,
-  tickets = [],
+  status = Status.redeemed,
+  tickets,
 }: AccordionProps) => {
-  const ticketCount = tickets.length;
+  const ticketCount = tickets!.length;
   const statusIndicator = getStatusIndicator(status);
   const formattedDate = formatDate(createdAt!);
 
-  const totalResource = tickets.reduce(
+  const totalResource = tickets!.reduce(
     (acc, ticket) => {
-      ticket.spec.forEach((spec) => {
-        spec.resource.forEach((res) => {
-          const qty = Number(res.quantity);
-
-          acc[res.name] = (acc[res.name] || 0) + qty;
-        });
+      ticket.ticket.spec.resource.forEach((res) => {
+        if (acc[res.name]) {
+          acc[res.name] += res.quantity;
+        } else {
+          acc[res.name] = res.quantity;
+        }
       });
 
       return acc;
@@ -61,31 +54,6 @@ const TaskAccordion = ({
     <Accordion className="w-full" variant="splitted">
       <AccordionItem
         className="w-full bg-white dark:bg-gray-800 border border-gray-200 dark:border-gray-700 hover:shadow-lg transition-all duration-300 hover:border-gray-300 dark:hover:border-gray-600"
-        subtitle={
-          <div className="flex justify-between items-center mt-3 text-sm">
-            <div className="flex items-center gap-4">
-              <div className="flex items-center gap-1 text-gray-600 dark:text-gray-400">
-                <TaskIcon className="!w-4 !h-4" />
-                <span className="font-medium">ID:</span>
-                <span className="font-mono text-xs bg-gray-100 dark:bg-gray-700 px-2 py-1 rounded">
-                  {id}
-                </span>
-              </div>
-            </div>
-            <div className="flex items-center gap-4 text-gray-600 dark:text-gray-400">
-              <div className="flex items-center gap-1">
-                <EditCalendarOutlined className="!w-4 !h-4" />
-                <span className="text-xs">{formattedDate}</span>
-              </div>
-              <div className="flex items-center gap-1">
-                <ConfirmationNumberOutlined className="!w-4 !h-4" />
-                <span className="text-xs">
-                  {ticketCount} ticket{ticketCount !== 1 ? "s" : ""}
-                </span>
-              </div>
-            </div>
-          </div>
-        }
         textValue="Task Item"
         title={
           <div className="flex items-center justify-between py-1">
@@ -96,9 +64,21 @@ const TaskAccordion = ({
                 />
               </div>
               <div>
-                <h3 className="font-bold text-lg text-gray-900 dark:text-white">
-                  {title == "" ? "Default Title" : title}
+                <h3 className="font-medium text-md text-gray-900 dark:text-white">
+                  {title || "Default Title"}
                 </h3>
+                <div className="flex items-center gap-4 text-gray-600 dark:text-gray-400 mt-2">
+                  <div className="flex items-center gap-1">
+                    <EditCalendarOutlined className="!w-3 !h-3" />
+                    <span className="text-xs">{formattedDate}</span>
+                  </div>
+                  <div className="flex items-center gap-1">
+                    <ConfirmationNumberOutlined className="!w-3 !h-3" />
+                    <span className="text-xs">
+                      {ticketCount} ticket{ticketCount !== 1 ? "s" : ""}
+                    </span>
+                  </div>
+                </div>
               </div>
             </div>
             <StatusChip status={status} />
@@ -107,34 +87,28 @@ const TaskAccordion = ({
       >
         <div className="p-4 space-y-6 border-t border-gray-200 dark:border-gray-700 bg-gray-50/50 dark:bg-gray-800/50">
           {/* Resource Summary Section */}
-          <div className="space-y-3">
+          <div className="space-y-3 px-5">
             <ResourceSummary
               resourceLimits={{
-                cpu: 100, // You can make this dynamic based on your requirements
-                gpu: 10,
-                memory: 1000,
+                AMD: 100, // You can make this dynamic based on your requirements
+                A200: 10,
+                RAMMY: 1000,
               }}
               showBreakdown={false}
               ticketCount={ticketCount}
               totalResources={totalResource}
             />
           </div>
-
-          {/* Divider */}
-          <Divider className="my-4" />
-
           {/* Tickets Section */}
-          <div className="space-y-3">
-            <div className="flex items-center justify-between">
-              <h4 className="text-sm font-semibold text-gray-800 dark:text-gray-200 flex items-center gap-2">
+          <div className="space-y-3 px-5">
+            <div className="flex gap-3 items-center justify-start">
+              <h4 className="text-xs px-1 font-medium text-gray-800 dark:text-gray-200 flex items-center gap-2">
                 <ConfirmationNumberOutlined className="!w-4 !h-4" />
-                Tickets ({ticketCount})
+                Tickets
               </h4>
-              {ticketCount > 0 && (
-                <span className="text-xs text-gray-500 dark:text-gray-400">
-                  Showing all tickets
-                </span>
-              )}
+              <Chip color="primary" size="sm" variant="flat">
+                {ticketCount} tickets
+              </Chip>
             </div>
 
             {ticketCount === 0 ? (
@@ -147,17 +121,8 @@ const TaskAccordion = ({
                 {tickets?.map((ticket, index) => (
                   <SubTicketEnhanced
                     key={ticket.id || index}
-                    layout="horizontal"
-                    name={ticket.id}
-                    resources={ticket.spec[0]?.resource.reduce(
-                      (acc, res) => {
-                        acc[res.name] = Number(res.quantity);
-
-                        return acc;
-                      },
-                      {} as Record<string, number>,
-                    )}
-                    showProgress={false}
+                    name={ticket.name}
+                    resources={ticket.ticket.spec.resource}
                   />
                 ))}
               </div>
@@ -165,13 +130,9 @@ const TaskAccordion = ({
           </div>
 
           {/* Action Buttons */}
-          {status === Status.active && (
+          {status === Status.redeemed && (
             <>
-              <Divider className="my-4" />
-              <div className="flex justify-between items-center pt-2">
-                <div className="text-xs text-gray-500 dark:text-gray-400">
-                  Task is currently running
-                </div>
+              <div className="flex justify-end items-center pt-2 px-5">
                 <StopButtonClient taskId={id!} />
               </div>
             </>
