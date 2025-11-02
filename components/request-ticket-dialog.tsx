@@ -3,7 +3,7 @@
 import { Modal, ModalContent, ModalHeader, ModalBody } from "@heroui/modal";
 import useSWR from "swr";
 import { Divider } from "@heroui/divider";
-import { useParams } from "next/navigation";
+import { useParams, useSearchParams } from "next/navigation";
 
 import TicketForm from "./ticketForm";
 
@@ -21,8 +21,9 @@ type RequestDialogProps = {
 
 const RequestTicketDialog = ({ setOnClose }: RequestDialogProps) => {
   const params = useParams();
+  const searchParams = useSearchParams();
   const namespaceId = params.namespaceId as string;
-  const resourcePoolId = params.resourcePoolId as string;
+  const quotaId = searchParams.get("quota_id") as string;
   const {
     data: quotasData,
     error: quotasError,
@@ -40,8 +41,8 @@ const RequestTicketDialog = ({ setOnClose }: RequestDialogProps) => {
     error: quotaUsageError,
     isLoading: quotaUsageLoading,
   } = useSWR(
-    ["quota-usage", resourcePoolId, namespaceId],
-    () => getQuotaUsageByNamespaceIdFromCH(resourcePoolId, namespaceId),
+    ["quota-usage", quotaId, namespaceId],
+    () => getQuotaUsageByNamespaceIdFromCH(quotaId, namespaceId),
     {
       revalidateOnFocus: false,
       dedupingInterval: 5000,
@@ -51,7 +52,7 @@ const RequestTicketDialog = ({ setOnClose }: RequestDialogProps) => {
   if (quotasLoading || quotaUsageLoading) return <Loading />;
   if (quotasError || quotaUsageError) return <div>Error loading quotas</div>;
   const quotas: Quota[] = quotasData.quotas || [];
-  const quota = quotas.find((q) => q.id === resourcePoolId);
+  const quota = quotas.find((q) => q.id === quotaId);
 
   const usageQuota: ResourceUsage[] = quotaUsageData.quotaUsage.usage || [];
 
@@ -71,7 +72,7 @@ const RequestTicketDialog = ({ setOnClose }: RequestDialogProps) => {
             createTicketToCH={requestTicketToCH}
             namespace_id={namespaceId}
             quota={quota!}
-            quota_id={resourcePoolId}
+            quota_id={quotaId!}
             setOnClose={setOnClose}
             usageQuota={usageQuota}
           />

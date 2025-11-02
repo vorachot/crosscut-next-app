@@ -1,6 +1,7 @@
 import { Key } from "react";
 
 import { UserTicketResponse } from "./ticket";
+import { Status } from "./enum";
 
 export type RequestTaskPayload = {
   title: string;
@@ -12,4 +13,5 @@ export type Task = {
   title: string;
   tickets: UserTicketResponse[];
   created_at: string;
+  status: Status;
 };

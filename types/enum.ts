@@ -1,9 +1,10 @@
 export enum Status {
   ready = "AVAILABLE",
   cancelled = "CANCELLED",
+  pending = "PENDING",
   redeemed = "RUNNING",
   succeeded = "SUCCEEDED",
-  inactive = "STOPPED",
+  stopped = "STOPPED",
 }
 export enum ResourceType {
   cpu = "CPU",

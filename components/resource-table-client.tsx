@@ -25,7 +25,7 @@ const ResourceTableClient = ({
       case "project-to-namespace":
         return `/projects/${row.project_id}/${row.id}`;
       case "namespace-to-resourcepool":
-        return `/projects/${row.project_id}/${parentId}/${row.id}`;
+        return `/projects/${row.project_id}/${parentId}/${row.resource_pool_id}?quota_id=${row.id}`;
       default:
         return "/";
     }

@@ -12,6 +12,8 @@ export function getStatusLabel(status: string) {
 }
 export const getStatusColor = (status: Status) => {
   switch (status) {
+    case Status.pending:
+      return "warning";
     case Status.ready:
       return "success";
     case Status.redeemed:
@@ -19,7 +21,7 @@ export const getStatusColor = (status: Status) => {
     case Status.succeeded:
     case Status.cancelled:
       return "default";
-    case Status.inactive:
+    case Status.stopped:
       return "danger";
     default:
       return "default";
@@ -40,7 +42,7 @@ export const getStatusIndicator = (status: Status) => {
         color: "text-blue-500",
         bgColor: "bg-blue-50 dark:bg-blue-900/20",
       };
-    case Status.inactive:
+    case Status.stopped:
       return {
         icon: StoppedIcon,
         color: "text-gray-500",

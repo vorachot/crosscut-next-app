@@ -5,6 +5,7 @@ import { useEffect, useRef } from "react";
 import { useBreadcrumb } from "@/context/BreadCrumbContext";
 import { getProjectDetailFromCH } from "@/api/project";
 import { getNamespaceDetailFromCH } from "@/api/namespace";
+import { getResourcePoolDetailById } from "@/api/quota";
 
 interface UseBreadcrumbDataProps {
   projectId?: string;
@@ -57,6 +58,18 @@ export const useBreadcrumbData = ({
         //     updateBreadcrumbItem(resourcePoolId, resourcePool.name);
         //   }
         // }
+        if (
+          resourcePoolId &&
+          !breadcrumbData[resourcePoolId] &&
+          !fetchedIds.current.has(resourcePoolId)
+        ) {
+          fetchedIds.current.add(resourcePoolId);
+
+          const { resourcePool } =
+            await getResourcePoolDetailById(resourcePoolId);
+
+          updateBreadcrumbItem(resourcePoolId, resourcePool.name);
+        }
       } catch (error) {
         console.error("Failed to fetch breadcrumb data:", error);
         // Remove failed IDs from cache

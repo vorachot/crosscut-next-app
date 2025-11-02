@@ -1,6 +1,6 @@
 "use client";
 import AddIcon from "@mui/icons-material/Add";
-import { useParams } from "next/navigation";
+import { useParams, useSearchParams } from "next/navigation";
 import useSWR from "swr";
 import {
   Dropdown,
@@ -61,17 +61,19 @@ export const ChevronDownIcon = ({
 
 const ResourcePoolDetailPage = () => {
   const params = useParams();
+  const searchParams = useSearchParams();
   const projectId = params.projectId as string;
   const namespaceId = params.namespaceId as string;
   const resourcePoolId = params.resourcePoolId as string;
+  const quotaId = searchParams.get("quota_id") as string;
 
   useBreadcrumbData({ projectId, namespaceId, resourcePoolId });
 
   const { breadcrumbData } = useBreadcrumb();
 
   const { data, error, isLoading } = useSWR(
-    ["quota-usage", namespaceId, resourcePoolId],
-    () => getQuotaUsageByNamespaceIdFromCH(resourcePoolId, namespaceId),
+    ["quota-usage", namespaceId, quotaId],
+    () => getQuotaUsageByNamespaceIdFromCH(quotaId, namespaceId),
     {
       revalidateOnFocus: false,
       dedupingInterval: 5000,
@@ -86,20 +88,26 @@ const ResourcePoolDetailPage = () => {
     <NamespaceProvider
       glidelet_urn={undefined}
       namespace_id={namespaceId}
-      quota_id={resourcePoolId}
+      quota_id={quotaId}
     >
       <div className="flex flex-col gap-6">
         {/* Header Section */}
         <div className="flex flex-col gap-4">
           <div className="flex flex-col">
-            <h1 className="text-3xl font-bold text-gray-900 dark:text-white">
-              {resourcePoolId}
-            </h1>
-            <p className="text-lg text-gray-600 dark:text-gray-400">
-              Resource pool in namespace{" "}
+            <p className="text-3xl font-bold text-gray-900 dark:text-white flex flex-wrap items-center gap-2">
+              <span className="text-3xl font-bold text-gray-900 dark:text-white">
+                {getDisplayName(resourcePoolId!, breadcrumbData)}
+              </span>
+            </p>
+            <p className="text-lg text-gray-600 dark:text-gray-400 flex flex-wrap items-center gap-1">
+              in namespace{" "}
               <span className="font-medium text-blue-600 dark:text-blue-400">
                 {getDisplayName(namespaceId, breadcrumbData)}
-              </span>{" "}
+              </span>
+              , project{" "}
+              <span className="font-medium text-blue-600 dark:text-blue-400">
+                {getDisplayName(projectId, breadcrumbData)}
+              </span>
             </p>
           </div>
         </div>

@@ -12,7 +12,7 @@ import ResourceSummary from "./resource-summary";
 import SubTicketEnhanced from "./sub-ticket-enhanced";
 
 import { Status } from "@/types/enum";
-import { formatDate, getStatusIndicator } from "@/utils/helper";
+import { formatDate, getStatusIndicator, getStatusLabel } from "@/utils/helper";
 import { UserTicketResponse } from "@/types/ticket";
 
 type AccordionProps = {
@@ -81,7 +81,7 @@ const TaskAccordion = ({
                 </div>
               </div>
             </div>
-            <StatusChip status={status} />
+            <StatusChip status={getStatusLabel(status)} />
           </div>
         }
       >
@@ -130,7 +130,7 @@ const TaskAccordion = ({
           </div>
 
           {/* Action Buttons */}
-          {status === Status.redeemed && (
+          {getStatusLabel(status) === Status.redeemed && (
             <>
               <div className="flex justify-end items-center pt-2 px-5">
                 <StopButtonClient taskId={id!} />

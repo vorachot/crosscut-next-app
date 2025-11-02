@@ -27,9 +27,9 @@ type NamespaceUsageResponse = {
 
 const defaultColumns = [
   { name: "NAME", uid: "name", sortable: true },
-  { name: "DESCRIPTION", uid: "description", sortable: true },
+  // { name: "DESCRIPTION", uid: "description", sortable: true },
   { name: "CREDIT", uid: "credit", sortable: true },
-  { name: "CREATED", uid: "created", sortable: true },
+  // { name: "CREATED", uid: "created", sortable: true },
   { name: "RESOURCE USAGE", uid: "usage", sortable: true },
 ];
 
@@ -99,9 +99,8 @@ const NamespaceResourceTable = ({
               onClick={() => onRowClick?.(row)}
             >
               <TableCell>{row.name}</TableCell>
-              <TableCell>{row.description}</TableCell>
+              {/* <TableCell>{row.description}</TableCell> */}
               <TableCell>{row.credit}</TableCell>
-              <TableCell>13 Jan 2022</TableCell>
               <TableCell className="flex flex-row gap-4">
                 <UsageBar
                   label="CPU"

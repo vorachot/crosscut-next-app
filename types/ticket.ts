@@ -8,7 +8,12 @@ export type UserTicketResponse = {
 type GliderTicket = {
   id: string;
   namespace_urn: string;
+  namespace_name: string;
+  project_urn: string;
+  project_name: string;
   glidelet_urn: string;
+  glidelet_name: string;
+  organization_name: string;
   spec: GliderSpec;
   reference_ticket_id: string;
   redeem_timeout: number;

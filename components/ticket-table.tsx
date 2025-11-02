@@ -27,7 +27,7 @@ import CancelTicketDialog from "./cancel-ticket-dialog";
 import { ResourceType } from "@/types/enum";
 import Loading from "@/app/loading";
 import { getTicketByNamespaceId, getUserTickets } from "@/api/ticket";
-import { formatDate, getDisplayName, getStatusLabel } from "@/utils/helper";
+import { formatDate, getStatusLabel } from "@/utils/helper";
 import { UserTicketResponse } from "@/types/ticket";
 import { useBreadcrumb } from "@/context/BreadCrumbContext";
 import { getResourceDetailByResourceIdFromCH } from "@/api/resource";
@@ -35,6 +35,7 @@ import { ResourceDetail } from "@/types/resource";
 
 const defaultColumns = [
   { name: "TICKET", uid: "name", sortable: true },
+  { name: "PROJECT", uid: "project", sortable: true },
   { name: "NAMESPACE", uid: "namespace", sortable: true },
   { name: "STATUS", uid: "status", sortable: true },
   { name: "CREATED", uid: "created", sortable: true },
@@ -217,9 +218,8 @@ const TicketTable = ({
                 className="dark:border-b dark:border-gray-700 hover:bg-gray-100 dark:hover:bg-gray-800 shadow-sm transition-colors duration-200"
               >
                 <TableCell>{ticket.name}</TableCell>
-                <TableCell>
-                  {getDisplayName(ticket.ticket.namespace_urn, breadcrumbData)}
-                </TableCell>
+                <TableCell>{ticket.ticket.project_name}</TableCell>
+                <TableCell>{ticket.ticket.namespace_name}</TableCell>
                 <TableCell>
                   <StatusChip status={getStatusLabel(ticket.status)} />
                 </TableCell>

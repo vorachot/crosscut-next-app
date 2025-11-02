@@ -181,7 +181,7 @@ const TicketTableDrawer = ({
               resourceDetails: ResourceDetail[];
             },
           ) => (
-            <TableRow key={ticket.id} className="hover:cursor-pointer">
+            <TableRow key={ticket.ticket.id} className="hover:cursor-pointer">
               <TableCell className="text-xs">
                 {/* {ticket.id.slice(0, 7)}... */}
                 {ticket.name}

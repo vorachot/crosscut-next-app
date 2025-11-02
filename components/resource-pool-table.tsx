@@ -13,7 +13,7 @@ import { useParams } from "next/navigation";
 
 import UsageBar from "./usagebar";
 
-import { Namespace, Quota } from "@/types/resource";
+import { Quota } from "@/types/resource";
 import { getQuotaUsageByNamespaceIdFromCH } from "@/api/quota";
 import Loading from "@/app/loading";
 
@@ -30,13 +30,14 @@ type QuotaUsageResponse = {
 
 const defaultColumns = [
   { name: "NAME", uid: "name", sortable: true },
-  { name: "DESCRIPTION", uid: "description", sortable: true },
-  { name: "CREATED", uid: "created", sortable: true },
+  { name: "ORGANIZATION", uid: "organization", sortable: true },
+  // { name: "DESCRIPTION", uid: "description", sortable: true },
+  // { name: "CREATED", uid: "created", sortable: true },
   { name: "RESOURCE USAGE", uid: "usage", sortable: true },
 ];
 
 type ResourcePoolTableProps = {
-  rows?: (Namespace | Quota)[];
+  rows?: Quota[];
   onRowClick?: (row: any) => void;
 };
 
@@ -98,9 +99,8 @@ const ResourcePoolTable = ({
               style={{ cursor: "pointer" }}
               onClick={() => onRowClick?.(row)}
             >
-              <TableCell>{row.name}</TableCell>
-              <TableCell>{row.description}</TableCell>
-              <TableCell>13 Jan 2022</TableCell>
+              <TableCell>{row.resource_pool_name}</TableCell>
+              <TableCell>{row.organization_name}</TableCell>
               <TableCell className="flex flex-row gap-4">
                 <UsageBar
                   label="CPU"
