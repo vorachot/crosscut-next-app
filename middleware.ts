@@ -4,12 +4,14 @@ export function middleware(request: NextRequest) {
   const token = request.cookies.get("NSmanagerSession")?.value;
 
   const isLoginPage = request.nextUrl.pathname === "/login";
+  const isCallbackPath = request.nextUrl.pathname.startsWith("/callback");
   const isPublicPath =
     request.nextUrl.pathname.startsWith("/_next") ||
     request.nextUrl.pathname.startsWith("/api/public");
 
   // ถ้า path ที่ไม่ต้องป้องกัน ก็ให้ผ่านไปเลย
   if (isPublicPath) return NextResponse.next();
+  if (isCallbackPath) return NextResponse.next();
 
   if (!token && !isLoginPage) {
     // If no token and trying to access protected route -> redirect to /login
