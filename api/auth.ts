@@ -45,7 +45,7 @@ export async function me(): Promise<Response> {
 
 export async function googleAuthWithCH(code: string): Promise<Response> {
   const response = await fetch(
-    `${process.env.NEXT_PUBLIC_NAMESPACE_MANAGER_URL}/users/accessTokens?${code}`,
+    `${process.env.NEXT_PUBLIC_NAMESPACE_MANAGER_URL}/users/access-token?${code}`,
     {
       method: "GET",
       credentials: "include",
