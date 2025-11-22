@@ -6,15 +6,16 @@ import { googleAuthWithCH } from "@/api/auth";
 
 const CallbackPage = () => {
   const searchParams = useSearchParams();
-  const code = searchParams.get("code");
+  const queryString = searchParams.toString();
+  // const code = searchParams.get("code");
 
   useEffect(() => {
-    if (code) {
-      googleAuthWithCH(code);
+    if (queryString) {
+      googleAuthWithCH(queryString);
     }
-  }, [code]);
+  }, [queryString]);
 
-  console.log("Callback page code:", code);
+  console.log("Callback page code:", queryString);
 
   return <div>Callback Page</div>;
 };
