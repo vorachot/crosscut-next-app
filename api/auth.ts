@@ -33,3 +33,15 @@ export async function me(): Promise<Response> {
 
   return response;
 }
+
+export async function googleAuthWithCH(code: string): Promise<Response> {
+  const response = await fetch(
+    `http://localhost:8080/users/accessTokens/${code}`,
+    {
+      method: "GET",
+      credentials: "include",
+    },
+  );
+
+  return response;
+}
