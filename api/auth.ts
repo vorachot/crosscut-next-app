@@ -1,3 +1,5 @@
+import apiClient from "@/utils/apiClient";
+
 export async function loginUser(
   username: string,
   password: string,
@@ -19,33 +21,26 @@ export async function loginUser(
 
   return response;
 }
-export async function logoutUser(): Promise<Response> {
-  const response = await fetch(
-    `${process.env.NEXT_PUBLIC_NAMESPACE_MANAGER_URL}/users/logout`,
-    {
-      method: "GET",
-      credentials: "include",
-    },
-  );
+export async function logoutUser() {
+  const response = await apiClient.get("/users/logout");
+
+  // Optionally redirect to login page after successful logout
+  if (response.status === 200) {
+    window.location.href = "/login";
+  }
 
   return response;
 }
 
-export async function me(): Promise<Response> {
-  const response = await fetch(
-    `${process.env.NEXT_PUBLIC_NAMESPACE_MANAGER_URL}/users/me`,
-    {
-      method: "GET",
-      credentials: "include",
-    },
-  );
+export async function me() {
+  const response = await apiClient.get("/users/me");
 
   return response;
 }
 
-export async function googleAuthWithCH(code: string): Promise<Response> {
+export async function googleAuthWithCH(queryString: string): Promise<Response> {
   const response = await fetch(
-    `${process.env.NEXT_PUBLIC_NAMESPACE_MANAGER_URL}/users/access-token?${code}`,
+    `${process.env.NEXT_PUBLIC_NAMESPACE_MANAGER_URL}/users/access-token?${queryString}`,
     {
       method: "GET",
       credentials: "include",

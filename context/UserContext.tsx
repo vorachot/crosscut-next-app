@@ -1,6 +1,7 @@
 "use client";
 
 import React, { createContext, useContext, useState, useEffect } from "react";
+import { usePathname } from "next/navigation";
 
 import { me } from "@/api/auth";
 
@@ -38,6 +39,7 @@ interface UserProviderProps {
 }
 
 export function UserProvider({ children }: UserProviderProps) {
+  const pathname = usePathname();
   const [user, setUser] = useState<User | null>(null);
   const [isLoading, setIsLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
@@ -49,8 +51,8 @@ export function UserProvider({ children }: UserProviderProps) {
     try {
       const response = await me();
 
-      if (response.ok) {
-        const userData = await response.json();
+      if (response.status === 200) {
+        const userData = response.data as User;
 
         setUser(userData);
       } else {
@@ -77,7 +79,9 @@ export function UserProvider({ children }: UserProviderProps) {
 
   // Check for existing session on mount
   useEffect(() => {
-    fetchUser();
+    if (pathname !== "/login" && pathname !== "/callback") {
+      fetchUser();
+    }
   }, []);
 
   const value = {

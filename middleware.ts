@@ -1,7 +1,8 @@
 import { NextRequest, NextResponse } from "next/server";
 
 export function middleware(request: NextRequest) {
-  const token = request.cookies.get("NSmanagerSession")?.value;
+  // const token = request.cookies.get("NSmanagerSession")?.value;
+  const accessToken = request.cookies.get("access_token")?.value;
 
   const isLoginPage = request.nextUrl.pathname === "/login";
   const isCallbackPath = request.nextUrl.pathname.startsWith("/callback");
@@ -13,12 +14,12 @@ export function middleware(request: NextRequest) {
   if (isPublicPath) return NextResponse.next();
   if (isCallbackPath) return NextResponse.next();
 
-  if (!token && !isLoginPage) {
+  if (!accessToken && !isLoginPage) {
     // If no token and trying to access protected route -> redirect to /login
     return NextResponse.redirect(new URL("/login", request.url));
   }
 
-  if (token && isLoginPage) {
+  if (accessToken && isLoginPage) {
     // If already logged in, redirect away from login page
     return NextResponse.redirect(new URL("/projects", request.url));
   }
