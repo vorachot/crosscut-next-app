@@ -23,25 +23,16 @@ export async function middleware(request: NextRequest) {
     // Try to authenticate with access token
     const response = await axios.get(
       `${process.env.NEXT_PUBLIC_NAMESPACE_MANAGER_URL}/users/me`,
-      {
-        headers: {
-          Authorization: `Bearer ${accessToken}`,
-        },
-      }
+      { withCredentials: true }
     );
     isAuthenticated = response.status === 200;
   } catch (error: any) {
     // If 401, try to refresh the token
     if (error.response?.status === 401 && refreshToken) {
       try {
-        const refreshResponse = await axios.post(
+        const refreshResponse = await axios.get(
           `${process.env.NEXT_PUBLIC_NAMESPACE_MANAGER_URL}/users/auth/refresh-token`,
-          {},
-          {
-            headers: {
-              Authorization: `Bearer ${refreshToken}`,
-            },
-          }
+          { withCredentials: true }
         );
 
         newAccessToken = refreshResponse.data.access_token;
@@ -50,11 +41,7 @@ export async function middleware(request: NextRequest) {
         // Verify the new access token works
         const verifyResponse = await axios.get(
           `${process.env.NEXT_PUBLIC_NAMESPACE_MANAGER_URL}/users/me`,
-          {
-            headers: {
-              Authorization: `Bearer ${newAccessToken}`,
-            },
-          }
+          { withCredentials: true }
         );
         isAuthenticated = verifyResponse.status === 200;
       } catch (refreshError) {
