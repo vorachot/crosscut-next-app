@@ -1,10 +1,9 @@
 import axios from "axios";
 import { NextRequest, NextResponse } from "next/server";
-import apiClient from "./utils/apiClient";
 
 export async function middleware(request: NextRequest) {
-  // const token = request.cookies.get("NSmanagerSession")?.value;
   const accessToken = request.cookies.get("access_token")?.value;
+  const refreshToken = request.cookies.get("refresh_token")?.value;
 
   const isLoginPage = request.nextUrl.pathname === "/login";
   const isCallbackPath = request.nextUrl.pathname.startsWith("/callback");
@@ -17,12 +16,56 @@ export async function middleware(request: NextRequest) {
   if (isCallbackPath) return NextResponse.next();
 
   let isAuthenticated = false;
+  let newAccessToken = accessToken;
+  let newRefreshToken = refreshToken;
+
   try {
-    const response = await apiClient.get("/users/me");
+    // Try to authenticate with access token
+    const response = await axios.get(
+      `${process.env.NEXT_PUBLIC_NAMESPACE_MANAGER_URL}/users/me`,
+      {
+        headers: {
+          Authorization: `Bearer ${accessToken}`,
+        },
+      }
+    );
     isAuthenticated = response.status === 200;
-  } catch (error) {
-    console.error("Error checking authentication:", error);
+  } catch (error: any) {
+    // If 401, try to refresh the token
+    if (error.response?.status === 401 && refreshToken) {
+      try {
+        const refreshResponse = await axios.post(
+          `${process.env.NEXT_PUBLIC_NAMESPACE_MANAGER_URL}/users/auth/refresh-token`,
+          {},
+          {
+            headers: {
+              Authorization: `Bearer ${refreshToken}`,
+            },
+          }
+        );
+
+        newAccessToken = refreshResponse.data.access_token;
+        newRefreshToken = refreshResponse.data.refresh_token;
+
+        // Verify the new access token works
+        const verifyResponse = await axios.get(
+          `${process.env.NEXT_PUBLIC_NAMESPACE_MANAGER_URL}/users/me`,
+          {
+            headers: {
+              Authorization: `Bearer ${newAccessToken}`,
+            },
+          }
+        );
+        isAuthenticated = verifyResponse.status === 200;
+      } catch (refreshError) {
+        console.error("Error refreshing token:", refreshError);
+        isAuthenticated = false;
+      }
+    } else {
+      console.error("Error checking authentication:", error);
+    }
   }
+
   if (!isAuthenticated && !isLoginPage) {
     // If no token and trying to access protected route -> redirect to /login
     return NextResponse.redirect(new URL("/login", request.url));
@@ -37,8 +80,26 @@ export async function middleware(request: NextRequest) {
     return NextResponse.redirect(new URL("/projects", request.url));
   }
 
-  // Allow the request to continue
-  return NextResponse.next();
+  // If tokens were refreshed, set new cookies in the response
+  const response = NextResponse.next();
+  if (newAccessToken !== accessToken && newAccessToken) {
+    response.cookies.set("access_token", newAccessToken, {
+      httpOnly: true,
+      secure: process.env.NODE_ENV === "production",
+      sameSite: "lax",
+      path: "/",
+    });
+  }
+  if (newRefreshToken !== refreshToken && newRefreshToken) {
+    response.cookies.set("refresh_token", newRefreshToken, {
+      httpOnly: true,
+      secure: process.env.NODE_ENV === "production",
+      sameSite: "lax",
+      path: "/",
+    });
+  }
+
+  return response;
 }
 export const config = {
   matcher: [
