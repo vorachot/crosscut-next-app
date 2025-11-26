@@ -11,48 +11,39 @@ export async function middleware(request: NextRequest) {
     request.nextUrl.pathname.startsWith("/_next") ||
     request.nextUrl.pathname.startsWith("/api/public");
 
-  // ถ้า path ที่ไม่ต้องป้องกัน ก็ให้ผ่านไปเลย
-  if (isPublicPath) return NextResponse.next();
-  if (isCallbackPath) return NextResponse.next();
+  if (isPublicPath || isCallbackPath) return NextResponse.next();
 
   let isAuthenticated = false;
   let newAccessToken = accessToken;
   let newRefreshToken = refreshToken;
 
   try {
-    // Try to authenticate with access token
+    // Try to authenticate using backend endpoint with cookies
     const response = await axios.get(
       `${process.env.NEXT_PUBLIC_NAMESPACE_MANAGER_URL}/users/me`,
       {
-        headers: {
-          Authorization: `Bearer ${accessToken}`,
-        },
+        withCredentials: true, // <-- include httpOnly cookies
       }
     );
     isAuthenticated = response.status === 200;
   } catch (error: any) {
-    // If 401, try to refresh the token
     if (error.response?.status === 401 && refreshToken) {
       try {
-        const refreshResponse = await axios.get(
+        // Use refresh token automatically from cookie
+        const refreshResponse = await axios.post(
           `${process.env.NEXT_PUBLIC_NAMESPACE_MANAGER_URL}/users/auth/refresh-token`,
-          {
-            headers: {
-              Authorization: `Bearer ${refreshToken}`,
-            },
-          }
+          {}, // empty body
+          { withCredentials: true } // cookies sent automatically
         );
 
         newAccessToken = refreshResponse.data.access_token;
         newRefreshToken = refreshResponse.data.refresh_token;
 
-        // Verify the new access token works
+        // Verify new access token works
         const verifyResponse = await axios.get(
           `${process.env.NEXT_PUBLIC_NAMESPACE_MANAGER_URL}/users/me`,
           {
-            headers: {
-              Authorization: `Bearer ${newAccessToken}`,
-            },
+            withCredentials: true, // cookies included
           }
         );
         isAuthenticated = verifyResponse.status === 200;
@@ -65,13 +56,12 @@ export async function middleware(request: NextRequest) {
     }
   }
 
+  // Redirect logic
   if (!isAuthenticated && !isLoginPage) {
-    // If no token and trying to access protected route -> redirect to /login
     return NextResponse.redirect(new URL("/login", request.url));
   }
 
   if (isAuthenticated && isLoginPage) {
-    // If already logged in, redirect away from login page
     return NextResponse.redirect(new URL("/projects", request.url));
   }
 
@@ -79,7 +69,7 @@ export async function middleware(request: NextRequest) {
     return NextResponse.redirect(new URL("/projects", request.url));
   }
 
-  // If tokens were refreshed, set new cookies in the response
+  // Set refreshed cookies if any
   const response = NextResponse.next();
   if (newAccessToken !== accessToken && newAccessToken) {
     response.cookies.set("access_token", newAccessToken, {
@@ -100,14 +90,9 @@ export async function middleware(request: NextRequest) {
 
   return response;
 }
+
 export const config = {
   matcher: [
-    /*
-     * Match all routes except:
-     * - static files (_next/static)
-     * - public API
-     * - favicon
-     */
     "/((?!_next/static|_next/image|favicon.ico|api/public).*)",
   ],
 };
