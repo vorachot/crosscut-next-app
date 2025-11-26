@@ -14,7 +14,7 @@ export async function getNamespacesByProjectIdFromCH(
 export async function getNamespaceDetailFromCH(
   namespaceId: string,
 ): Promise<any> {
-  const response = await apiClient.get(`/ns/namespace/${namespaceId}`);
+  const response = await apiClient.get(`/ns/namespaces/${namespaceId}`);
 
   if (response.status !== 200) {
     throw new Error("Failed to fetch namespace details");

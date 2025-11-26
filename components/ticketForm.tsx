@@ -62,7 +62,7 @@ const TicketForm = ({
           quantity,
         }),
       ),
-      duration: 2,
+      duration: 3600,
     };
 
     try {
