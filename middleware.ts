@@ -1,5 +1,6 @@
 import axios from "axios";
 import { NextRequest, NextResponse } from "next/server";
+import apiClient from "./utils/apiClient";
 
 export async function middleware(request: NextRequest) {
   // const token = request.cookies.get("NSmanagerSession")?.value;
@@ -17,19 +18,17 @@ export async function middleware(request: NextRequest) {
 
   let isAuthenticated = false;
   try {
-    await axios.get(
-      `${process.env.NEXT_PUBLIC_NAMESPACE_MANAGER_URL}/users/me`, // Empty body since refresh token is in httpOnly cookie
-    );
-    isAuthenticated = true;
+    const response = await apiClient.get("/users/me");
+    isAuthenticated = response.status === 200;
   } catch (error) {
-    console.error("Error refreshing token:", error);
+    console.error("Error checking authentication:", error);
   }
-  if (!accessToken && !isLoginPage) {
+  if (!isAuthenticated && !isLoginPage) {
     // If no token and trying to access protected route -> redirect to /login
     return NextResponse.redirect(new URL("/login", request.url));
   }
 
-  if (accessToken && isLoginPage) {
+  if (isAuthenticated && isLoginPage) {
     // If already logged in, redirect away from login page
     return NextResponse.redirect(new URL("/projects", request.url));
   }
