@@ -1,4 +1,5 @@
 import axios, { AxiosResponse } from "axios";
+import { useRouter } from "next/navigation";
 
 const apiClient = axios.create({
   baseURL: process.env.NEXT_PUBLIC_NAMESPACE_MANAGER_URL,
@@ -27,7 +28,8 @@ apiClient.interceptors.response.use(
         return apiClient(originalRequest);
       } catch (refreshError) {
         // Redirect to login on refresh failure
-        window.location.href = "/login";
+        const router = useRouter();
+        router.push("/login");
 
         return Promise.reject(refreshError);
       }
