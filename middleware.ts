@@ -30,9 +30,8 @@ export async function middleware(request: NextRequest) {
     if (error.response?.status === 401 && refreshToken) {
       try {
         // Use refresh token automatically from cookie
-        const refreshResponse = await axios.post(
+        const refreshResponse = await axios.get(
           `${process.env.NEXT_PUBLIC_NAMESPACE_MANAGER_URL}/users/auth/refresh-token`,
-          {}, // empty body
           { withCredentials: true } // cookies sent automatically
         );
 
