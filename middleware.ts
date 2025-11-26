@@ -23,7 +23,11 @@ export async function middleware(request: NextRequest) {
     // Try to authenticate with access token
     const response = await axios.get(
       `${process.env.NEXT_PUBLIC_NAMESPACE_MANAGER_URL}/users/me`,
-      { withCredentials: true }
+      {
+        headers: {
+          Authorization: `Bearer ${accessToken}`,
+        },
+      }
     );
     isAuthenticated = response.status === 200;
   } catch (error: any) {
@@ -32,7 +36,11 @@ export async function middleware(request: NextRequest) {
       try {
         const refreshResponse = await axios.get(
           `${process.env.NEXT_PUBLIC_NAMESPACE_MANAGER_URL}/users/auth/refresh-token`,
-          { withCredentials: true }
+          {
+            headers: {
+              Authorization: `Bearer ${refreshToken}`,
+            },
+          }
         );
 
         newAccessToken = refreshResponse.data.access_token;
@@ -41,7 +49,11 @@ export async function middleware(request: NextRequest) {
         // Verify the new access token works
         const verifyResponse = await axios.get(
           `${process.env.NEXT_PUBLIC_NAMESPACE_MANAGER_URL}/users/me`,
-          { withCredentials: true }
+          {
+            headers: {
+              Authorization: `Bearer ${newAccessToken}`,
+            },
+          }
         );
         isAuthenticated = verifyResponse.status === 200;
       } catch (refreshError) {
