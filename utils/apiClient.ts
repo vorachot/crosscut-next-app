@@ -1,40 +1,48 @@
-import axios, { AxiosResponse } from "axios";
+import axios, { AxiosRequestConfig, AxiosResponse } from "axios";
+import { cookies } from "next/headers";
 
-const apiClient = axios.create({
-  baseURL: process.env.NEXT_PUBLIC_NAMESPACE_MANAGER_URL,
-  withCredentials: true,
-});
+interface AxiosRequestConfigWithRetry extends AxiosRequestConfig {
+  _retry?: boolean;
+}
 
-// Response interceptor to handle token refresh
-apiClient.interceptors.response.use(
-  (response: AxiosResponse) => {
-    return response;
-  },
-  async (error) => {
-    const originalRequest = error.config;
+export async function apiClientServer(originalRequest?: AxiosRequestConfigWithRetry) {
+  const cookieStore = await cookies();
+  const accessToken = cookieStore.get("access_token")?.value;
 
-    if (error.response?.status === 401 && !originalRequest._retry) {
-      originalRequest._retry = true;
+  const client = axios.create({
+    baseURL: process.env.NEXT_PUBLIC_NAMESPACE_MANAGER_URL,
+    headers: accessToken
+      ? {
+        Authorization: `Bearer ${accessToken}`,
+      }
+      : undefined,
+  });
 
-      try {
-        // Call refresh endpoint - cookies will be automatically included
-        await axios.get(
-          `${process.env.NEXT_PUBLIC_NAMESPACE_MANAGER_URL}/users/auth/refresh-token`, // Empty body since refresh token is in httpOnly cookie
-          { withCredentials: true },
+  // Response interceptor to handle refresh
+  client.interceptors.response.use(
+    (response: AxiosResponse) => response,
+    async (error) => {
+      if (error.response?.status === 401 && !originalRequest?._retry) {
+        const refreshResponse = await axios.get(
+          `${process.env.NEXT_PUBLIC_NAMESPACE_MANAGER_URL}/users/auth/refresh-token`,
+          { withCredentials: true } // refresh token cookie is httpOnly
         );
 
-        // Retry the original request - new access token cookie will be automatically included
-        return apiClient(originalRequest);
-      } catch (refreshError) {
-        // Redirect to login on refresh failure
-        window.location.href = "/login";
+        const newAccessToken = refreshResponse.data.access_token;
 
-        return Promise.reject(refreshError);
+        if (newAccessToken && originalRequest) {
+          originalRequest._retry = true;
+          originalRequest.headers = {
+            ...originalRequest.headers,
+            Authorization: `Bearer ${newAccessToken}`,
+          };
+          return client(originalRequest);
+        }
       }
+
+      return Promise.reject(error);
     }
+  );
 
-    return Promise.reject(error);
-  },
-);
-
-export default apiClient;
+  return client;
+}
