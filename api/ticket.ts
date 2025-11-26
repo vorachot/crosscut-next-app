@@ -1,76 +1,44 @@
 import { RequestTicketPayload } from "@/types/payload";
+import apiClient from "@/utils/apiClient";
 
 export async function getTicketByNamespaceId(nsId: string): Promise<any> {
-  const response = await fetch(
-    `${process.env.NEXT_PUBLIC_NAMESPACE_MANAGER_URL}/ticket/getTickets/${nsId}`,
-    {
-      method: "GET",
-      credentials: "include",
-    },
-  );
+  const response = await apiClient.get(`/ticket/getTickets/${nsId}`);
 
-  if (!response.ok) {
-    const errorText = await response.text();
-
-    throw new Error(errorText || "Failed to fetch ticket");
+  if (response.status !== 200) {
+    throw new Error("Failed to fetch ticket by namespace ID");
   }
 
-  return response.json();
+  return response.data;
 }
 export async function getUserTickets(): Promise<any> {
-  const response = await fetch(
-    `${process.env.NEXT_PUBLIC_NAMESPACE_MANAGER_URL}/ticket/getUserTickets`,
-    {
-      method: "GET",
-      credentials: "include",
-    },
-  );
+  const response = await apiClient.get(`/ticket/getUserTickets`);
 
-  if (!response.ok) {
-    const errorText = await response.text();
-
-    throw new Error(errorText || "Failed to fetch user tickets");
+  if (response.status !== 200) {
+    throw new Error("Failed to fetch user tickets");
   }
 
-  return response.json();
+  return response.data;
 }
 export async function requestTicketToCH(
   ticketPayload: RequestTicketPayload,
 ): Promise<any> {
-  const response = await fetch(
-    `${process.env.NEXT_PUBLIC_NAMESPACE_MANAGER_URL}/ticket/requestTicketToCH`,
-    {
-      method: "POST",
-      headers: {
-        "Content-Type": "application/json",
-      },
-      credentials: "include",
-      body: JSON.stringify(ticketPayload),
-    },
+  const response = await apiClient.post(
+    `/ticket/requestTicketToCH`,
+    ticketPayload,
   );
 
-  if (!response.ok) {
-    const errorText = await response.text();
-
-    throw new Error(errorText || "Failed to create ticket");
+  if (response.status !== 200) {
+    throw new Error("Failed to request ticket");
   }
 
-  return response.json();
+  return response.data;
 }
 export async function cancelTicket(ticketId: string): Promise<any> {
-  const response = await fetch(
-    `${process.env.NEXT_PUBLIC_NAMESPACE_MANAGER_URL}/ticket/cancelTicket/${ticketId}`,
-    {
-      method: "GET",
-      credentials: "include",
-    },
-  );
+  const response = await apiClient.get(`/ticket/cancelTicket/${ticketId}`);
 
-  if (!response.ok) {
-    const errorText = await response.text();
-
-    throw new Error(errorText || "Failed to cancel ticket");
+  if (response.status !== 200) {
+    throw new Error("Failed to cancel ticket");
   }
 
-  return response.json();
+  return response.data;
 }

@@ -1,57 +1,35 @@
+import apiClient from "@/utils/apiClient";
+
 export async function getNamespacesByProjectIdFromCH(
   projectId: string,
 ): Promise<any> {
-  const response = await fetch(
-    `${process.env.NEXT_PUBLIC_NAMESPACE_MANAGER_URL}/ns/namespaces/all/${projectId}`,
-    {
-      method: "GET",
-      credentials: "include",
-    },
-  );
+  const response = await apiClient.get(`/ns/namespaces/all/${projectId}`);
 
-  if (!response.ok) {
-    const errorText = await response.text();
-
-    throw new Error(errorText || "Failed to fetch namespaces");
+  if (response.status !== 200) {
+    throw new Error("Failed to fetch namespaces");
   }
 
-  return response.json();
+  return response.data;
 }
 export async function getNamespaceDetailFromCH(
   namespaceId: string,
 ): Promise<any> {
-  const response = await fetch(
-    `${process.env.NEXT_PUBLIC_NAMESPACE_MANAGER_URL}/ns/namespaces/${namespaceId}`,
-    {
-      method: "GET",
-      credentials: "include",
-    },
-  );
+  const response = await apiClient.get(`/ns/namespace/${namespaceId}`);
 
-  if (!response.ok) {
-    const errorText = await response.text();
-
-    throw new Error(errorText || "Failed to fetch namespace details");
+  if (response.status !== 200) {
+    throw new Error("Failed to fetch namespace details");
   }
 
-  return response.json();
+  return response.data;
 }
 export async function getNamespaceUsageByNamespaceIdFromCH(
   namespaceId: string,
 ): Promise<any> {
-  const response = await fetch(
-    `${process.env.NEXT_PUBLIC_NAMESPACE_MANAGER_URL}/ns/namespaceUsage/${namespaceId}`,
-    {
-      method: "GET",
-      credentials: "include",
-    },
-  );
+  const response = await apiClient.get(`/ns/namespaceUsage/${namespaceId}`);
 
-  if (!response.ok) {
-    const errorText = await response.text();
-
-    throw new Error(errorText || "Failed to fetch project usage");
+  if (response.status !== 200) {
+    throw new Error("Failed to fetch namespace usage");
   }
 
-  return response.json();
+  return response.data;
 }

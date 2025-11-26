@@ -1,63 +1,34 @@
 import { RequestTaskPayload } from "@/types/task";
+import apiClient from "@/utils/apiClient";
 
 export async function createTask(taskReq: RequestTaskPayload): Promise<any> {
-  const response = await fetch(
-    `${process.env.NEXT_PUBLIC_NAMESPACE_MANAGER_URL}/ticket/useTickets`,
-    {
-      method: "POST",
-      headers: {
-        "Content-Type": "application/json",
-      },
-      credentials: "include",
-      body: JSON.stringify(taskReq),
-    },
-  );
+  const response = await apiClient.post(`/ticket/useTickets`, taskReq);
 
-  if (!response.ok) {
-    const errorText = await response.text();
-
-    throw new Error(errorText || "Failed to create task");
+  if (response.status !== 200) {
+    throw new Error("Failed to create task");
   }
 
-  return response.json();
+  return response.data;
 }
 
 export async function getTasks(): Promise<any> {
-  const response = await fetch(
-    `${process.env.NEXT_PUBLIC_NAMESPACE_MANAGER_URL}/ticket/tasks`,
-    {
-      method: "GET",
-      credentials: "include",
-    },
-  );
+  const response = await apiClient.get(`/ticket/tasks`);
 
-  if (!response.ok) {
-    const errorText = await response.text();
-
-    throw new Error(errorText || "Failed to fetch tasks");
+  if (response.status !== 200) {
+    throw new Error("Failed to fetch tasks");
   }
 
-  return response.json();
+  return response.data;
 }
 
 export async function stopTask(taskId: string): Promise<any> {
-  const response = await fetch(
-    `${process.env.NEXT_PUBLIC_NAMESPACE_MANAGER_URL}/ticket/stopTask`,
-    {
-      method: "DELETE",
-      headers: {
-        "Content-Type": "application/json",
-      },
-      credentials: "include",
-      body: JSON.stringify({ task_id: taskId }),
-    },
-  );
+  const response = await apiClient.delete(`/ticket/stopTask/`, {
+    data: { task_id: taskId },
+  });
 
-  if (!response.ok) {
-    const errorText = await response.text();
-
-    throw new Error(errorText || "Failed to stop task");
+  if (response.status !== 200) {
+    throw new Error("Failed to stop task");
   }
 
-  return response.json();
+  return response.data;
 }
