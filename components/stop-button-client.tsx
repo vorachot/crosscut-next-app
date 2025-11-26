@@ -5,9 +5,9 @@ import { Stop } from "@mui/icons-material";
 import StopTaskDialog from "./stop-task-dialog";
 
 const StopButtonClient = ({ taskId }: { taskId: string }) => {
-  const { isOpen, onOpen, onClose } = useDisclosure();
+  const { open, onOpen, onClose } = useDisclosure();
   const handleClick = () => {
-    if (isOpen) {
+    if (open) {
       onClose();
     } else {
       onOpen();
@@ -16,7 +16,7 @@ const StopButtonClient = ({ taskId }: { taskId: string }) => {
 
   return (
     <>
-      {isOpen && (
+      {open && (
         <div className="fixed inset-0 flex items-center justify-center z-50 bg-gray-800 bg-opacity-50">
           <StopTaskDialog setOnClose={onClose} taskId={taskId} />
         </div>
