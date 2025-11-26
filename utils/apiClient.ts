@@ -1,8 +1,9 @@
+'use client';
 // utils/apiClient.ts
 import axios, { InternalAxiosRequestConfig, AxiosResponse } from "axios";
-import { getCookie, setCookie, deleteCookie } from 'cookies-next';
-import { get } from "http";
-import router from "next/router";
+import { getCookie, setCookie } from 'cookies-next';
+import { useRouter } from "next/navigation";
+
 
 interface AxiosRequestConfigWithRetry extends InternalAxiosRequestConfig {
   _retry?: boolean;
@@ -57,6 +58,7 @@ apiClient.interceptors.response.use(
         return apiClient(originalRequest);
       } catch (refreshError) {
         // Redirect to login if refresh fails
+        const router = useRouter();
         router.push("/login");
         return Promise.reject(refreshError);
       }
