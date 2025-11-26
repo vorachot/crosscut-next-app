@@ -1,71 +1,42 @@
-'use client';
-// utils/apiClient.ts
-import axios, { InternalAxiosRequestConfig, AxiosResponse } from "axios";
-import { getCookie, setCookie } from 'cookies-next';
+import axios, { AxiosResponse } from "axios";
 import { useRouter } from "next/navigation";
-
-
-interface AxiosRequestConfigWithRetry extends InternalAxiosRequestConfig {
-  _retry?: boolean;
-}
 
 const apiClient = axios.create({
   baseURL: process.env.NEXT_PUBLIC_NAMESPACE_MANAGER_URL,
+  withCredentials: true,
 });
 
-// Attach access token automatically
-apiClient.interceptors.request.use((config: InternalAxiosRequestConfig) => {
-  const accessToken = getCookie("access_token");
-  if (accessToken) {
-    config.headers["Authorization"] = `Bearer ${accessToken}`;
-  }
-  return config;
-});
-
-// Response interceptor: retry on 401 using refresh token
+// Response interceptor to handle token refresh
 apiClient.interceptors.response.use(
-  (response: AxiosResponse) => response,
+  (response: AxiosResponse) => {
+    return response;
+  },
   async (error) => {
-    const originalRequest = error.config as AxiosRequestConfigWithRetry;
+    const originalRequest = error.config;
 
     if (error.response?.status === 401 && !originalRequest._retry) {
       originalRequest._retry = true;
 
       try {
-        const refreshToken = getCookie("refresh_token");
-        if (!refreshToken) throw new Error("No refresh token available");
-
-        // Call refresh endpoint using refresh token in Authorization header
-        const refreshResponse = await axios.post(
-          `${process.env.NEXT_PUBLIC_NAMESPACE_MANAGER_URL}/users/auth/refresh-token`,
-          {}, // empty body
-          {
-            headers: {
-              Authorization: `Bearer ${refreshToken}`,
-            },
-          }
+        // Call refresh endpoint - cookies will be automatically included
+        await axios.get(
+          `${process.env.NEXT_PUBLIC_NAMESPACE_MANAGER_URL}/users/auth/refresh-token`, // Empty body since refresh token is in httpOnly cookie
+          { withCredentials: true },
         );
 
-        const newAccessToken = refreshResponse.data.access_token;
-        const newRefreshToken = refreshResponse.data.refresh_token;
-
-        if (newAccessToken) setCookie("access_token", newAccessToken, { httpOnly: true });
-        if (newRefreshToken) setCookie("refresh_token", newRefreshToken, { httpOnly: true });
-
-        // Retry original request with new access token
-        originalRequest.headers["Authorization"] = `Bearer ${newAccessToken}`;
-
+        // Retry the original request - new access token cookie will be automatically included
         return apiClient(originalRequest);
       } catch (refreshError) {
-        // Redirect to login if refresh fails
+        // Redirect to login on refresh failure
         const router = useRouter();
         router.push("/login");
+
         return Promise.reject(refreshError);
       }
     }
 
     return Promise.reject(error);
-  }
+  },
 );
 
 export default apiClient;
