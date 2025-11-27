@@ -9,8 +9,6 @@
     "lint": "eslint --fix"
   },
   "dependencies": {
-    "@chakra-ui/hooks": "^2.4.2",
-    "@chakra-ui/react": "^3.30.0",
     "@emotion/react": "^11.14.0",
     "@emotion/styled": "^11.14.1",
     "@heroui/accordion": "^2.2.19",

@@ -8,7 +8,7 @@ import {
   TableHeader,
   TableRow,
 } from "@heroui/table";
-import { Button } from "@chakra-ui/react";
+import { Button } from "@heroui/button";
 import useSWR from "swr";
 import {
   Dropdown,

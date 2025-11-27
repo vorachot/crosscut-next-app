@@ -1,11 +1,15 @@
-import { useDisclosure } from "@chakra-ui/react";
+import { useState } from "react";
 import { Button } from "@heroui/button";
 import { Stop } from "@mui/icons-material";
 
 import StopTaskDialog from "./stop-task-dialog";
 
 const StopButtonClient = ({ taskId }: { taskId: string }) => {
-  const { open, onOpen, onClose } = useDisclosure();
+  const [open, setOpen] = useState(false);
+
+  const onOpen = () => setOpen(true);
+  const onClose = () => setOpen(false);
+
   const handleClick = () => {
     if (open) {
       onClose();
