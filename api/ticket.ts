@@ -27,7 +27,7 @@ export async function requestTicketToCH(
     ticketPayload,
   );
 
-  if (response.status !== 200) {
+  if (!(response.status >= 200 && response.status < 300)) {
     throw new Error("Failed to request ticket");
   }
 
