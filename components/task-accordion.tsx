@@ -122,7 +122,9 @@ const TaskAccordion = ({
                   <SubTicketEnhanced
                     key={ticket.id || index}
                     name={ticket.name}
+                    password={ticket.password}
                     resources={ticket.ticket.spec.resource}
+                    url={ticket.url}
                   />
                 ))}
               </div>

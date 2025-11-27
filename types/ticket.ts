@@ -4,6 +4,8 @@ export type UserTicketResponse = {
   ticket: GliderTicket;
   signature: string;
   status: string;
+  url?: string;
+  password?: string;
 };
 type GliderTicket = {
   id: string;

@@ -274,9 +274,9 @@ const TicketTable = ({
                   <div className="relative flex gap-2">
                     <Dropdown className="dark:bg-gray-900">
                       <DropdownTrigger className="!w-9 !h-9">
-                        <Button className="hover:bg-gray-100 dark:hover:bg-gray-800 shadow-sm transition-colors duration-200 rounded-full">
+                        <div className="hover:bg-gray-100 dark:hover:bg-gray-800 shadow-sm transition-colors duration-200 rounded-full w-9 h-9 flex items-center justify-center cursor-pointer">
                           <MoreVert />
-                        </Button>
+                        </div>
                       </DropdownTrigger>
                       <DropdownMenu>
                         <DropdownItem key="view">View</DropdownItem>
