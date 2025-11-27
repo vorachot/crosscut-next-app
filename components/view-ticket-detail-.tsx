@@ -1,6 +1,8 @@
 import { Button } from "@heroui/button";
 import { Card } from "@heroui/card";
 import { useState } from "react";
+import ContentCopyRoundedIcon from "@mui/icons-material/ContentCopyRounded";
+import InventoryRoundedIcon from "@mui/icons-material/InventoryRounded";
 
 type ViewTicketDetailProps = {
   setOnClose?: () => void;
@@ -22,11 +24,15 @@ const ViewTicketDetail = ({
       try {
         await navigator.clipboard.writeText(password);
         setCopied(true);
-        setTimeout(() => setCopied(false), 2000);
       } catch (err) {
         console.error("Failed to copy password:", err);
       }
     }
+  };
+
+  const handleOnclose = () => {
+    if (setOnClose) setOnClose();
+    setCopied(false);
   };
 
   if (!open) return null;
@@ -36,7 +42,7 @@ const ViewTicketDetail = ({
       <Card className="w-[400px] px-5 py-5 bg-white dark:bg-gray-800 shadow-md border border-gray-200 dark:border-gray-700 relative">
         <Button
           className="absolute top-2 right-2 min-w-8 h-8 p-0 bg-transparent hover:bg-gray-100 dark:hover:bg-gray-700 text-gray-500 dark:text-gray-400 rounded-full"
-          onPress={() => setOnClose && setOnClose()}
+          onPress={handleOnclose}
         >
           ✕
         </Button>
@@ -84,7 +90,11 @@ const ViewTicketDetail = ({
                     variant="light"
                     onPress={handleCopyPassword}
                   >
-                    {copied ? "✓" : "📋"}
+                    {copied ? (
+                      <InventoryRoundedIcon className="!w-5 !h-5" />
+                    ) : (
+                      <ContentCopyRoundedIcon className="!w-5 !h-5" />
+                    )}
                   </Button>
                 </div>
               </>
