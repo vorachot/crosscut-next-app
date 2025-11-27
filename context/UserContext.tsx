@@ -79,10 +79,10 @@ export function UserProvider({ children }: UserProviderProps) {
 
   // Check for existing session on mount
   useEffect(() => {
-    if (pathname !== "/login" && pathname !== "/callback") {
+    if (pathname !== "/login") {
       fetchUser();
     }
-  }, []);
+  }, [pathname]);
 
   const value = {
     user,
