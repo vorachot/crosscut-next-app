@@ -22,7 +22,7 @@ export async function getTasks(): Promise<any> {
 }
 
 export async function stopTask(taskId: string): Promise<any> {
-  const response = await apiClient.post(`/ticket/stopTask/`, {
+  const response = await apiClient.delete(`/ticket/stopTask/`, {
     data: { task_id: taskId },
   });
 
