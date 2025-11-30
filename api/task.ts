@@ -22,9 +22,7 @@ export async function getTasks(): Promise<any> {
 }
 
 export async function stopTask(taskId: string): Promise<any> {
-  const response = await apiClient.delete(`/ticket/stopTask/`, {
-    data: { task_id: taskId },
-  });
+  const response = await apiClient.delete(`/ticket/stopTask/${taskId}`);
 
   if (response.status !== 200) {
     throw new Error("Failed to stop task");
