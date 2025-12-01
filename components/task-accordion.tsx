@@ -127,7 +127,7 @@ const TaskAccordion = ({
                       name={ticket.name}
                       password={ticket.password}
                       resources={ticket.ticket.spec.resource}
-                      taskStatus={status}
+                      taskStatus={getStatusLabel(status)}
                       url={ticket.url}
                     />
                   ))}
