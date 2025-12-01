@@ -16,6 +16,7 @@ type TicketTableClientProps = {
   selectionBehavior?: "replace" | "toggle";
   selectedKeys?: Selection;
   onSelectionChange?: (keys: Selection) => void;
+  onAllTicketIds?: (ids: string[]) => void;
 };
 
 const TicketTableClient = ({
@@ -28,15 +29,17 @@ const TicketTableClient = ({
   onSelectionChange,
   nsId,
   resourcePoolId,
+  onAllTicketIds,
 }: TicketTableClientProps) => {
   return isDrawer ? (
     <TicketTableDrawer
+      selectionBehavior={selectionBehavior}
+      selectionMode={selectionMode}
+      onAllTicketIds={onAllTicketIds}
+      onSelectionChange={onSelectionChange}
       columns={columns}
       // rows={rows}
       selectedKeys={selectedKeys}
-      selectionBehavior={selectionBehavior}
-      selectionMode={selectionMode}
-      onSelectionChange={onSelectionChange}
     />
   ) : (
     <TicketTable

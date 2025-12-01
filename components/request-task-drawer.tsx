@@ -12,7 +12,7 @@ import { Input } from "@heroui/input";
 import { Chip } from "@heroui/chip";
 import { Divider } from "@heroui/divider";
 import { Selection } from "@heroui/table";
-import { useState } from "react";
+import { useCallback, useEffect, useState } from "react";
 import { mutate } from "swr";
 import {
   Assignment as TaskIcon,
@@ -38,9 +38,26 @@ const RequestTaskDrawer = ({ isOpen, onClose }: RequestTaskDrawerProps) => {
   const [errors, setErrors] = useState<{ taskName?: string; tickets?: string }>(
     {},
   );
+  const [allTicketIds, setAllTicketIds] = useState<string[]>([]);
+  const handleAllTicketIds = useCallback((ids: string[]) => {
+    setAllTicketIds(ids);
+  }, []);
+
+  const handleSelectionChange = useCallback(
+    (keys: Selection) => {
+      if (keys === "all") {
+        // Convert "all" to actual Set of all ticket IDs
+        setSelectedKeys(new Set(allTicketIds));
+      } else {
+        setSelectedKeys(keys);
+      }
+    },
+    [allTicketIds],
+  );
 
   const hasSelectedTickets = selectedKeys !== "all" && selectedKeys.size > 0;
-  const selectedCount = selectedKeys === "all" ? 0 : selectedKeys.size;
+  const selectedCount =
+    selectedKeys === "all" ? allTicketIds.length : selectedKeys.size;
 
   // Validation
   const validateForm = () => {
@@ -94,6 +111,10 @@ const RequestTaskDrawer = ({ isOpen, onClose }: RequestTaskDrawerProps) => {
     setErrors({});
     onClose();
   };
+
+  useEffect(() => {
+    console.log("Selected Keys:", selectedKeys);
+  }, [selectedKeys]);
 
   return (
     <Drawer isOpen={isOpen} size="lg" onOpenChange={handleClose}>
@@ -186,7 +207,8 @@ const RequestTaskDrawer = ({ isOpen, onClose }: RequestTaskDrawerProps) => {
                   isDrawer={true}
                   selectedKeys={selectedKeys}
                   selectionMode="multiple"
-                  onSelectionChange={setSelectedKeys}
+                  onAllTicketIds={handleAllTicketIds}
+                  onSelectionChange={handleSelectionChange}
                 />
               </div>
             </div>
