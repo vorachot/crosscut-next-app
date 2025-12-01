@@ -10,7 +10,6 @@ import {
 } from "@heroui/dropdown";
 import { Button } from "@heroui/button";
 import { SVGProps } from "react";
-import { Toaster } from "react-hot-toast";
 
 import ResourceCard from "./resource-card";
 import ButtonClient from "./button-client";
@@ -91,7 +90,6 @@ const ResourcePoolDetailPage = () => {
       namespace_id={namespaceId}
       quota_id={quotaId}
     >
-      <Toaster />
       <div className="flex flex-col gap-6">
         {/* Header Section */}
         <div className="flex flex-col gap-4">
