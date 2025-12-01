@@ -1,6 +1,6 @@
 import { Card } from "@heroui/card";
 import { Chip } from "@heroui/chip";
-import { useEffect, useState } from "react";
+import { useEffect, useState, useMemo } from "react";
 import {
   Dropdown,
   DropdownItem,
@@ -16,6 +16,9 @@ import ViewTicketDetail from "./view-ticket-detail-";
 import { SpecResource } from "@/types/ticket";
 import { getResourceDetailByResourceIdFromCH } from "@/api/resource";
 import { ResourceType } from "@/types/enum";
+
+// Cache for resource details to avoid redundant API calls
+const resourceDetailsCache = new Map<string, any>();
 
 type SubTicketEnhancedProps = {
   name?: string;
@@ -36,6 +39,12 @@ const SubTicketEnhanced = ({
   const [resourceDetailsLoading, setResourceDetailsLoading] = useState(false);
   const [cancelDialogOpen, setCancelDialogOpen] = useState(false);
 
+  // Memoize resource IDs to prevent unnecessary re-fetches
+  const resourceIds = useMemo(
+    () => resources?.map((r) => r.resource_id).join(",") || "",
+    [resources]
+  );
+
   useEffect(() => {
     const fetchResourceDetailsForTickets = async () => {
       if (!resources || resources.length === 0) return;
@@ -44,12 +53,24 @@ const SubTicketEnhanced = ({
       try {
         const resourceDetails = await Promise.all(
           resources.map(async (resource: SpecResource) => {
+            // Check cache first
+            if (resourceDetailsCache.has(resource.resource_id)) {
+              return {
+                ...resource,
+                resourceDetail: resourceDetailsCache.get(resource.resource_id),
+              };
+            }
+
+            // Fetch if not in cache
             const resourceDetail = await getResourceDetailByResourceIdFromCH(
-              resource.resource_id,
+              resource.resource_id
             );
 
+            // Store in cache
+            resourceDetailsCache.set(resource.resource_id, resourceDetail);
+
             return { ...resource, resourceDetail };
-          }),
+          })
         );
 
         setResourcesWithDetails(resourceDetails);
@@ -62,7 +83,7 @@ const SubTicketEnhanced = ({
     };
 
     fetchResourceDetailsForTickets();
-  }, [resources]);
+  }, [resourceIds]);
 
   const handleViewClick = () => {
     setCancelDialogOpen(true);
@@ -97,7 +118,7 @@ const SubTicketEnhanced = ({
               (
                 resource: SpecResource & {
                   resourceDetail: any;
-                },
+                }
               ) => {
                 return (
                   <div
@@ -136,7 +157,7 @@ const SubTicketEnhanced = ({
                     )}
                   </div>
                 );
-              },
+              }
             )}
             <div className="relative flex gap-2">
               <Dropdown className="dark:bg-gray-900">

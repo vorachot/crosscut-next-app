@@ -32,7 +32,7 @@ const TicketForm = ({
 }: TicketFormProps) => {
   const [resourceDetails, setResourceDetails] = useState<any[]>([]);
   const [resourceValues, setResourceValues] = useState<Record<string, number>>(
-    {},
+    {}
   );
   const [ticketName, setTicketName] = useState<string>("");
   const [isSubmitting, setIsSubmitting] = useState(false);
@@ -60,7 +60,7 @@ const TicketForm = ({
         ([resource_id, quantity]) => ({
           resource_id,
           quantity,
-        }),
+        })
       ),
       duration: 3600,
     };
@@ -87,7 +87,7 @@ const TicketForm = ({
 
   const getAvailableQuantity = (
     resourceType: string,
-    originalQuantity: number,
+    originalQuantity: number
   ) => {
     if (!usageQuota) return originalQuantity;
 
@@ -107,7 +107,7 @@ const TicketForm = ({
 
     if (gpuValue > 0 && ramValue < 2) {
       setValidationError(
-        "Increase your RAM allocation to at least 2 GB when requesting GPU resources.",
+        "Increase your RAM allocation to at least 2 GB when requesting GPU resources."
       );
 
       return false;
@@ -121,7 +121,7 @@ const TicketForm = ({
   // Helper function to get resource value by type
   const getResourceValueByType = (resourceType: string) => {
     const resource = resourceDetails.find(
-      (res) => res.detail?.resource?.resource_type?.name === resourceType,
+      (res) => res.detail?.resource?.resource_type?.name === resourceType
     );
 
     if (!resource) return 0;
@@ -135,8 +135,8 @@ const TicketForm = ({
 
       const details = await Promise.all(
         quota.resources.map((res) =>
-          getResourceDetailByResourceIdFromCH(res.resource_prop.resource_id),
-        ),
+          getResourceDetailByResourceIdFromCH(res.resource_prop.resource_id)
+        )
       );
 
       const merged = quota.resources.map((res, i) => ({
@@ -216,7 +216,7 @@ const TicketForm = ({
             {resourceDetails.map((res) => {
               const availableQuantity = getAvailableQuantity(
                 res.detail.resource.resource_type.name,
-                res.quantity,
+                res.quantity
               );
 
               return (
