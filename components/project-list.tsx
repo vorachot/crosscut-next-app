@@ -41,7 +41,6 @@ const ProjectList = () => {
         <InfoCard
           key={index}
           aria-label={`Project ${project.name}`}
-          createdDate="30 Nov 2027"
           id={project.id}
           title={project.name}
         />
