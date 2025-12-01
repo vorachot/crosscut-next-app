@@ -36,7 +36,8 @@ const TicketForm = ({
     {},
   );
   const [ticketName, setTicketName] = useState<string>("");
-  const [duration, setDuration] = useState<number>(1);
+  const [hours, setHours] = useState<number>(1);
+  const [minutes, setMinutes] = useState<number>(30);
   const [isSubmitting, setIsSubmitting] = useState(false);
 
   const handleValueChange = (resource_id: string, value: number) => {
@@ -45,13 +46,23 @@ const TicketForm = ({
       [resource_id]: value,
     }));
   };
-
+  const getTotalDurationMinutes = () => {
+    return hours * 60 + minutes;
+  };
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     if (!validateGpuRamRequirement(true)) {
       return;
     }
     if (!validateResourceSelection(true)) {
+      return;
+    }
+    if (getTotalDurationMinutes() <= 60) {
+      toast.error("Duration must be greater than 1 hour", {
+        duration: 4000,
+        icon: "⚠️",
+      });
+
       return;
     }
     setIsSubmitting(true);
@@ -66,7 +77,7 @@ const TicketForm = ({
           quantity,
         }),
       ),
-      duration: duration * 60,
+      duration: getTotalDurationMinutes() * 60, // Convert to seconds
     };
 
     try {
@@ -75,7 +86,9 @@ const TicketForm = ({
       if (setOnClose) {
         setOnClose();
       }
-      await mutate(["tickets", namespace_id], undefined, { revalidate: true });
+      await mutate(["tickets", namespace_id], undefined, {
+        revalidate: true,
+      });
       await mutate(["quota-usage", namespace_id, quota_id], undefined, {
         revalidate: true,
       });
@@ -183,7 +196,11 @@ const TicketForm = ({
   }, [resourceValues, resourceDetails]);
 
   const isFormValid = () => {
-    return ticketName.trim() && getTotalResourcesSelected() > 0;
+    return (
+      ticketName.trim() &&
+      getTotalResourcesSelected() > 0 &&
+      getTotalDurationMinutes() > 0
+    );
   };
 
   return (
@@ -191,9 +208,10 @@ const TicketForm = ({
       <Toaster />
       <Form className="flex flex-col gap-5" onSubmit={handleSubmit}>
         {/* Ticket Details Section */}
-        <div className="flex gap-4 items-center">
+        <div className="space-y-4 w-full">
           <Input
             isRequired
+            className="w-full"
             classNames={{
               input: "text-gray-700 dark:text-gray-200",
               label: "text-gray-600 dark:text-gray-300 font-medium",
@@ -205,21 +223,46 @@ const TicketForm = ({
             variant="bordered"
             onValueChange={setTicketName}
           />
-          <Input
-            isRequired
-            classNames={{
-              input: "text-gray-700 dark:text-gray-200",
-              label: "text-gray-600 dark:text-gray-300 font-medium",
-            }}
-            label="Duration (minutes)"
-            labelPlacement="outside"
-            max="180"
-            min="1"
-            type="number"
-            value={duration.toString()}
-            variant="bordered"
-            onValueChange={(value) => setDuration(parseInt(value) || 0)}
-          />
+          <div className="space-y-2">
+            <div className="text-sm font-medium text-gray-600 dark:text-gray-300">
+              Duration <span className="text-red-500">*</span>
+            </div>
+            <div className="flex gap-3 items-center w-full">
+              <Input
+                className="w-full"
+                classNames={{
+                  input: "text-gray-700 dark:text-gray-200",
+                  label: "text-gray-600 dark:text-gray-300 font-medium",
+                }}
+                label="Hours"
+                labelPlacement="outside"
+                max="23"
+                min="1"
+                type="number"
+                value={hours.toString()}
+                variant="bordered"
+                onValueChange={(value) => setHours(parseInt(value) || 0)}
+              />
+              <Input
+                className="w-full"
+                classNames={{
+                  input: "text-gray-700 dark:text-gray-200",
+                  label: "text-gray-600 dark:text-gray-300 font-medium",
+                }}
+                label="Minutes"
+                labelPlacement="outside"
+                max="59"
+                min="0"
+                type="number"
+                value={minutes.toString()}
+                variant="bordered"
+                onValueChange={(value) => setMinutes(parseInt(value) || 0)}
+              />
+              {/* <div className="mt-6 text-sm text-gray-500 dark:text-gray-400">
+                Total: {getTotalDurationMinutes()} min
+              </div> */}
+            </div>
+          </div>
           {/* {getTotalResourcesSelected() > 0 && (
             <Chip color="primary" size="sm" variant="flat">
               {getTotalResourcesSelected()} resources selected
