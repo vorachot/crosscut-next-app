@@ -16,9 +16,7 @@ import ViewTicketDetail from "./view-ticket-detail-";
 import { SpecResource } from "@/types/ticket";
 import { getResourceDetailByResourceIdFromCH } from "@/api/resource";
 import { ResourceType, Status } from "@/types/enum";
-
-// Cache for resource details to avoid redundant API calls
-const resourceDetailsCache = new Map<string, any>();
+import { getCachedOrFetch } from "@/utils/resourceCache";
 
 type SubTicketEnhancedProps = {
   name?: string;
@@ -44,7 +42,7 @@ const SubTicketEnhanced = ({
   // Memoize resource IDs to prevent unnecessary re-fetches
   const resourceIds = useMemo(
     () => resources?.map((r) => r.resource_id).join(",") || "",
-    [resources],
+    [resources]
   );
 
   useEffect(() => {
@@ -55,24 +53,13 @@ const SubTicketEnhanced = ({
       try {
         const resourceDetails = await Promise.all(
           resources.map(async (resource: SpecResource) => {
-            // Check cache first
-            if (resourceDetailsCache.has(resource.resource_id)) {
-              return {
-                ...resource,
-                resourceDetail: resourceDetailsCache.get(resource.resource_id),
-              };
-            }
-
-            // Fetch if not in cache
-            const resourceDetail = await getResourceDetailByResourceIdFromCH(
+            const resourceDetail = await getCachedOrFetch(
               resource.resource_id,
+              () => getResourceDetailByResourceIdFromCH(resource.resource_id)
             );
 
-            // Store in cache
-            resourceDetailsCache.set(resource.resource_id, resourceDetail);
-
             return { ...resource, resourceDetail };
-          }),
+          })
         );
 
         setResourcesWithDetails(resourceDetails);
@@ -120,7 +107,7 @@ const SubTicketEnhanced = ({
               (
                 resource: SpecResource & {
                   resourceDetail: any;
-                },
+                }
               ) => {
                 return (
                   <div
@@ -159,7 +146,7 @@ const SubTicketEnhanced = ({
                     )}
                   </div>
                 );
-              },
+              }
             )}
             {taskStatus === Status.redeemed && (
               <div className="relative flex gap-2">

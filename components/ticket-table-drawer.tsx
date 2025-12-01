@@ -22,9 +22,7 @@ import { UserTicketResponse } from "@/types/ticket";
 import { ResourceType } from "@/types/enum";
 import { getResourceDetailByResourceIdFromCH } from "@/api/resource";
 import { ResourceDetail } from "@/types/resource";
-
-// Cache for resource details to avoid redundant API calls
-const resourceDetailsCache = new Map<string, any>();
+import { getCachedOrFetch } from "@/utils/resourceCache";
 
 const defaultColumns = [
   { name: "TICKET", uid: "name", sortable: true },
@@ -104,24 +102,11 @@ const TicketTableDrawer = ({
             }
 
             const resourceDetails = await Promise.all(
-              ticket.ticket.spec.resource.map((resource) => {
-                // Check cache first
-                if (resourceDetailsCache.has(resource.resource_id)) {
-                  return Promise.resolve(
-                    resourceDetailsCache.get(resource.resource_id)
-                  );
-                }
-
-                // Fetch if not in cache
-                return getResourceDetailByResourceIdFromCH(
-                  resource.resource_id
-                ).then((detail) => {
-                  // Store in cache
-                  resourceDetailsCache.set(resource.resource_id, detail);
-
-                  return detail;
-                });
-              })
+              ticket.ticket.spec.resource.map((resource) =>
+                getCachedOrFetch(resource.resource_id, () =>
+                  getResourceDetailByResourceIdFromCH(resource.resource_id)
+                )
+              )
             );
 
             const resourcesWithDetails = ticket.ticket.spec.resource.map(
