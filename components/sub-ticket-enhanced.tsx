@@ -44,7 +44,7 @@ const SubTicketEnhanced = ({
   // Memoize resource IDs to prevent unnecessary re-fetches
   const resourceIds = useMemo(
     () => resources?.map((r) => r.resource_id).join(",") || "",
-    [resources]
+    [resources],
   );
 
   useEffect(() => {
@@ -65,14 +65,14 @@ const SubTicketEnhanced = ({
 
             // Fetch if not in cache
             const resourceDetail = await getResourceDetailByResourceIdFromCH(
-              resource.resource_id
+              resource.resource_id,
             );
 
             // Store in cache
             resourceDetailsCache.set(resource.resource_id, resourceDetail);
 
             return { ...resource, resourceDetail };
-          })
+          }),
         );
 
         setResourcesWithDetails(resourceDetails);
@@ -120,7 +120,7 @@ const SubTicketEnhanced = ({
               (
                 resource: SpecResource & {
                   resourceDetail: any;
-                }
+                },
               ) => {
                 return (
                   <div
@@ -159,7 +159,7 @@ const SubTicketEnhanced = ({
                     )}
                   </div>
                 );
-              }
+              },
             )}
             {taskStatus === Status.redeemed && (
               <div className="relative flex gap-2">
