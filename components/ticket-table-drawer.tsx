@@ -60,11 +60,11 @@ const TicketTableDrawer = ({
     {
       revalidateOnFocus: false,
       dedupingInterval: 5000,
-    },
+    }
   );
   const getResourceValueByType = (
     resourceDetails: any[],
-    resourceType: ResourceType,
+    resourceType: ResourceType
   ) => {
     if (!resourceDetails || resourceDetails.length === 0) return 0;
 
@@ -102,19 +102,19 @@ const TicketTableDrawer = ({
 
             const resourceDetails = await Promise.all(
               ticket.ticket.spec.resource.map((resource) =>
-                getResourceDetailByResourceIdFromCH(resource.resource_id),
-              ),
+                getResourceDetailByResourceIdFromCH(resource.resource_id)
+              )
             );
 
             const resourcesWithDetails = ticket.ticket.spec.resource.map(
               (resource, i) => ({
                 ...resource,
                 detail: resourceDetails[i],
-              }),
+              })
             );
 
             return { ...ticket, resourceDetails: resourcesWithDetails };
-          }),
+          })
         );
 
         setTicketsWithResourceDetails(ticketsWithDetails);
@@ -138,15 +138,15 @@ const TicketTableDrawer = ({
       (
         ticket: UserTicketResponse & {
           resourceDetails: ResourceDetail[];
-        },
-      ) => ticket.status === "ready",
+        }
+      ) => ticket.status === "ready"
     );
   }, [ticketsWithResourceDetails, data]);
 
   useEffect(() => {
     if (filteredTickets.length > 0 && onAllTicketIds) {
       const allIds = filteredTickets.map(
-        (ticket: UserTicketResponse) => ticket.ticket.id,
+        (ticket: UserTicketResponse) => ticket.ticket.id
       );
 
       onAllTicketIds(allIds);
@@ -192,7 +192,7 @@ const TicketTableDrawer = ({
           (
             ticket: UserTicketResponse & {
               resourceDetails: ResourceDetail[];
-            },
+            }
           ) => (
             <TableRow key={ticket.ticket.id} className="hover:cursor-pointer">
               <TableCell className="text-xs">
@@ -206,7 +206,7 @@ const TicketTableDrawer = ({
                     day: "2-digit",
                     month: "short",
                     year: "numeric",
-                  },
+                  }
                 )}
               </TableCell>
               <TableCell className="flex flex-row gap-2 items-center">
@@ -216,40 +216,40 @@ const TicketTableDrawer = ({
                   <>
                     {getResourceValueByType(
                       ticket.resourceDetails || [],
-                      ResourceType.cpu,
+                      ResourceType.cpu
                     ) > 0 && (
                       <ResourceChip
                         size="sm"
                         type={ResourceType.cpu}
                         value={getResourceValueByType(
                           ticket.resourceDetails || [],
-                          ResourceType.cpu,
+                          ResourceType.cpu
                         )}
                       />
                     )}
                     {getResourceValueByType(
                       ticket.resourceDetails || [],
-                      ResourceType.gpu,
+                      ResourceType.gpu
                     ) > 0 && (
                       <ResourceChip
                         size="sm"
                         type={ResourceType.gpu}
                         value={getResourceValueByType(
                           ticket.resourceDetails || [],
-                          ResourceType.gpu,
+                          ResourceType.gpu
                         )}
                       />
                     )}
                     {getResourceValueByType(
                       ticket.resourceDetails || [],
-                      ResourceType.memory,
+                      ResourceType.memory
                     ) > 0 && (
                       <ResourceChip
                         size="sm"
                         type={ResourceType.memory}
                         value={getResourceValueByType(
                           ticket.resourceDetails || [],
-                          ResourceType.memory,
+                          ResourceType.memory
                         )}
                       />
                     )}
@@ -257,7 +257,7 @@ const TicketTableDrawer = ({
                 )}
               </TableCell>
             </TableRow>
-          ),
+          )
         )}
       </TableBody>
     </Table>
