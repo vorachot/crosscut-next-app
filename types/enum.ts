@@ -4,7 +4,7 @@ export enum Status {
   failed = "FAILED",
   pending = "PENDING",
   redeemed = "RUNNING",
-  succeeded = "SUCCEEDED",
+  expired = "SUCCEEDED",
   stopped = "STOPPED",
 }
 export enum ResourceType {
