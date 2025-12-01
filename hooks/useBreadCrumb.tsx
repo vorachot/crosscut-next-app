@@ -71,6 +71,7 @@ export const useBreadcrumbData = ({
           updateBreadcrumbItem(resourcePoolId, resourcePool.name);
         }
       } catch (error) {
+        /* eslint-disable no-console */
         console.error("Failed to fetch breadcrumb data:", error);
         // Remove failed IDs from cache
         if (projectId) fetchedIds.current.delete(projectId);

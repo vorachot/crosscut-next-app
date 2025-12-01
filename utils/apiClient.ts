@@ -29,6 +29,7 @@ apiClient.interceptors.response.use(
       } catch (refreshError) {
         // Redirect to login on refresh failure
         const router = useRouter();
+
         router.push("/login");
 
         return Promise.reject(refreshError);

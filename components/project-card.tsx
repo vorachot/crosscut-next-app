@@ -1,4 +1,4 @@
-import { Card, CardBody, CardFooter, CardHeader } from "@heroui/card";
+import { Card, CardFooter, CardHeader } from "@heroui/card";
 import { Divider } from "@heroui/divider";
 import { Folder } from "@mui/icons-material";
 import Link from "next/link";
@@ -13,13 +13,11 @@ import { ResourceUsage } from "@/types/resource";
 type ProjectCardProps = {
   id?: string;
   title?: string;
-  createdDate: string;
 };
 
 const ProjectCard = ({
   id = "default-id",
   title = "Default Title",
-  createdDate = "Default Created Date",
 }: ProjectCardProps) => {
   const { data, error, isLoading } = useSWR(
     ["project-usage"],
@@ -35,35 +33,47 @@ const ProjectCard = ({
   const usageData: ResourceUsage[] = data.projectUsage.usage || [];
 
   return (
-    <Link className="no-underline" href={`/projects/${id}`}>
+    <Link
+      aria-label={`View project ${title} details`}
+      className="no-underline focus:outline-none focus:ring-2 focus:ring-blue-500 rounded-lg"
+      href={`/projects/${id}`}
+    >
       <Card
-        className="w-[300px] h-[285px] px-4 py-6 bg-white dark:bg-gray-800 shadow-md border border-gray-200 dark:border-gray-700 cursor-pointer  transition-all duration-300 ease-in-out 
-  hover:shadow-xl hover:scale-[1.02]"
+        aria-label={`Project card for ${title}`}
+        className="w-[300px] px-4 py-6 bg-white dark:bg-gray-800 shadow-md border border-gray-200 dark:border-gray-700 cursor-pointer transition-all duration-300 ease-in-out 
+          hover:shadow-xl hover:scale-[1.02]"
+        role="article"
       >
-        <CardHeader className="flex gap-3 py-0 items-start">
+        <CardHeader className="flex gap-3 py-0 mb-2 items-start">
           <div className="flex-shrink-0">
-            <Folder className="!w-8 !h-8 text-gray-700 dark:text-gray-300" />
+            <Folder
+              aria-hidden="true"
+              className="!w-8 !h-8 text-gray-700 dark:text-gray-300"
+            />
           </div>
-          <p className="text-[22px] font-medium">{title}</p>
+          <p
+            className="text-[22px] font-medium truncate flex-1"
+            title={title} // Show full title on hover
+          >
+            {title}
+          </p>
         </CardHeader>
-        <CardBody className="py-2 justify-end">
-          <div className="flex items-center gap-1">
-            <span className="text-sm text-gray-600 dark:text-gray-300">
-              <span className="text-gray-400">Created: </span>
-              <span className="font-medium">{createdDate}</span>
-            </span>
-          </div>
-        </CardBody>
         <Divider />
         <CardFooter className="flex flex-col gap-2">
-          {usageData.map((item) => (
-            <UsageBar
-              key={item.type_id}
-              label={item.type}
-              maxValue={item.quota}
-              value={item.usage}
-            />
-          ))}
+          {usageData.length > 0 ? (
+            usageData.map((item, index) => (
+              <UsageBar
+                key={`${item.type_id}-${index}`} // More unique key
+                label={item.type}
+                maxValue={item.quota}
+                value={item.usage}
+              />
+            ))
+          ) : (
+            <div className="text-sm text-gray-500 dark:text-gray-400 text-center py-4">
+              No usage data available
+            </div>
+          )}
         </CardFooter>
       </Card>
     </Link>

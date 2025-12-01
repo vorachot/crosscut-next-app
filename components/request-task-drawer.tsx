@@ -12,7 +12,7 @@ import { Input } from "@heroui/input";
 import { Chip } from "@heroui/chip";
 import { Divider } from "@heroui/divider";
 import { Selection } from "@heroui/table";
-import { useState } from "react";
+import { useCallback, useState } from "react";
 import { mutate } from "swr";
 import {
   Assignment as TaskIcon,
@@ -21,6 +21,7 @@ import {
   Info as InfoIcon,
   Warning as WarningIcon,
 } from "@mui/icons-material";
+import toast, { Toaster } from "react-hot-toast";
 
 import TicketTableClient from "./ticket-table-client";
 
@@ -38,9 +39,26 @@ const RequestTaskDrawer = ({ isOpen, onClose }: RequestTaskDrawerProps) => {
   const [errors, setErrors] = useState<{ taskName?: string; tickets?: string }>(
     {},
   );
+  const [allTicketIds, setAllTicketIds] = useState<string[]>([]);
+  const handleAllTicketIds = useCallback((ids: string[]) => {
+    setAllTicketIds(ids);
+  }, []);
+
+  const handleSelectionChange = useCallback(
+    (keys: Selection) => {
+      if (keys === "all") {
+        // Convert "all" to actual Set of all ticket IDs
+        setSelectedKeys(new Set(allTicketIds));
+      } else {
+        setSelectedKeys(keys);
+      }
+    },
+    [allTicketIds],
+  );
 
   const hasSelectedTickets = selectedKeys !== "all" && selectedKeys.size > 0;
-  const selectedCount = selectedKeys === "all" ? 0 : selectedKeys.size;
+  const selectedCount =
+    selectedKeys === "all" ? allTicketIds.length : selectedKeys.size;
 
   // Validation
   const validateForm = () => {
@@ -73,7 +91,7 @@ const RequestTaskDrawer = ({ isOpen, onClose }: RequestTaskDrawerProps) => {
       };
 
       await createTask(taskData);
-
+      toast.success("Task created successfully!");
       // Reset form
       setTaskName("");
       setSelectedKeys(new Set());
@@ -81,8 +99,9 @@ const RequestTaskDrawer = ({ isOpen, onClose }: RequestTaskDrawerProps) => {
       onClose();
 
       await mutate(["tasks"], undefined, { revalidate: true });
-    } catch {
+    } catch (err) {
       setErrors({ tickets: "Failed to create task. Please try again." });
+      toast.error("Failed to create task. Please try again.: " + err);
     } finally {
       setIsCreating(false);
     }
@@ -96,46 +115,51 @@ const RequestTaskDrawer = ({ isOpen, onClose }: RequestTaskDrawerProps) => {
   };
 
   return (
-    <Drawer isOpen={isOpen} size="lg" onOpenChange={handleClose}>
-      <DrawerContent className="bg-white dark:bg-gray-800">
-        <DrawerHeader className="flex items-center gap-3 pb-3 border-b border-gray-200 dark:border-gray-700">
-          <div className="p-2 bg-blue-100 dark:bg-blue-900/30 rounded-lg">
-            <TaskIcon className="!w-6 !h-6 text-blue-600 dark:text-blue-400" />
-          </div>
-          <div>
-            <h2 className="text-xl font-semibold text-gray-900 dark:text-white">
-              Create New Task
-            </h2>
-            {/* <p className="text-sm text-gray-600 dark:text-gray-400 mt-1">
+    <>
+      <Toaster />
+      <Drawer isOpen={isOpen} size="lg" onOpenChange={handleClose}>
+        <DrawerContent className="bg-white dark:bg-gray-800">
+          <DrawerHeader className="flex items-center gap-3 pb-3 border-b border-gray-200 dark:border-gray-700">
+            <div className="p-2 bg-blue-100 dark:bg-blue-900/30 rounded-lg">
+              <TaskIcon className="!w-6 !h-6 text-blue-600 dark:text-blue-400" />
+            </div>
+            <div>
+              <h2 className="text-xl font-semibold text-gray-900 dark:text-white">
+                Create New Task
+              </h2>
+              {/* <p className="text-sm text-gray-600 dark:text-gray-400 mt-1">
               Configure your task settings and select tickets
             </p> */}
-          </div>
-        </DrawerHeader>
+            </div>
+          </DrawerHeader>
 
-        <DrawerBody className="px-6 py-5">
-          {/* Task Configuration Section */}
-          <div className="space-y-4 w-full">
-            <Form className="space-y-4 w-full">
-              <div>
-                <div className="space-y-2 w-full">
-                  <Input
-                    isRequired
-                    errorMessage={errors.taskName}
-                    isInvalid={!!errors.taskName}
-                    label="Task Name"
-                    labelPlacement="outside"
-                    placeholder="e.g. My First Task"
-                    value={taskName}
-                    variant="bordered"
-                    onChange={(e) => {
-                      setTaskName(e.target.value);
-                      if (errors.taskName) {
-                        setErrors((prev) => ({ ...prev, taskName: undefined }));
-                      }
-                    }}
-                  />
-                </div>
-                {/* <div className="space-y-2">
+          <DrawerBody className="px-6 py-5">
+            {/* Task Configuration Section */}
+            <div className="space-y-4 w-full">
+              <Form className="space-y-4 w-full">
+                <div>
+                  <div className="space-y-2 w-full">
+                    <Input
+                      isRequired
+                      errorMessage={errors.taskName}
+                      isInvalid={!!errors.taskName}
+                      label="Task Name"
+                      labelPlacement="outside"
+                      placeholder="e.g. My First Task"
+                      value={taskName}
+                      variant="bordered"
+                      onChange={(e) => {
+                        setTaskName(e.target.value);
+                        if (errors.taskName) {
+                          setErrors((prev) => ({
+                            ...prev,
+                            taskName: undefined,
+                          }));
+                        }
+                      }}
+                    />
+                  </div>
+                  {/* <div className="space-y-2">
                   <Input
                     label="Description (Optional)"
                     labelPlacement="outside"
@@ -145,94 +169,98 @@ const RequestTaskDrawer = ({ isOpen, onClose }: RequestTaskDrawerProps) => {
                     onChange={(e) => setDescription(e.target.value)}
                   />
                 </div> */}
-              </div>
-            </Form>
-          </div>
+                </div>
+              </Form>
+            </div>
 
-          <Divider />
+            <Divider />
 
-          {/* Ticket Selection Section */}
-          <div className="space-y-2">
-            <div className="flex items-center justify-between h-8">
-              <div className="flex items-center gap-2">
-                <h3 className="text-sm font-semibold text-gray-700 flex items-center gap-2 dark:text-gray-300">
-                  Select Tickets
-                </h3>
-                {hasSelectedTickets && (
-                  <Chip color="primary" size="sm" variant="flat">
-                    {selectedCount} selected
-                  </Chip>
+            {/* Ticket Selection Section */}
+            <div className="space-y-2">
+              <div className="flex items-center justify-between h-8">
+                <div className="flex items-center gap-2">
+                  <h3 className="text-sm font-semibold text-gray-700 flex items-center gap-2 dark:text-gray-300">
+                    Select Tickets
+                  </h3>
+                  {hasSelectedTickets && (
+                    <Chip color="primary" size="sm" variant="flat">
+                      {selectedCount} selected
+                    </Chip>
+                  )}
+                </div>
+
+                {errors.tickets && (
+                  <div className="flex items-center gap-2 text-red-600 dark:text-red-400">
+                    <WarningIcon className="!w-4 !h-4" />
+                    <span className="text-sm">{errors.tickets}</span>
+                  </div>
                 )}
               </div>
 
-              {errors.tickets && (
-                <div className="flex items-center gap-2 text-red-600 dark:text-red-400">
-                  <WarningIcon className="!w-4 !h-4" />
-                  <span className="text-sm">{errors.tickets}</span>
+              <div className="bg-gray-50 dark:bg-gray-800/50 rounded-lg">
+                <div className="flex items-center gap-2 mb-3">
+                  <InfoIcon className="!w-4 !h-4 text-blue-500" />
+                  <span className="text-sm text-gray-600 dark:text-gray-400">
+                    Select one or more available tickets to include in your task
+                  </span>
                 </div>
+
+                <div className="max-h-80 overflow-y-auto border border-gray-200 dark:border-gray-700 rounded-lg bg-white dark:bg-gray-800">
+                  <TicketTableClient
+                    isDrawer={true}
+                    selectedKeys={selectedKeys}
+                    selectionMode="multiple"
+                    onAllTicketIds={handleAllTicketIds}
+                    onSelectionChange={handleSelectionChange}
+                  />
+                </div>
+              </div>
+            </div>
+          </DrawerBody>
+
+          <DrawerFooter className="flex justify-between items-center pt-4 border-t border-gray-200 dark:border-gray-700">
+            <div className="flex items-center gap-2 text-sm text-gray-600 dark:text-gray-400">
+              {hasSelectedTickets ? (
+                <>
+                  <CheckIcon className="!w-4 !h-4 text-green-500" />
+                  <span>
+                    {selectedCount} ticket{selectedCount !== 1 ? "s" : ""}{" "}
+                    selected
+                  </span>
+                </>
+              ) : (
+                <>
+                  <InfoIcon className="!w-4 !h-4" />
+                  <span>Please select ticket</span>
+                </>
               )}
             </div>
 
-            <div className="bg-gray-50 dark:bg-gray-800/50 rounded-lg">
-              <div className="flex items-center gap-2 mb-3">
-                <InfoIcon className="!w-4 !h-4 text-blue-500" />
-                <span className="text-sm text-gray-600 dark:text-gray-400">
-                  Select one or more available tickets to include in your task
-                </span>
-              </div>
-
-              <div className="max-h-80 overflow-y-auto border border-gray-200 dark:border-gray-700 rounded-lg bg-white dark:bg-gray-800">
-                <TicketTableClient
-                  isDrawer={true}
-                  selectedKeys={selectedKeys}
-                  selectionMode="multiple"
-                  onSelectionChange={setSelectedKeys}
-                />
-              </div>
+            <div className="flex gap-3">
+              <Button
+                color="default"
+                startContent={<CloseIcon className="!w-4 !h-4" />}
+                variant="light"
+                onPress={handleClose}
+              >
+                Cancel
+              </Button>
+              <Button
+                color="primary"
+                isDisabled={!hasSelectedTickets || !taskName.trim()}
+                isLoading={isCreating}
+                startContent={
+                  !isCreating && <CheckIcon className="!w-4 !h-4" />
+                }
+                onPress={handleCreateTask}
+              >
+                {isCreating ? "Creating Task..." : "Create Task"}
+              </Button>
             </div>
-          </div>
-        </DrawerBody>
-
-        <DrawerFooter className="flex justify-between items-center pt-4 border-t border-gray-200 dark:border-gray-700">
-          <div className="flex items-center gap-2 text-sm text-gray-600 dark:text-gray-400">
-            {hasSelectedTickets ? (
-              <>
-                <CheckIcon className="!w-4 !h-4 text-green-500" />
-                <span>
-                  {selectedCount} ticket{selectedCount !== 1 ? "s" : ""}{" "}
-                  selected
-                </span>
-              </>
-            ) : (
-              <>
-                <InfoIcon className="!w-4 !h-4" />
-                <span>Please select ticket</span>
-              </>
-            )}
-          </div>
-
-          <div className="flex gap-3">
-            <Button
-              color="default"
-              startContent={<CloseIcon className="!w-4 !h-4" />}
-              variant="light"
-              onPress={handleClose}
-            >
-              Cancel
-            </Button>
-            <Button
-              color="primary"
-              isDisabled={!hasSelectedTickets || !taskName.trim()}
-              isLoading={isCreating}
-              startContent={!isCreating && <CheckIcon className="!w-4 !h-4" />}
-              onPress={handleCreateTask}
-            >
-              {isCreating ? "Creating Task..." : "Create Task"}
-            </Button>
-          </div>
-        </DrawerFooter>
-      </DrawerContent>
-    </Drawer>
+          </DrawerFooter>
+        </DrawerContent>
+      </Drawer>
+    </>
   );
 };
 

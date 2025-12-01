@@ -8,7 +8,6 @@ import ResourceCard from "./resource-card";
 
 import { useBreadcrumbData } from "@/hooks/useBreadCrumb";
 import NamespaceList from "@/components/namespace-list";
-import { formatDate } from "@/utils/helper";
 import Loading from "@/app/loading";
 import { getProjectUsageByProjectIdFromCH } from "@/api/project";
 import { ResourceUsage } from "@/types/resource";
@@ -35,11 +34,7 @@ const ProjectDetailPage = () => {
   return (
     <div className="flex flex-col justify-center gap-7">
       <div className="flex gap-5">
-        <InfoCard
-          createdAt={formatDate("2022-01-01")}
-          projectId={projectId}
-          updatedAt={formatDate("2022-01-02")}
-        />
+        <InfoCard projectId={projectId} />
         <ResourceCard usageData={usageData} />
       </div>
 

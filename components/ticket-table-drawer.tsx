@@ -11,7 +11,8 @@ import {
 import { Selection } from "@heroui/table";
 import useSWR from "swr";
 import { ConfirmationNumber as TicketIcon } from "@mui/icons-material";
-import { useEffect, useState } from "react";
+import { useEffect, useMemo, useState } from "react";
+import { toast } from "react-hot-toast";
 
 import ResourceChip from "./resource-chip";
 
@@ -36,6 +37,7 @@ type TicketTableProps = {
   selectionBehavior?: "replace" | "toggle";
   selectedKeys?: Selection;
   onSelectionChange?: (keys: Selection) => void;
+  onAllTicketIds?: (ids: string[]) => void;
   // onRowClick?: (row: (typeof defaultRows)[number]) => void;
 };
 
@@ -46,6 +48,7 @@ const TicketTableDrawer = ({
   selectionBehavior = "replace",
   selectedKeys,
   onSelectionChange,
+  onAllTicketIds,
 }: TicketTableProps) => {
   const [ticketsWithResourceDetails, setTicketsWithResourceDetails] = useState<
     any[]
@@ -116,7 +119,7 @@ const TicketTableDrawer = ({
 
         setTicketsWithResourceDetails(ticketsWithDetails);
       } catch (error) {
-        console.error("Error fetching resource details:", error);
+        toast.error("Error fetching resource details:" + error);
         setTicketsWithResourceDetails(data || []);
       } finally {
         setResourceDetailsLoading(false);
@@ -125,22 +128,32 @@ const TicketTableDrawer = ({
 
     fetchResourceDetailsForTickets();
   }, [data]);
+  const filteredTickets = useMemo(() => {
+    const tickets =
+      ticketsWithResourceDetails.length > 0
+        ? ticketsWithResourceDetails
+        : (data ?? []);
 
+    return tickets.filter(
+      (
+        ticket: UserTicketResponse & {
+          resourceDetails: ResourceDetail[];
+        },
+      ) => ticket.status === "ready",
+    );
+  }, [ticketsWithResourceDetails, data]);
+
+  useEffect(() => {
+    if (filteredTickets.length > 0 && onAllTicketIds) {
+      const allIds = filteredTickets.map(
+        (ticket: UserTicketResponse) => ticket.ticket.id,
+      );
+
+      onAllTicketIds(allIds);
+    }
+  }, [filteredTickets, onAllTicketIds]);
   if (isLoading) return <Loading />;
   if (error) return <div>Error loading tickets</div>;
-  const tickets =
-    ticketsWithResourceDetails.length > 0
-      ? ticketsWithResourceDetails
-      : (data ?? []);
-
-  const filteredTickets = tickets.filter(
-    (
-      ticket: UserTicketResponse & {
-        resourceDetails: ResourceDetail[];
-      },
-    ) => ticket.status === "ready",
-  );
-
   if (filteredTickets.length === 0) {
     return (
       <div className="text-center py-12">

@@ -1,9 +1,4 @@
-import {
-  Assignment as TaskIcon,
-  PlayArrow as RunningIcon,
-  CheckCircle as CompletedIcon,
-  Cancel as StoppedIcon,
-} from "@mui/icons-material";
+import { Assignment as TaskIcon } from "@mui/icons-material";
 
 import { Status } from "@/types/enum";
 
@@ -15,11 +10,12 @@ export const getStatusColor = (status: Status) => {
     case Status.pending:
       return "warning";
     case Status.ready:
+    case Status.expired:
       return "success";
     case Status.redeemed:
       return "primary";
-    case Status.succeeded:
     case Status.cancelled:
+    case Status.failed:
       return "default";
     case Status.stopped:
       return "danger";
@@ -36,18 +32,18 @@ export const getStatusIndicator = (status: Status) => {
     //     color: "text-green-500",
     //     bgColor: "bg-green-50 dark:bg-green-900/20",
     //   };
-    case Status.succeeded:
-      return {
-        icon: CompletedIcon,
-        color: "text-blue-500",
-        bgColor: "bg-blue-50 dark:bg-blue-900/20",
-      };
-    case Status.stopped:
-      return {
-        icon: StoppedIcon,
-        color: "text-gray-500",
-        bgColor: "bg-gray-50 dark:bg-gray-900/20",
-      };
+    // case Status.expired:
+    //   return {
+    //     icon: CompletedIcon,
+    //     color: "text-blue-500",
+    //     bgColor: "bg-blue-50 dark:bg-blue-900/20",
+    //   };
+    // case Status.stopped:
+    //   return {
+    //     icon: StoppedIcon,
+    //     color: "text-gray-500",
+    //     bgColor: "bg-gray-50 dark:bg-gray-900/20",
+    //   };
     default:
       return {
         icon: TaskIcon,

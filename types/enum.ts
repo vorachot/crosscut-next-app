@@ -1,9 +1,10 @@
 export enum Status {
   ready = "AVAILABLE",
   cancelled = "CANCELLED",
+  failed = "FAILED",
   pending = "PENDING",
   redeemed = "RUNNING",
-  succeeded = "SUCCEEDED",
+  expired = "SUCCEEDED",
   stopped = "STOPPED",
 }
 export enum ResourceType {
