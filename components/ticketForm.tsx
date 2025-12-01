@@ -35,6 +35,7 @@ const TicketForm = ({
     {},
   );
   const [ticketName, setTicketName] = useState<string>("");
+  const [duration, setDuration] = useState<number>(1);
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [validationError, setValidationError] = useState<string>("");
 
@@ -62,7 +63,7 @@ const TicketForm = ({
           quantity,
         }),
       ),
-      duration: 3600,
+      duration: duration * 60,
     };
 
     try {
@@ -165,7 +166,7 @@ const TicketForm = ({
     <div className="px-6">
       <Form className="flex flex-col gap-5" onSubmit={handleSubmit}>
         {/* Ticket Details Section */}
-        <div className="space-y-2">
+        <div className="flex gap-4 items-center">
           <Input
             isRequired
             classNames={{
@@ -178,6 +179,21 @@ const TicketForm = ({
             value={ticketName}
             variant="bordered"
             onValueChange={setTicketName}
+          />
+          <Input
+            isRequired
+            classNames={{
+              input: "text-gray-700 dark:text-gray-200",
+              label: "text-gray-600 dark:text-gray-300 font-medium",
+            }}
+            label="Duration (minutes)"
+            labelPlacement="outside"
+            max="180"
+            min="1"
+            type="number"
+            value={duration.toString()}
+            variant="bordered"
+            onValueChange={(value) => setDuration(parseInt(value) || 0)}
           />
           {/* {getTotalResourcesSelected() > 0 && (
             <Chip color="primary" size="sm" variant="flat">
