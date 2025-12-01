@@ -12,6 +12,7 @@ import { Selection } from "@heroui/table";
 import useSWR from "swr";
 import { ConfirmationNumber as TicketIcon } from "@mui/icons-material";
 import { useEffect, useMemo, useState } from "react";
+import { toast } from "react-hot-toast";
 
 import ResourceChip from "./resource-chip";
 
@@ -118,7 +119,7 @@ const TicketTableDrawer = ({
 
         setTicketsWithResourceDetails(ticketsWithDetails);
       } catch (error) {
-        console.error("Error fetching resource details:", error);
+        toast.error("Error fetching resource details:" + error);
         setTicketsWithResourceDetails(data || []);
       } finally {
         setResourceDetailsLoading(false);

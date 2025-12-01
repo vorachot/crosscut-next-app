@@ -8,6 +8,7 @@ import {
   DropdownTrigger,
 } from "@heroui/dropdown";
 import { MoreVert } from "@mui/icons-material";
+import toast, { Toaster } from "react-hot-toast";
 
 import ResourceChip from "./resource-chip";
 import ViewTicketDetail from "./view-ticket-detail-";
@@ -55,7 +56,7 @@ const SubTicketEnhanced = ({
 
         setResourcesWithDetails(resourceDetails);
       } catch (error) {
-        console.error("Error fetching resource details:", error);
+        toast.error("Error fetching resource details:" + error);
         setResourcesWithDetails(resources || []);
       } finally {
         setResourceDetailsLoading(false);
@@ -75,7 +76,7 @@ const SubTicketEnhanced = ({
 
   return (
     <>
-      {" "}
+      <Toaster />
       <Card
         className="flex py-3 px-4 bg-white dark:bg-gray-800 border border-gray-200 dark:border-gray-700 hover:bg-gray-50 dark:hover:bg-gray-750 transition-colors"
         radius="md"

@@ -18,7 +18,7 @@ import {
 import { MoreVert } from "@mui/icons-material";
 import { ConfirmationNumber as TicketIcon } from "@mui/icons-material";
 import { useEffect, useState } from "react";
-import { Toaster } from "react-hot-toast";
+import toast, { Toaster } from "react-hot-toast";
 
 import StatusChip from "./status-chip";
 import ResourceChip from "./resource-chip";
@@ -121,7 +121,7 @@ const TicketTable = ({
 
         setTicketsWithResourceDetails(ticketsWithDetails);
       } catch (error) {
-        console.error("Error fetching resource details:", error);
+        toast.error("Error fetching resource details:" + error);
         setTicketsWithResourceDetails(data || []);
       } finally {
         setResourceDetailsLoading(false);

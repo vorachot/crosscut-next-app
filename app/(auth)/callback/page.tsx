@@ -29,8 +29,7 @@ const CallbackPage = () => {
           setError("No authentication data received");
           setTimeout(() => router.replace("/login"), 2000);
         }
-      } catch (error) {
-        console.error("Callback error:", error);
+      } catch {
         setError("Authentication failed");
         setTimeout(() => router.replace("/login?error=callback_failed"), 2000);
       } finally {
