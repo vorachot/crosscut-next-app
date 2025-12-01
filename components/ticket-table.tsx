@@ -8,7 +8,6 @@ import {
   TableHeader,
   TableRow,
 } from "@heroui/table";
-import { Button } from "@heroui/button";
 import useSWR from "swr";
 import {
   Dropdown,
@@ -19,6 +18,7 @@ import {
 import { MoreVert } from "@mui/icons-material";
 import { ConfirmationNumber as TicketIcon } from "@mui/icons-material";
 import { useEffect, useState } from "react";
+import { Toaster } from "react-hot-toast";
 
 import StatusChip from "./status-chip";
 import ResourceChip from "./resource-chip";
@@ -29,7 +29,6 @@ import Loading from "@/app/loading";
 import { getTicketByNamespaceId, getUserTickets } from "@/api/ticket";
 import { formatDate, getStatusLabel } from "@/utils/helper";
 import { UserTicketResponse } from "@/types/ticket";
-import { useBreadcrumb } from "@/context/BreadCrumbContext";
 import { getResourceDetailByResourceIdFromCH } from "@/api/resource";
 import { ResourceDetail } from "@/types/resource";
 
@@ -60,7 +59,6 @@ const TicketTable = ({
   resourcePoolId,
 }: TicketTableProps) => {
   const shouldFetchByNs = Boolean(nsId);
-  const { breadcrumbData } = useBreadcrumb();
 
   const [cancelDialogOpen, setCancelDialogOpen] = useState(false);
   const [selectedTicket, setSelectedTicket] =
@@ -194,6 +192,7 @@ const TicketTable = ({
 
   return (
     <>
+      <Toaster />
       <Table
         // align="start"
         removeWrapper

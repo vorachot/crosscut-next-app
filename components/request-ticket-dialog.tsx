@@ -4,6 +4,7 @@ import { Modal, ModalContent, ModalHeader, ModalBody } from "@heroui/modal";
 import useSWR from "swr";
 import { Divider } from "@heroui/divider";
 import { useParams, useSearchParams } from "next/navigation";
+import { Toaster } from "react-hot-toast";
 
 import TicketForm from "./ticketForm";
 
@@ -57,28 +58,36 @@ const RequestTicketDialog = ({ setOnClose }: RequestDialogProps) => {
   const usageQuota: ResourceUsage[] = quotaUsageData.quotaUsage.usage || [];
 
   return (
-    <Modal isOpen={true} scrollBehavior="inside" size="sm" onClose={setOnClose}>
-      <ModalContent>
-        <ModalHeader className="flex flex-col gap-1">
-          <div className="flex flex-col w-full">
-            <h2 className="text-xl font-semibold text-gray-700 gap-2 dark:text-gray-300">
-              New Ticket
-            </h2>
-          </div>
-        </ModalHeader>
-        <Divider />
-        <ModalBody className="px-1 pt-5">
-          <TicketForm
-            createTicketToCH={requestTicketToCH}
-            namespace_id={namespaceId}
-            quota={quota!}
-            quota_id={quotaId!}
-            setOnClose={setOnClose}
-            usageQuota={usageQuota}
-          />
-        </ModalBody>
-      </ModalContent>
-    </Modal>
+    <>
+      <Toaster />
+      <Modal
+        isOpen={true}
+        scrollBehavior="inside"
+        size="sm"
+        onClose={setOnClose}
+      >
+        <ModalContent>
+          <ModalHeader className="flex flex-col gap-1">
+            <div className="flex flex-col w-full">
+              <h2 className="text-xl font-semibold text-gray-700 gap-2 dark:text-gray-300">
+                New Ticket
+              </h2>
+            </div>
+          </ModalHeader>
+          <Divider />
+          <ModalBody className="px-1 pt-5">
+            <TicketForm
+              createTicketToCH={requestTicketToCH}
+              namespace_id={namespaceId}
+              quota={quota!}
+              quota_id={quotaId!}
+              setOnClose={setOnClose}
+              usageQuota={usageQuota}
+            />
+          </ModalBody>
+        </ModalContent>
+      </Modal>
+    </>
   );
 };
 

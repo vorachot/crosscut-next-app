@@ -6,6 +6,7 @@ import { useEffect, useState } from "react";
 import { mutate } from "swr";
 import { Input } from "@heroui/input";
 import { Card, CardBody } from "@heroui/card";
+import toast, { Toaster } from "react-hot-toast";
 
 import SliderInput from "./slider-input";
 
@@ -37,7 +38,6 @@ const TicketForm = ({
   const [ticketName, setTicketName] = useState<string>("");
   const [duration, setDuration] = useState<number>(1);
   const [isSubmitting, setIsSubmitting] = useState(false);
-  const [validationError, setValidationError] = useState<string>("");
 
   const handleValueChange = (resource_id: string, value: number) => {
     setResourceValues((prev) => ({
@@ -48,7 +48,10 @@ const TicketForm = ({
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    if (!validateGpuRamRequirement()) {
+    if (!validateGpuRamRequirement(true)) {
+      return;
+    }
+    if (!validateResourceSelection(true)) {
       return;
     }
     setIsSubmitting(true);
@@ -68,6 +71,7 @@ const TicketForm = ({
 
     try {
       await createTicketToCH(requestTicketPayload);
+      toast.success("Ticket created successfully!");
       if (setOnClose) {
         setOnClose();
       }
@@ -76,7 +80,7 @@ const TicketForm = ({
         revalidate: true,
       });
     } catch (error) {
-      console.error("Failed to create ticket:", error);
+      toast.error("Failed to create ticket. Please try again: " + error);
     } finally {
       setIsSubmitting(false);
     }
@@ -102,19 +106,41 @@ const TicketForm = ({
     // Return the minimum of original quantity and available quantity
     return Math.min(originalQuantity, Math.max(0, available));
   };
-  const validateGpuRamRequirement = () => {
+  const validateGpuRamRequirement = (showToast = false) => {
     const gpuValue = getResourceValueByType("GPU");
     const ramValue = getResourceValueByType("RAM");
 
     if (gpuValue > 0 && ramValue < 2) {
-      setValidationError(
-        "Increase your RAM allocation to at least 2 GB when requesting GPU resources.",
-      );
+      if (showToast) {
+        toast.error("Increase your RAM allocation to at least 2 GB", {
+          duration: 4000,
+          icon: "⚠️",
+        });
+      }
 
       return false;
     }
 
-    setValidationError("");
+    return true;
+  };
+  const validateResourceSelection = (showToast = false) => {
+    const cpuValue = getResourceValueByType("CPU");
+    const gpuValue = getResourceValueByType("GPU");
+    const ramValue = getResourceValueByType("RAM");
+
+    if (cpuValue <= 0 || gpuValue <= 0 || ramValue <= 0) {
+      if (showToast) {
+        toast.error(
+          "Resource values cannot be zero. Please adjust your selections.",
+          {
+            duration: 4000,
+            icon: "⚠️",
+          },
+        );
+      }
+
+      return false;
+    }
 
     return true;
   };
@@ -152,18 +178,17 @@ const TicketForm = ({
   }, [quota]);
   useEffect(() => {
     if (resourceDetails.length > 0) {
-      validateGpuRamRequirement();
+      validateGpuRamRequirement(false);
     }
   }, [resourceValues, resourceDetails]);
 
   const isFormValid = () => {
-    return (
-      ticketName.trim() && getTotalResourcesSelected() > 0 && !validationError
-    );
+    return ticketName.trim() && getTotalResourcesSelected() > 0;
   };
 
   return (
     <div className="px-6">
+      <Toaster />
       <Form className="flex flex-col gap-5" onSubmit={handleSubmit}>
         {/* Ticket Details Section */}
         <div className="flex gap-4 items-center">
@@ -201,27 +226,6 @@ const TicketForm = ({
             </Chip>
           )} */}
         </div>
-        {/* Validation Error Message */}
-        {validationError && (
-          <div className="flex items-center gap-2 p-2 bg-red-50 dark:bg-red-900/20 border-l-4 border-red-400 dark:border-red-500 rounded-r-lg">
-            <div className="flex-shrink-0">
-              <svg
-                className="w-5 h-5 text-red-500 dark:text-red-400"
-                fill="currentColor"
-                viewBox="0 0 20 20"
-              >
-                <path
-                  clipRule="evenodd"
-                  d="M8.485 3.495c.673-1.167 2.357-1.167 3.03 0l6.28 10.875c.673 1.167-.17 2.625-1.516 2.625H3.72c-1.347 0-2.189-1.458-1.515-2.625L8.485 3.495zM10 6a.75.75 0 01.75.75v3.5a.75.75 0 01-1.5 0v-3.5A.75.75 0 0110 6zm0 9a1 1 0 100-2 1 1 0 000 2z"
-                  fillRule="evenodd"
-                />
-              </svg>
-            </div>
-            <div className="mt-1 text-xs text-red-600 dark:text-red-400">
-              <strong>Tip:</strong> {validationError}
-            </div>
-          </div>
-        )}
         {/* Resources Section */}
         <div className="w-full space-y-2">
           <h3 className="text-sm font-semibold text-gray-700 flex items-center gap-2 dark:text-gray-300">
