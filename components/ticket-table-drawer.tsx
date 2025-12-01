@@ -23,6 +23,9 @@ import { ResourceType } from "@/types/enum";
 import { getResourceDetailByResourceIdFromCH } from "@/api/resource";
 import { ResourceDetail } from "@/types/resource";
 
+// Cache for resource details to avoid redundant API calls
+const resourceDetailsCache = new Map<string, any>();
+
 const defaultColumns = [
   { name: "TICKET", uid: "name", sortable: true },
   // { name: "STATUS", uid: "status", sortable: true },
@@ -101,9 +104,24 @@ const TicketTableDrawer = ({
             }
 
             const resourceDetails = await Promise.all(
-              ticket.ticket.spec.resource.map((resource) =>
-                getResourceDetailByResourceIdFromCH(resource.resource_id)
-              )
+              ticket.ticket.spec.resource.map((resource) => {
+                // Check cache first
+                if (resourceDetailsCache.has(resource.resource_id)) {
+                  return Promise.resolve(
+                    resourceDetailsCache.get(resource.resource_id)
+                  );
+                }
+
+                // Fetch if not in cache
+                return getResourceDetailByResourceIdFromCH(
+                  resource.resource_id
+                ).then((detail) => {
+                  // Store in cache
+                  resourceDetailsCache.set(resource.resource_id, detail);
+
+                  return detail;
+                });
+              })
             );
 
             const resourcesWithDetails = ticket.ticket.spec.resource.map(
@@ -132,7 +150,7 @@ const TicketTableDrawer = ({
     const tickets =
       ticketsWithResourceDetails.length > 0
         ? ticketsWithResourceDetails
-        : (data ?? []);
+        : data ?? [];
 
     return tickets.filter(
       (
