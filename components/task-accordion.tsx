@@ -28,7 +28,7 @@ const TaskAccordion = ({
   id,
   title,
   createdAt,
-  status = Status.redeemed,
+  status = Status.pending,
   tickets,
 }: AccordionProps) => {
   const ticketCount = tickets!.length;
@@ -124,6 +124,7 @@ const TaskAccordion = ({
                     name={ticket.name}
                     password={ticket.password}
                     resources={ticket.ticket.spec.resource}
+                    taskStatus={status}
                     url={ticket.url}
                   />
                 ))}

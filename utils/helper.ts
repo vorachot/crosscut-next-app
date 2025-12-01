@@ -1,6 +1,5 @@
 import {
   Assignment as TaskIcon,
-  PlayArrow as RunningIcon,
   CheckCircle as CompletedIcon,
   Cancel as StoppedIcon,
 } from "@mui/icons-material";
@@ -20,6 +19,7 @@ export const getStatusColor = (status: Status) => {
       return "primary";
     case Status.succeeded:
     case Status.cancelled:
+    case Status.failed:
       return "default";
     case Status.stopped:
       return "danger";

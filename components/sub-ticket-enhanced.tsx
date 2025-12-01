@@ -8,14 +8,13 @@ import {
   DropdownTrigger,
 } from "@heroui/dropdown";
 import { MoreVert } from "@mui/icons-material";
-import { Button } from "@heroui/button";
 
 import ResourceChip from "./resource-chip";
 import ViewTicketDetail from "./view-ticket-detail-";
 
 import { SpecResource } from "@/types/ticket";
 import { getResourceDetailByResourceIdFromCH } from "@/api/resource";
-import { ResourceType } from "@/types/enum";
+import { ResourceType, Status } from "@/types/enum";
 
 type SubTicketEnhancedProps = {
   name?: string;
@@ -23,6 +22,7 @@ type SubTicketEnhancedProps = {
   status?: string;
   url?: string;
   password?: string;
+  taskStatus?: string;
 };
 
 const SubTicketEnhanced = ({
@@ -31,6 +31,7 @@ const SubTicketEnhanced = ({
   status,
   url,
   password,
+  taskStatus,
 }: SubTicketEnhancedProps) => {
   const [resourcesWithDetails, setResourcesWithDetails] = useState<any[]>([]);
   const [resourceDetailsLoading, setResourceDetailsLoading] = useState(false);
@@ -138,20 +139,22 @@ const SubTicketEnhanced = ({
                 );
               },
             )}
-            <div className="relative flex gap-2">
-              <Dropdown className="dark:bg-gray-900">
-                <DropdownTrigger className="!w-9 !h-9">
-                  <div className="hover:bg-gray-100 dark:hover:bg-gray-800 shadow-sm transition-colors duration-200 rounded-full w-9 h-9 flex items-center justify-center cursor-pointer">
-                    <MoreVert />
-                  </div>
-                </DropdownTrigger>
-                <DropdownMenu>
-                  <DropdownItem key="view" onPress={handleViewClick}>
-                    View
-                  </DropdownItem>
-                </DropdownMenu>
-              </Dropdown>
-            </div>
+            {taskStatus === Status.redeemed && (
+              <div className="relative flex gap-2">
+                <Dropdown className="dark:bg-gray-900">
+                  <DropdownTrigger className="!w-9 !h-9">
+                    <div className="hover:bg-gray-100 dark:hover:bg-gray-800 shadow-sm transition-colors duration-200 rounded-full w-9 h-9 flex items-center justify-center cursor-pointer">
+                      <MoreVert />
+                    </div>
+                  </DropdownTrigger>
+                  <DropdownMenu>
+                    <DropdownItem key="view" onPress={handleViewClick}>
+                      View
+                    </DropdownItem>
+                  </DropdownMenu>
+                </Dropdown>
+              </div>
+            )}
           </div>
         </div>
       </Card>
