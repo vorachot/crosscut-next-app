@@ -20,6 +20,13 @@ const Breadcrumb = () => {
     const isLast = i === segments.length - 1;
     const displayName = getDisplayName(seg, breadcrumbData);
 
+    // Show loading state for UUID segments without proper display name
+    const isUUID =
+      /^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/i.test(
+        seg,
+      );
+    const isLoading = isUUID && displayName === seg && !breadcrumbData?.[seg];
+
     return (
       <li key={href} className="inline-flex items-center font-medium">
         {!isLast ? (
@@ -27,11 +34,19 @@ const Breadcrumb = () => {
             className="capitalize text-[18px] hover:text-blue-600 hover:underline"
             href={href}
           >
-            {displayName}
+            {isLoading ? (
+              <span className="inline-block w-20 h-5 bg-gray-200 dark:bg-gray-600 rounded animate-pulse" />
+            ) : (
+              displayName
+            )}
           </Link>
         ) : (
           <span className="capitalize text-[18px] text-gray-500 dark:text-gray-400 cursor-default">
-            {displayName}
+            {isLoading ? (
+              <span className="inline-block w-20 h-5 bg-gray-200 dark:bg-gray-600 rounded animate-pulse" />
+            ) : (
+              displayName
+            )}
           </span>
         )}
         {!isLast && (
