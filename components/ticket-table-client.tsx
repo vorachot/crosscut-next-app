@@ -11,6 +11,7 @@ type TicketTableClientProps = {
   nsId?: string;
   resourcePoolId?: string;
   isDrawer?: boolean;
+  isResourcePool?: boolean;
   pathTemplate?: "resourcepool-to-ticket" | "ticket-to-resourcepool";
   selectionMode?: "multiple" | "single" | "none";
   selectionBehavior?: "replace" | "toggle";
@@ -29,6 +30,7 @@ const TicketTableClient = ({
   onSelectionChange,
   nsId,
   resourcePoolId,
+  isResourcePool = false,
   onAllTicketIds,
 }: TicketTableClientProps) => {
   return isDrawer ? (
@@ -44,6 +46,7 @@ const TicketTableClient = ({
   ) : (
     <TicketTable
       columns={columns}
+      isResourcePool={isResourcePool}
       nsId={nsId}
       resourcePoolId={resourcePoolId}
       selectionBehavior={selectionBehavior}

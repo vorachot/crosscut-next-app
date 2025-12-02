@@ -90,16 +90,14 @@ const ResourcePoolDetailPage = () => {
       namespace_id={namespaceId}
       quota_id={quotaId}
     >
-      <div className="flex flex-col gap-6">
+      <div className="container mx-auto pt-1 p-4 space-y-6">
         {/* Header Section */}
         <div className="flex flex-col gap-4">
           <div className="flex flex-col">
-            <p className="text-3xl font-bold text-gray-900 dark:text-white flex flex-wrap items-center gap-2">
-              <span className="text-3xl font-bold text-gray-900 dark:text-white">
-                {getDisplayName(resourcePoolId!, breadcrumbData)}
-              </span>
-            </p>
-            <p className="text-lg text-gray-600 dark:text-gray-400 flex flex-wrap items-center gap-1">
+            <h1 className="text-2xl font-bold text-gray-900 dark:text-white flex flex-wrap items-center gap-2 mb-2">
+              {getDisplayName(resourcePoolId!, breadcrumbData)}
+            </h1>
+            <p className="text-md text-gray-600 dark:text-gray-400 flex flex-wrap items-center gap-1">
               in namespace{" "}
               <span className="font-medium text-blue-600 dark:text-blue-400">
                 {getDisplayName(namespaceId, breadcrumbData)}
@@ -156,6 +154,7 @@ const ResourcePoolDetailPage = () => {
             </div>
           </div>
           <TicketTableClient
+            isResourcePool={true}
             nsId={namespaceId}
             pathTemplate="resourcepool-to-ticket"
             resourcePoolId={resourcePoolId}

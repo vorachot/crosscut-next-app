@@ -7,6 +7,7 @@ import {
   TableRow,
 } from "@heroui/table";
 import useSWR from "swr";
+import { TollRounded } from "@mui/icons-material";
 
 import UsageBar from "./usagebar";
 
@@ -100,7 +101,12 @@ const NamespaceResourceTable = ({
             >
               <TableCell>{row.name}</TableCell>
               {/* <TableCell>{row.description}</TableCell> */}
-              <TableCell>{row.credit}</TableCell>
+              <TableCell>
+                <div className="flex items-center">
+                  <TollRounded className="inline-block mr-1 mb-0.5 !w-4 !h-4" />
+                  {row.credit}
+                </div>
+              </TableCell>
               <TableCell className="flex flex-row gap-4">
                 <UsageBar
                   label="CPU"

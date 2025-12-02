@@ -32,13 +32,19 @@ const ProjectDetailPage = () => {
   const usageData: ResourceUsage[] = data.projectUsage.usage || [];
 
   return (
-    <div className="flex flex-col justify-center gap-7">
-      <div className="flex gap-5">
-        <InfoCard projectId={projectId} />
-        <ResourceCard usageData={usageData} />
+    <div className="container mx-auto p-4 space-y-6">
+      <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
+        <div className="lg:col-span-1 flex">
+          <InfoCard projectId={projectId} />
+        </div>
+        <div className="lg:col-span-2 flex">
+          <ResourceCard usageData={usageData} />
+        </div>
       </div>
 
-      <NamespaceList projectId={projectId} />
+      <div className="w-full">
+        <NamespaceList projectId={projectId} />
+      </div>
     </div>
   );
 };

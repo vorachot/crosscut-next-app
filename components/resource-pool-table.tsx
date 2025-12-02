@@ -10,6 +10,7 @@ import {
 } from "@heroui/table";
 import useSWR from "swr";
 import { useParams } from "next/navigation";
+import { HomeWorkRounded } from "@mui/icons-material";
 
 import UsageBar from "./usagebar";
 
@@ -100,7 +101,12 @@ const ResourcePoolTable = ({
               onClick={() => onRowClick?.(row)}
             >
               <TableCell>{row.resource_pool_name}</TableCell>
-              <TableCell>{row.organization_name}</TableCell>
+              <TableCell>
+                <div className="flex items-center">
+                  <HomeWorkRounded className="inline-block mr-1 mb-0.5 !w-4 !h-4" />
+                  {row.organization_name}
+                </div>
+              </TableCell>
               <TableCell className="flex flex-row gap-4">
                 <UsageBar
                   label="CPU"

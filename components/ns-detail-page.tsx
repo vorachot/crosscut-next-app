@@ -35,27 +35,29 @@ const NamespaceDetailPage = () => {
   const usageData: ResourceUsage[] = data.namespaceUsage.usage || [];
 
   return (
-    <div className="flex flex-col gap-6">
+    <div className="container mx-auto pt-1 p-4 space-y-3">
       {/* Header Section */}
-      <div className="flex flex-col gap-4">
-        <div className="flex flex-col">
-          <h1 className="text-3xl font-bold text-gray-900 dark:text-white">
-            {getDisplayName(namespaceId, breadcrumbData)}
-          </h1>
-          <p className="text-gray-600 dark:text-gray-400 text-lg">
-            Namespace in project{" "}
-            <span className="font-medium text-blue-600 dark:text-blue-400">
-              {getDisplayName(projectId, breadcrumbData)}
-            </span>
-          </p>
-        </div>
+      <div>
+        <h1 className="text-2xl font-bold text-gray-900 dark:text-white mb-2">
+          {getDisplayName(namespaceId, breadcrumbData)}
+        </h1>
+        <p className="text-gray-600 dark:text-gray-400 text-md">
+          Namespace in project{" "}
+          <span className="font-medium text-blue-600 dark:text-blue-400">
+            {getDisplayName(projectId, breadcrumbData)}
+          </span>
+        </p>
       </div>
 
       {/* Resource Quota Overview */}
-      <ResourceCard usageData={usageData} />
+      <div className="w-full">
+        <ResourceCard usageData={usageData} />
+      </div>
 
       {/* Resource Pools Section */}
-      <ResourcePoolList namespaceId={namespaceId} />
+      <div className="w-full">
+        <ResourcePoolList namespaceId={namespaceId} />
+      </div>
     </div>
   );
 };
