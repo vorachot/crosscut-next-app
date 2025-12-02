@@ -10,6 +10,7 @@ export const getStatusColor = (status: Status) => {
     case Status.pending:
       return "warning";
     case Status.ready:
+      return "secondary";
     case Status.expired:
       return "success";
     case Status.redeemed:

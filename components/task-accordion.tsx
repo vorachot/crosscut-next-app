@@ -84,7 +84,9 @@ const TaskAccordion = ({
                   </div>
                 </div>
               </div>
-              <StatusChip status={getStatusLabel(status)} />
+              <div className="min-w-[120px]">
+                <StatusChip isTask={true} status={getStatusLabel(status)} />
+              </div>
             </div>
           }
         >
