@@ -80,6 +80,35 @@ const ResourcePoolDetailPage = () => {
     },
   );
 
+  // Helper function to check if a value looks like a UUID
+  const isUUID = (str: string) => {
+    const uuidRegex =
+      /^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/i;
+
+    return uuidRegex.test(str);
+  };
+
+  // Get display names or show loading state
+  const resourcePoolDisplayName = getDisplayName(
+    resourcePoolId!,
+    breadcrumbData,
+  );
+  const namespaceDisplayName = getDisplayName(namespaceId, breadcrumbData);
+  const projectDisplayName = getDisplayName(projectId, breadcrumbData);
+
+  const isResourcePoolLoading =
+    isUUID(resourcePoolId) &&
+    resourcePoolDisplayName === resourcePoolId &&
+    !breadcrumbData?.[resourcePoolId];
+  const isNamespaceLoading =
+    isUUID(namespaceId) &&
+    namespaceDisplayName === namespaceId &&
+    !breadcrumbData?.[namespaceId];
+  const isProjectLoading =
+    isUUID(projectId) &&
+    projectDisplayName === projectId &&
+    !breadcrumbData?.[projectId];
+
   if (isLoading) return <Loading />;
   if (error) return <div>Error loading tickets</div>;
   const usageData: ResourceUsage[] = data.quotaUsage.usage || [];
@@ -95,16 +124,28 @@ const ResourcePoolDetailPage = () => {
         <div className="flex flex-col gap-4">
           <div className="flex flex-col">
             <h1 className="text-2xl font-bold text-gray-900 dark:text-white flex flex-wrap items-center gap-2 mb-2">
-              {getDisplayName(resourcePoolId!, breadcrumbData)}
+              {isResourcePoolLoading ? (
+                <span className="inline-block w-48 h-8 bg-gray-200 dark:bg-gray-600 rounded animate-pulse" />
+              ) : (
+                resourcePoolDisplayName
+              )}
             </h1>
             <p className="text-md text-gray-600 dark:text-gray-400 flex flex-wrap items-center gap-1">
               in namespace{" "}
               <span className="font-medium text-blue-600 dark:text-blue-400">
-                {getDisplayName(namespaceId, breadcrumbData)}
+                {isNamespaceLoading ? (
+                  <span className="inline-block w-32 h-5 bg-gray-200 dark:bg-gray-600 rounded animate-pulse" />
+                ) : (
+                  namespaceDisplayName
+                )}
               </span>
               , project{" "}
               <span className="font-medium text-blue-600 dark:text-blue-400">
-                {getDisplayName(projectId, breadcrumbData)}
+                {isProjectLoading ? (
+                  <span className="inline-block w-32 h-5 bg-gray-200 dark:bg-gray-600 rounded animate-pulse" />
+                ) : (
+                  projectDisplayName
+                )}
               </span>
             </p>
           </div>

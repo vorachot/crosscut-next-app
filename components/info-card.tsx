@@ -18,14 +18,33 @@ type InfoCardProps = {
 const InfoCard = ({ projectId, createdAt, updatedAt }: InfoCardProps) => {
   const { breadcrumbData } = useBreadcrumb();
 
+  // Helper function to check if a value looks like a UUID
+  const isUUID = (str: string) => {
+    const uuidRegex =
+      /^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/i;
+
+    return uuidRegex.test(str);
+  };
+
+  // Get display name and loading state
+  const projectDisplayName = getDisplayName(projectId!, breadcrumbData);
+  const isProjectLoading = Boolean(
+    projectId &&
+      isUUID(projectId) &&
+      projectDisplayName === projectId &&
+      !breadcrumbData?.[projectId],
+  );
+
   const InfoItem = ({
     label,
     value,
     icon,
+    isLoading,
   }: {
     label: string;
     value?: string;
     icon?: React.ReactNode;
+    isLoading?: boolean;
   }) => (
     <div className="group hover:bg-gray-50 dark:hover:bg-gray-700/30 rounded-lg p-3 transition-colors duration-200">
       <div className="flex items-start justify-between">
@@ -41,7 +60,9 @@ const InfoCard = ({ projectId, createdAt, updatedAt }: InfoCardProps) => {
         </div>
       </div>
       <div className="ml-6">
-        {value ? (
+        {isLoading ? (
+          <span className="inline-block w-32 h-6 bg-gray-200 dark:bg-gray-600 rounded animate-pulse" />
+        ) : value ? (
           <span className="text-base font-medium text-gray-900 dark:text-gray-100 break-words">
             {value}
           </span>
@@ -74,8 +95,9 @@ const InfoCard = ({ projectId, createdAt, updatedAt }: InfoCardProps) => {
         <div className="space-y-1">
           <InfoItem
             icon={<FolderOpenOutlined className="!w-4 !h-4" />}
+            isLoading={isProjectLoading}
             label="Project Name"
-            value={getDisplayName(projectId!, breadcrumbData)}
+            value={projectDisplayName}
           />
 
           <InfoItem
