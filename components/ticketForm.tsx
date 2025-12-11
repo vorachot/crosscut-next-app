@@ -57,7 +57,7 @@ const TicketForm = ({
     if (!validateResourceSelection(true)) {
       return;
     }
-    if (getTotalDurationMinutes() <= 60) {
+    if (getTotalDurationMinutes() < 60) {
       toast.error("Duration must be greater than 1 hour", {
         duration: 4000,
         icon: "⚠️",
@@ -298,8 +298,9 @@ const TicketForm = ({
                     <div className="mt-1 flex justify-between text-xs text-gray-500">
                       <span>Available: {availableQuantity}</span>
                       <span>
-                        Selected:{" "}
-                        {resourceValues[res.resource_prop.resource_id] || 0}
+                        {/* Selected:{" "}
+                        {resourceValues[res.resource_prop.resource_id] || 0}{" "} */}
+                        {res.detail.resource.resource_type.unit}
                       </span>
                     </div>
                   </CardBody>
