@@ -24,8 +24,8 @@ export type Project = {
 export type Quota = {
   id: string;
   name: string;
-  resource_pool_id: string;
-  resource_pool_name: string;
+  node_id: string;
+  node_name: string;
   organization_name: string;
   project_id: string;
   resources: Resource[];
