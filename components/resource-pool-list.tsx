@@ -16,7 +16,7 @@ const ResourcePoolList = ({ namespaceId }: { namespaceId: string }) => {
     {
       revalidateOnFocus: false,
       dedupingInterval: 5000, // Prevent duplicate requests for 5 seconds
-    },
+    }
   );
 
   if (isLoading) return <Loading />;
@@ -27,7 +27,7 @@ const ResourcePoolList = ({ namespaceId }: { namespaceId: string }) => {
     <div className="flex flex-col gap-4">
       <div className="flex gap-4 items-center">
         <h2 className="text-2xl font-semibold text-gray-900 dark:text-white">
-          Resource Pools
+          Resources
         </h2>
         <Chip color="primary" size="sm" variant="flat">
           {quotas.length} pools
@@ -35,7 +35,7 @@ const ResourcePoolList = ({ namespaceId }: { namespaceId: string }) => {
       </div>
       <ResourceTableClient
         parentId={namespaceId}
-        pathTemplate="namespace-to-resourcepool"
+        pathTemplate="namespace-to-resource"
         rows={quotas}
       />
     </div>

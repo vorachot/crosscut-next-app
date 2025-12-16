@@ -10,7 +10,7 @@ import { Namespace, Quota } from "@/types/resource";
 type ResourceTableClientProps = {
   parentId?: string;
   rows?: (Namespace | Quota)[];
-  pathTemplate: "project-to-namespace" | "namespace-to-resourcepool";
+  pathTemplate: "project-to-namespace" | "namespace-to-resource";
 };
 
 const ResourceTableClient = ({
@@ -24,7 +24,7 @@ const ResourceTableClient = ({
     switch (pathTemplate) {
       case "project-to-namespace":
         return `/projects/${row.project_id}/${row.id}`;
-      case "namespace-to-resourcepool":
+      case "namespace-to-resource":
         return `/projects/${row.project_id}/${parentId}/${row.resource_pool_id}?quota_id=${row.id}`;
       default:
         return "/";
