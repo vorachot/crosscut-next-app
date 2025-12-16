@@ -56,8 +56,8 @@ const ResourcePoolTable = ({
           getQuotaUsageByNamespaceIdFromCH(quotaId, nsId).then((res) => ({
             quotaId,
             usage: res.quotaUsage.usage,
-          })),
-        ),
+          }))
+        )
       );
 
       return results;
@@ -65,7 +65,7 @@ const ResourcePoolTable = ({
     {
       revalidateOnFocus: false,
       dedupingInterval: 5000,
-    },
+    }
   );
 
   if (isLoading) return <Loading />;
@@ -100,7 +100,7 @@ const ResourcePoolTable = ({
               style={{ cursor: "pointer" }}
               onClick={() => onRowClick?.(row)}
             >
-              <TableCell>{row.resource_pool_name}</TableCell>
+              <TableCell>{row.node_name}</TableCell>
               <TableCell>
                 <div className="flex items-center">
                   <HomeWorkRounded className="inline-block mr-1 mb-0.5 !w-4 !h-4" />
