@@ -52,7 +52,7 @@ const RequestTicketDialog = ({ setOnClose }: RequestDialogProps) => {
 
   if (quotasLoading || quotaUsageLoading) return <Loading />;
   if (quotasError || quotaUsageError) return <div>Error loading quotas</div>;
-  const quotas: Quota[] = quotasData.quotas || [];
+  const quotas: Quota[] = quotasData || [];
   const quota = quotas.find((q) => q.id === quotaId);
 
   const usageQuota: ResourceUsage[] = quotaUsageData.quotaUsage.usage || [];

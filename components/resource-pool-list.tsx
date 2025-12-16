@@ -21,7 +21,7 @@ const ResourcePoolList = ({ namespaceId }: { namespaceId: string }) => {
 
   if (isLoading) return <Loading />;
   if (error) return <div>Error loading quotas</div>;
-  const quotas: Quota[] = data.quotas || [];
+  const quotas: Quota[] = data || [];
 
   return (
     <div className="flex flex-col gap-4">
@@ -30,7 +30,7 @@ const ResourcePoolList = ({ namespaceId }: { namespaceId: string }) => {
           Resources
         </h2>
         <Chip color="primary" size="sm" variant="flat">
-          {quotas.length} pools
+          {quotas.length} resources
         </Chip>
       </div>
       <ResourceTableClient

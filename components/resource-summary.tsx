@@ -19,9 +19,9 @@ const ResourceSummary = ({
   resourceLimits,
 }: ResourceSummaryProps) => {
   const resourceTypes = [
-    { type: ResourceType.cpu, key: "AMD", unit: "Cores" },
-    { type: ResourceType.gpu, key: "A200", unit: "GiB" },
-    { type: ResourceType.memory, key: "RAMMY", unit: "GiB" },
+    { type: ResourceType.cpu, key: "CPU", unit: "Cores" },
+    { type: ResourceType.gpu, key: "GPU", unit: "GiB" },
+    { type: ResourceType.memory, key: "RAM", unit: "GiB" },
   ];
 
   const hasAnyResources = resourceTypes.some(
