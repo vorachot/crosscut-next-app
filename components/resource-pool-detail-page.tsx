@@ -22,13 +22,14 @@ import { NamespaceProvider } from "@/context/NamespaceContext";
 import { getQuotaUsageByNamespaceIdFromCH } from "@/api/quota";
 import Loading from "@/app/loading";
 import { ResourceUsage } from "@/types/resource";
+import { Status } from "@/types/enum";
 
-export const statusOptions = [
-  { name: "Available", uid: "available" },
-  { name: "Cancelled", uid: "cancelled" },
-  { name: "Stopped", uid: "stopped" },
-  { name: "Running", uid: "running" },
-];
+export const statusOptions: { uid: Status; name: string }[] = Object.values(
+  Status,
+).map((status) => ({
+  uid: status,
+  name: status.toLowerCase(),
+}));
 export type IconSvgProps = SVGProps<SVGSVGElement> & {
   size?: number;
 };

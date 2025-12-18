@@ -45,6 +45,7 @@ const defaultColumns = [
 
 const resourcePoolColumns = [
   { name: "TICKET", uid: "name", sortable: true },
+  { name: "OWNER", uid: "owner", sortable: false },
   { name: "STATUS", uid: "status", sortable: true },
   { name: "CREATED", uid: "created", sortable: true },
   { name: "ALLOCATED RESOURCES", uid: "usage", sortable: true },
@@ -274,8 +275,17 @@ const TicketTable = ({
           key={ticket.ticket.id}
           className="dark:border-b dark:border-gray-700 hover:bg-gray-100 dark:hover:bg-gray-800 shadow-sm transition-colors duration-200"
         >
-          <TableCell className="truncate pr-2" title={ticket.name}>
+          <TableCell
+            className="pr-2 max-w-[180px] whitespace-nowrap overflow-hidden text-ellipsis"
+            title={ticket.name}
+          >
             {ticket.name}
+          </TableCell>
+          <TableCell
+            className="pr-2 max-w-[180px] whitespace-nowrap overflow-hidden text-ellipsis"
+            title={ticket.owner_name}
+          >
+            {ticket.owner_name || "N/A"}
           </TableCell>
           <TableCell>
             <StatusChip status={getStatusLabel(ticket.status)} />
@@ -294,14 +304,20 @@ const TicketTable = ({
         key={ticket.ticket.id}
         className="dark:border-b dark:border-gray-700 hover:bg-gray-100 dark:hover:bg-gray-800 shadow-sm transition-colors duration-200"
       >
-        <TableCell className="truncate pr-2" title={ticket.name}>
+        <TableCell
+          className="pr-2 max-w-[180px] whitespace-nowrap overflow-hidden text-ellipsis"
+          title={ticket.name}
+        >
           {ticket.name}
         </TableCell>
-        <TableCell className="truncate pr-2" title={ticket.ticket.project_name}>
+        <TableCell
+          className="pr-2 max-w-[180px] whitespace-nowrap overflow-hidden text-ellipsis"
+          title={ticket.ticket.project_name}
+        >
           {ticket.ticket.project_name}
         </TableCell>
         <TableCell
-          className="truncate pr-2"
+          className="pr-2 max-w-[180px] whitespace-nowrap overflow-hidden text-ellipsis"
           title={ticket.ticket.namespace_name}
         >
           {ticket.ticket.namespace_name}
@@ -325,6 +341,15 @@ const TicketTable = ({
     ticketsWithResourceDetails.length > 0
       ? ticketsWithResourceDetails
       : (data ?? []);
+
+  tickets.sort(
+    (
+      a: UserTicketResponse & { resourceDetails: ResourceDetail[] },
+      b: UserTicketResponse & { resourceDetails: ResourceDetail[] },
+    ) =>
+      new Date(b.ticket.created_at).getTime() -
+      new Date(a.ticket.created_at).getTime(),
+  );
 
   if (tickets.length === 0) {
     return (
@@ -353,11 +378,12 @@ const TicketTable = ({
               key={column.uid}
               className={`
                 ${column.uid === "name" ? (isResourcePool ? "w-1/6" : "w-1/12") : ""}
+                ${column.uid === "owner" ? (isResourcePool ? "w-1/6" : "w-1/12") : ""}
                 ${column.uid === "project" ? "w-1/6" : ""}
                 ${column.uid === "namespace" ? "w-1/12" : ""}
                 ${column.uid === "status" ? (isResourcePool ? "w-32" : "w-24") : ""}
                 ${column.uid === "created" ? (isResourcePool ? "w-40" : "w-32") : ""}
-                ${column.uid === "usage" ? (isResourcePool ? "w-1/3" : "w-48") : ""}
+                ${column.uid === "usage" ? (isResourcePool ? "w-1/5" : "w-48") : ""}
                 ${column.uid === "actions" ? "w-16" : ""}
               `}
             >

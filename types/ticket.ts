@@ -6,6 +6,7 @@ export type UserTicketResponse = {
   status: string;
   url?: string;
   password?: string;
+  owner_name: string;
 };
 type GliderTicket = {
   id: string;
