@@ -21,6 +21,7 @@ type TicketFormProps = {
   usageQuota?: ResourceUsage[];
   createTicketToCH: (payload: RequestTicketPayload) => Promise<any>;
   setOnClose?: () => void;
+  minMaxDuration: number;
 };
 
 const TicketForm = ({
@@ -30,6 +31,7 @@ const TicketForm = ({
   createTicketToCH,
   setOnClose,
   usageQuota,
+  minMaxDuration,
 }: TicketFormProps) => {
   const [resourceDetails, setResourceDetails] = useState<any[]>([]);
   const [resourceValues, setResourceValues] = useState<Record<string, number>>(
@@ -57,11 +59,27 @@ const TicketForm = ({
     if (!validateResourceSelection(true)) {
       return;
     }
-    if (getTotalDurationMinutes() < 60) {
+    const totalDurationSeconds = getTotalDurationMinutes() * 60;
+
+    if (totalDurationSeconds < 3600) {
       toast.error("Duration must be greater than 1 hour", {
         duration: 4000,
         icon: "⚠️",
       });
+
+      return;
+    }
+    if (minMaxDuration && totalDurationSeconds > minMaxDuration) {
+      const maxHours = Math.floor(minMaxDuration / 3600);
+      const maxMinutes = Math.floor((minMaxDuration % 3600) / 60);
+
+      toast.error(
+        `Duration cannot exceed ${maxHours}h ${maxMinutes}m (max allowed: ${minMaxDuration}s)`,
+        {
+          duration: 4000,
+          icon: "⚠️",
+        },
+      );
 
       return;
     }
@@ -236,7 +254,7 @@ const TicketForm = ({
                 }}
                 label="Hours"
                 labelPlacement="outside"
-                max="23"
+                // max="23"
                 min="1"
                 type="number"
                 value={hours.toString()}

@@ -55,6 +55,11 @@ const RequestTicketDialog = ({ setOnClose }: RequestDialogProps) => {
   const quotas: Quota[] = quotasData || [];
   const quota = quotas.find((q) => q.id === quotaId);
 
+  const minMaxDuration =
+    quota?.resources?.reduce((min, resource) => {
+      return Math.min(min, resource.resource_prop.max_duration || Infinity);
+    }, Infinity) ?? Infinity;
+
   const usageQuota: ResourceUsage[] = quotaUsageData.quotaUsage.usage || [];
 
   return (
@@ -78,6 +83,7 @@ const RequestTicketDialog = ({ setOnClose }: RequestDialogProps) => {
           <ModalBody className="px-1 pt-5">
             <TicketForm
               createTicketToCH={requestTicketToCH}
+              minMaxDuration={minMaxDuration}
               namespace_id={namespaceId}
               quota={quota!}
               quota_id={quotaId!}
