@@ -137,6 +137,7 @@ const TaskAccordion = ({
               )}
             </div>
 
+            {console.log("Task status:", getStatusLabel(status))}
             {/* Action Buttons */}
             {getStatusLabel(status) === Status.redeemed && (
               <>
