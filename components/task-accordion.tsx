@@ -39,6 +39,8 @@ const TaskAccordion = ({
   const statusIndicator = getStatusIndicator(status);
   const formattedDate = formatDate(createdAt!);
 
+  console.log("Task status:", getStatusLabel(status));
+
   const totalResource = tickets!.reduce((acc, ticket) => {
     ticket.ticket.spec.resource.forEach((res) => {
       if (acc[res.name]) {
@@ -135,8 +137,7 @@ const TaskAccordion = ({
                   ))}
                 </div>
               )}
-            </div>
-
+            <
             {console.log("Task status:", getStatusLabel(status))}
             {/* Action Buttons */}
             {getStatusLabel(status) === Status.redeemed && (
