@@ -30,3 +30,13 @@ export async function stopTask(taskId: string): Promise<any> {
 
   return response.data;
 }
+
+export async function cancelTask(taskId: string): Promise<any> {
+  const response = await apiClient.patch(`/tasks/${taskId}/cancel`);
+
+  if (response.status !== 200) {
+    throw new Error("Failed to cancel task");
+  }
+
+  return response.data;
+}

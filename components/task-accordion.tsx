@@ -1,6 +1,7 @@
 "use client";
 import { Accordion, AccordionItem } from "@heroui/accordion";
 import {
+  Cancel,
   ConfirmationNumberOutlined,
   EditCalendarOutlined,
 } from "@mui/icons-material";
@@ -15,6 +16,8 @@ import SubTicketEnhanced from "./sub-ticket-enhanced";
 import { Status } from "@/types/enum";
 import { formatDate, getStatusIndicator, getStatusLabel } from "@/utils/helper";
 import { UserTicketResponse } from "@/types/ticket";
+import { get } from "http";
+import CancelButtonClient from "./cancel-button-client";
 
 type AccordionProps = {
   id?: string;
@@ -36,20 +39,17 @@ const TaskAccordion = ({
   const statusIndicator = getStatusIndicator(status);
   const formattedDate = formatDate(createdAt!);
 
-  const totalResource = tickets!.reduce(
-    (acc, ticket) => {
-      ticket.ticket.spec.resource.forEach((res) => {
-        if (acc[res.name]) {
-          acc[res.name] += res.quantity;
-        } else {
-          acc[res.name] = res.quantity;
-        }
-      });
+  const totalResource = tickets!.reduce((acc, ticket) => {
+    ticket.ticket.spec.resource.forEach((res) => {
+      if (acc[res.name]) {
+        acc[res.name] += res.quantity;
+      } else {
+        acc[res.name] = res.quantity;
+      }
+    });
 
-      return acc;
-    },
-    {} as Record<string, number>,
-  );
+    return acc;
+  }, {} as Record<string, number>);
 
   return (
     <>
@@ -142,6 +142,14 @@ const TaskAccordion = ({
               <>
                 <div className="flex justify-end items-center pt-2 px-5">
                   <StopButtonClient taskId={id!} />
+                </div>
+              </>
+            )}
+
+            {getStatusLabel(status) === Status.pending && (
+              <>
+                <div className="flex justify-end items-center pt-2 px-5">
+                  <CancelButtonClient taskId={id!} />
                 </div>
               </>
             )}
