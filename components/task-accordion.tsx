@@ -4,6 +4,7 @@ import {
   Cancel,
   ConfirmationNumberOutlined,
   EditCalendarOutlined,
+  HourglassBottomOutlined,
 } from "@mui/icons-material";
 import { Chip } from "@heroui/chip";
 import { Toaster } from "react-hot-toast";
@@ -24,6 +25,7 @@ type AccordionProps = {
   title?: string;
   description?: string;
   createdAt?: string;
+  estimatedStartTime?: string;
   status?: Status;
   tickets?: UserTicketResponse[];
 };
@@ -32,12 +34,14 @@ const TaskAccordion = ({
   id,
   title,
   createdAt,
+  estimatedStartTime,
   status = Status.pending,
   tickets,
 }: AccordionProps) => {
   const ticketCount = tickets!.length;
   const statusIndicator = getStatusIndicator(status);
   const formattedDate = formatDate(createdAt!);
+  const estimatedStartTimeFormatted = formatDate(estimatedStartTime!);
 
   console.log("Task status:", getStatusLabel(status));
 
@@ -74,8 +78,19 @@ const TaskAccordion = ({
                   </h3>
                   <div className="flex items-center gap-4 text-gray-600 dark:text-gray-400 mt-2">
                     <div className="flex items-center gap-1">
-                      <EditCalendarOutlined className="!w-3 !h-3" />
-                      <span className="text-xs">{formattedDate}</span>
+                      {status === Status.pending ? (
+                        <>
+                          <HourglassBottomOutlined className="!w-3 !h-3" />
+                          <span className="text-xs">
+                            {estimatedStartTimeFormatted}
+                          </span>
+                        </>
+                      ) : (
+                        <>
+                          <EditCalendarOutlined className="!w-3 !h-3" />
+                          <span className="text-xs">{formattedDate}</span>
+                        </>
+                      )}
                     </div>
                     <div className="flex items-center gap-1">
                       <ConfirmationNumberOutlined className="!w-3 !h-3" />
