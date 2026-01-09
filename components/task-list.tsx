@@ -42,6 +42,7 @@ const TaskList = () => {
           status={task.status as Status}
           tickets={task.tickets}
           title={task.title}
+          estimatedStartTime={formatDate(task.estimated_start_time)}
         />
       ))}
     </div>

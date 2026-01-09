@@ -44,6 +44,7 @@ const TaskAccordion = ({
   const estimatedStartTimeFormatted = formatDate(estimatedStartTime!);
 
   console.log("Task status:", getStatusLabel(status));
+  console.log("Status enum value:", status);
 
   const totalResource = tickets!.reduce((acc, ticket) => {
     ticket.ticket.spec.resource.forEach((res) => {
