@@ -1,5 +1,6 @@
 import { Card } from "@heroui/card";
 import { Chip } from "@heroui/chip";
+import { Button } from "@heroui/button";
 import { useEffect, useState, useMemo } from "react";
 import {
   Dropdown,
@@ -7,7 +8,7 @@ import {
   DropdownMenu,
   DropdownTrigger,
 } from "@heroui/dropdown";
-import { MoreVert } from "@mui/icons-material";
+import { MoreVert, Close } from "@mui/icons-material";
 import toast, { Toaster } from "react-hot-toast";
 
 import ResourceChip from "./resource-chip";
@@ -95,11 +96,11 @@ const SubTicketEnhanced = ({
             <div className="text-sm text-gray-700 dark:text-gray-300 font-medium">
               {name}
             </div>
-            {status && (
+            {/* {status && (
               <Chip size="sm" variant="dot">
                 {status}
               </Chip>
-            )}
+            )} */}
           </div>
 
           <div className="flex flex-wrap gap-2">
@@ -148,7 +149,7 @@ const SubTicketEnhanced = ({
                 );
               }
             )}
-            {taskStatus === Status.redeemed && (
+            {status === "redeemed" ? (
               <div className="relative flex gap-2">
                 <Dropdown className="dark:bg-gray-900">
                   <DropdownTrigger className="!w-9 !h-9">
@@ -163,6 +164,19 @@ const SubTicketEnhanced = ({
                   </DropdownMenu>
                 </Dropdown>
               </div>
+            ) : (
+              <Button
+                isIconOnly
+                className="w-9 h-9 min-w-9"
+                radius="full"
+                size="sm"
+                variant="light"
+                onPress={() => toast(`Status: ${status || "Unknown"}`)}
+              >
+                <div className="w-6 h-6 rounded-full border-2 border-gray-400 dark:border-gray-500 flex items-center justify-center">
+                  <Close className="!w-4 !h-4 text-gray-500 dark:text-gray-400" />
+                </div>
+              </Button>
             )}
           </div>
         </div>

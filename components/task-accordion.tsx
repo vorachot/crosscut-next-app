@@ -149,6 +149,7 @@ const TaskAccordion = ({
                       resources={ticket.ticket.spec.resource}
                       taskStatus={getStatusLabel(status)}
                       url={ticket.url}
+                      status={ticket.status}
                     />
                   ))}
                 </div>
