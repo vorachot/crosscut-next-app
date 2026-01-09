@@ -4,7 +4,6 @@ import { Modal, ModalContent, ModalHeader, ModalBody } from "@heroui/modal";
 import useSWR from "swr";
 import { Divider } from "@heroui/divider";
 import { useParams, useSearchParams } from "next/navigation";
-import { Toaster } from "react-hot-toast";
 
 import TicketForm from "./ticketForm";
 
@@ -35,7 +34,7 @@ const RequestTicketDialog = ({ setOnClose }: RequestDialogProps) => {
     {
       revalidateOnFocus: false,
       dedupingInterval: 5000, // Prevent duplicate requests for 5 seconds
-    },
+    }
   );
   const {
     data: quotaUsageData,
@@ -47,7 +46,7 @@ const RequestTicketDialog = ({ setOnClose }: RequestDialogProps) => {
     {
       revalidateOnFocus: false,
       dedupingInterval: 5000,
-    },
+    }
   );
 
   if (quotasLoading || quotaUsageLoading) return <Loading />;
@@ -64,7 +63,6 @@ const RequestTicketDialog = ({ setOnClose }: RequestDialogProps) => {
 
   return (
     <>
-      <Toaster />
       <Modal
         isOpen={true}
         scrollBehavior="inside"

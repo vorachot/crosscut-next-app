@@ -18,7 +18,7 @@ import {
 import { MoreVert } from "@mui/icons-material";
 import { ConfirmationNumber as TicketIcon } from "@mui/icons-material";
 import { useEffect, useState } from "react";
-import toast, { Toaster } from "react-hot-toast";
+import toast from "react-hot-toast";
 
 import StatusChip from "./status-chip";
 import ResourceChip from "./resource-chip";
@@ -100,7 +100,7 @@ const TicketTable = ({
     {
       revalidateOnFocus: false,
       dedupingInterval: 5000,
-    },
+    }
   );
 
   useEffect(() => {
@@ -121,20 +121,20 @@ const TicketTable = ({
             const resourceDetails = await Promise.all(
               ticket.ticket.spec.resource.map((resource) =>
                 getCachedOrFetch(resource.resource_id, () =>
-                  getResourceDetailByResourceIdFromCH(resource.resource_id),
-                ),
-              ),
+                  getResourceDetailByResourceIdFromCH(resource.resource_id)
+                )
+              )
             );
 
             const resourcesWithDetails = ticket.ticket.spec.resource.map(
               (resource, i) => ({
                 ...resource,
                 detail: resourceDetails[i],
-              }),
+              })
             );
 
             return { ...ticket, resourceDetails: resourcesWithDetails };
-          }),
+          })
         );
 
         setTicketsWithResourceDetails(ticketsWithDetails);
@@ -151,7 +151,7 @@ const TicketTable = ({
 
   const getResourceValueByType = (
     resourceDetails: any[],
-    resourceType: ResourceType,
+    resourceType: ResourceType
   ) => {
     if (!resourceDetails || resourceDetails.length === 0) return 0;
 
@@ -183,7 +183,7 @@ const TicketTable = ({
       ResourceType.memory,
     ].reduce(
       (sum, type) => sum + getResourceValueByType(ticket.resourceDetails, type),
-      0,
+      0
     );
 
     return totalResources > 0;
@@ -200,40 +200,40 @@ const TicketTable = ({
           <>
             {getResourceValueByType(
               ticket.resourceDetails || [],
-              ResourceType.cpu,
+              ResourceType.cpu
             ) > 0 && (
               <ResourceChip
                 size="sm"
                 type={ResourceType.cpu}
                 value={getResourceValueByType(
                   ticket.resourceDetails || [],
-                  ResourceType.cpu,
+                  ResourceType.cpu
                 )}
               />
             )}
             {getResourceValueByType(
               ticket.resourceDetails || [],
-              ResourceType.gpu,
+              ResourceType.gpu
             ) > 0 && (
               <ResourceChip
                 size="sm"
                 type={ResourceType.gpu}
                 value={getResourceValueByType(
                   ticket.resourceDetails || [],
-                  ResourceType.gpu,
+                  ResourceType.gpu
                 )}
               />
             )}
             {getResourceValueByType(
               ticket.resourceDetails || [],
-              ResourceType.memory,
+              ResourceType.memory
             ) > 0 && (
               <ResourceChip
                 size="sm"
                 type={ResourceType.memory}
                 value={getResourceValueByType(
                   ticket.resourceDetails || [],
-                  ResourceType.memory,
+                  ResourceType.memory
                 )}
               />
             )}
@@ -267,7 +267,7 @@ const TicketTable = ({
   );
 
   const renderTableRow = (
-    ticket: UserTicketResponse & { resourceDetails: ResourceDetail[] },
+    ticket: UserTicketResponse & { resourceDetails: ResourceDetail[] }
   ) => {
     if (isResourcePool) {
       return (
@@ -340,15 +340,15 @@ const TicketTable = ({
   const tickets =
     ticketsWithResourceDetails.length > 0
       ? ticketsWithResourceDetails
-      : (data ?? []);
+      : data ?? [];
 
   tickets.sort(
     (
       a: UserTicketResponse & { resourceDetails: ResourceDetail[] },
-      b: UserTicketResponse & { resourceDetails: ResourceDetail[] },
+      b: UserTicketResponse & { resourceDetails: ResourceDetail[] }
     ) =>
       new Date(b.ticket.created_at).getTime() -
-      new Date(a.ticket.created_at).getTime(),
+      new Date(a.ticket.created_at).getTime()
   );
 
   if (tickets.length === 0) {
@@ -364,7 +364,6 @@ const TicketTable = ({
 
   return (
     <>
-      <Toaster />
       <Table
         removeWrapper
         aria-label="Ticket Table"
@@ -377,13 +376,43 @@ const TicketTable = ({
             <TableColumn
               key={column.uid}
               className={`
-                ${column.uid === "name" ? (isResourcePool ? "w-1/6" : "w-1/12") : ""}
-                ${column.uid === "owner" ? (isResourcePool ? "w-1/6" : "w-1/12") : ""}
+                ${
+                  column.uid === "name"
+                    ? isResourcePool
+                      ? "w-1/6"
+                      : "w-1/12"
+                    : ""
+                }
+                ${
+                  column.uid === "owner"
+                    ? isResourcePool
+                      ? "w-1/6"
+                      : "w-1/12"
+                    : ""
+                }
                 ${column.uid === "project" ? "w-1/6" : ""}
                 ${column.uid === "namespace" ? "w-1/12" : ""}
-                ${column.uid === "status" ? (isResourcePool ? "w-32" : "w-24") : ""}
-                ${column.uid === "created" ? (isResourcePool ? "w-40" : "w-32") : ""}
-                ${column.uid === "usage" ? (isResourcePool ? "w-1/5" : "w-48") : ""}
+                ${
+                  column.uid === "status"
+                    ? isResourcePool
+                      ? "w-32"
+                      : "w-24"
+                    : ""
+                }
+                ${
+                  column.uid === "created"
+                    ? isResourcePool
+                      ? "w-40"
+                      : "w-32"
+                    : ""
+                }
+                ${
+                  column.uid === "usage"
+                    ? isResourcePool
+                      ? "w-1/5"
+                      : "w-48"
+                    : ""
+                }
                 ${column.uid === "actions" ? "w-16" : ""}
               `}
             >
@@ -396,8 +425,8 @@ const TicketTable = ({
             (
               ticket: UserTicketResponse & {
                 resourceDetails: ResourceDetail[];
-              },
-            ) => renderTableRow(ticket),
+              }
+            ) => renderTableRow(ticket)
           )}
         </TableBody>
       </Table>

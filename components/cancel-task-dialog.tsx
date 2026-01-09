@@ -1,7 +1,7 @@
 import { Button } from "@heroui/button";
 import { Card } from "@heroui/card";
 import { mutate } from "swr";
-import { toast, Toaster } from "react-hot-toast";
+import { toast } from "react-hot-toast";
 
 import { cancelTask } from "@/api/task";
 
@@ -26,7 +26,6 @@ const CancelTaskDialog = ({ setOnClose, taskId }: CancelTaskDialogProps) => {
 
   return (
     <>
-      <Toaster />
       <Card className="w-[350px] px-5 py-6 bg-white dark:bg-gray-800 shadow-md border border-gray-200 dark:border-gray-700 relative">
         <Button
           className="absolute top-2 right-2 min-w-8 h-8 p-0 bg-transparent hover:bg-gray-100 dark:hover:bg-gray-700 text-gray-500 dark:text-gray-400 rounded-full"

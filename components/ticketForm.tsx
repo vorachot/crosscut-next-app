@@ -6,7 +6,7 @@ import { useEffect, useState } from "react";
 import { mutate } from "swr";
 import { Input } from "@heroui/input";
 import { Card, CardBody } from "@heroui/card";
-import toast, { Toaster } from "react-hot-toast";
+import toast from "react-hot-toast";
 
 import SliderInput from "./slider-input";
 
@@ -223,7 +223,6 @@ const TicketForm = ({
 
   return (
     <div className="px-6">
-      <Toaster />
       <Form className="flex flex-col gap-5" onSubmit={handleSubmit}>
         {/* Ticket Details Section */}
         <div className="space-y-4 w-full">

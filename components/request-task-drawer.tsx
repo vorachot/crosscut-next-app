@@ -21,7 +21,7 @@ import {
   Info as InfoIcon,
   Warning as WarningIcon,
 } from "@mui/icons-material";
-import toast, { Toaster } from "react-hot-toast";
+import toast from "react-hot-toast";
 
 import TicketTableClient from "./ticket-table-client";
 
@@ -37,7 +37,7 @@ const RequestTaskDrawer = ({ isOpen, onClose }: RequestTaskDrawerProps) => {
   const [taskName, setTaskName] = useState("");
   const [isCreating, setIsCreating] = useState(false);
   const [errors, setErrors] = useState<{ taskName?: string; tickets?: string }>(
-    {},
+    {}
   );
   const [allTicketIds, setAllTicketIds] = useState<string[]>([]);
   const handleAllTicketIds = useCallback((ids: string[]) => {
@@ -53,7 +53,7 @@ const RequestTaskDrawer = ({ isOpen, onClose }: RequestTaskDrawerProps) => {
         setSelectedKeys(keys);
       }
     },
-    [allTicketIds],
+    [allTicketIds]
   );
 
   const hasSelectedTickets = selectedKeys !== "all" && selectedKeys.size > 0;
@@ -116,7 +116,6 @@ const RequestTaskDrawer = ({ isOpen, onClose }: RequestTaskDrawerProps) => {
 
   return (
     <>
-      <Toaster />
       <Drawer isOpen={isOpen} size="lg" onOpenChange={handleClose}>
         <DrawerContent className="bg-white dark:bg-gray-800">
           <DrawerHeader className="flex items-center gap-3 pb-3 border-b border-gray-200 dark:border-gray-700">
