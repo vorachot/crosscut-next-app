@@ -44,7 +44,7 @@ const TaskAccordion = ({
   const estimatedStartTimeFormatted = formatDate(estimatedStartTime!);
 
   console.log("Task status:", getStatusLabel(status));
-  console.log("Status enum value:", status);
+  console.log("Status enum value:", getStatusLabel(status), Status.pending);
 
   const totalResource = tickets!.reduce((acc, ticket) => {
     ticket.ticket.spec.resource.forEach((res) => {
@@ -79,7 +79,7 @@ const TaskAccordion = ({
                   </h3>
                   <div className="flex items-center gap-4 text-gray-600 dark:text-gray-400 mt-2">
                     <div className="flex items-center gap-1">
-                      {status === Status.pending ? (
+                      {getStatusLabel(status) == Status.pending ? (
                         <>
                           <HourglassBottomOutlined className="!w-3 !h-3" />
                           <span className="text-xs">
