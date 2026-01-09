@@ -61,8 +61,8 @@ const TicketForm = ({
     }
     const totalDurationSeconds = getTotalDurationMinutes() * 60;
 
-    if (totalDurationSeconds < 3600) {
-      toast.error("Duration must be greater than 1 hour", {
+    if (totalDurationSeconds < 60) {
+      toast.error("Duration must be greater than 1 minute", {
         duration: 4000,
         icon: "⚠️",
       });
@@ -255,7 +255,7 @@ const TicketForm = ({
                 label="Hours"
                 labelPlacement="outside"
                 // max="23"
-                min="1"
+                min="0"
                 type="number"
                 value={hours.toString()}
                 variant="bordered"
