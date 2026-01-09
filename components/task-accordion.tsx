@@ -7,7 +7,6 @@ import {
   HourglassBottomOutlined,
 } from "@mui/icons-material";
 import { Chip } from "@heroui/chip";
-import { Toaster } from "react-hot-toast";
 
 import StatusChip from "./status-chip";
 import StopButtonClient from "./stop-button-client";
@@ -60,7 +59,6 @@ const TaskAccordion = ({
 
   return (
     <>
-      <Toaster />
       <Accordion className="w-full" variant="splitted">
         <AccordionItem
           className="w-full bg-white dark:bg-gray-800 border border-gray-200 dark:border-gray-700 hover:shadow-lg transition-all duration-300 hover:border-gray-300 dark:hover:border-gray-600"

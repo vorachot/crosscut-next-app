@@ -6,6 +6,7 @@ import * as React from "react";
 import { HeroUIProvider } from "@heroui/system";
 import { useRouter } from "next/navigation";
 import { ThemeProvider as NextThemesProvider } from "next-themes";
+import { Toaster } from "react-hot-toast";
 
 import { UserProvider } from "@/context/UserContext";
 
@@ -37,6 +38,7 @@ export function Providers({ children, themeProps }: ProvidersProps) {
         attribute="class"
         defaultTheme="dark"
       >
+        <Toaster position="top-right" />
         <UserProvider>{children}</UserProvider>
       </NextThemesProvider>
     </HeroUIProvider>
