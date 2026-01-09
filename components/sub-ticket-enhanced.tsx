@@ -170,7 +170,9 @@ const SubTicketEnhanced = ({
                 radius="full"
                 size="sm"
                 variant="light"
-                onPress={() => toast(`Status: ${status || "Unknown"}`)}
+                onPress={() =>
+                  toast(`Status: ${status?.toUpperCase() || "Unknown"}`)
+                }
               >
                 <div className="w-6 h-6 rounded-full border-2 border-gray-400 dark:border-gray-500 flex items-center justify-center">
                   <Close className="!w-4 !h-4 text-gray-500 dark:text-gray-400" />
