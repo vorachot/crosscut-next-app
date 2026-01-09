@@ -38,7 +38,7 @@ export function Providers({ children, themeProps }: ProvidersProps) {
         attribute="class"
         defaultTheme="dark"
       >
-        <Toaster position="top-right" />
+        <Toaster position="top-center" />
         <UserProvider>{children}</UserProvider>
       </NextThemesProvider>
     </HeroUIProvider>
