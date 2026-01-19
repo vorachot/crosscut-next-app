@@ -45,17 +45,20 @@ const TaskAccordion = ({
   console.log("Task status:", getStatusLabel(status));
   console.log("Status enum value:", getStatusLabel(status), Status.pending);
 
-  const totalResource = tickets!.reduce((acc, ticket) => {
-    ticket.ticket.spec.resource.forEach((res) => {
-      if (acc[res.name]) {
-        acc[res.name] += res.quantity;
-      } else {
-        acc[res.name] = res.quantity;
-      }
-    });
+  const totalResource = tickets!.reduce(
+    (acc, ticket) => {
+      ticket.ticket.spec.resource.forEach((res) => {
+        if (acc[res.name]) {
+          acc[res.name] += res.quantity;
+        } else {
+          acc[res.name] = res.quantity;
+        }
+      });
 
-    return acc;
-  }, {} as Record<string, number>);
+      return acc;
+    },
+    {} as Record<string, number>,
+  );
 
   return (
     <>

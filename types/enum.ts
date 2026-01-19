@@ -6,6 +6,7 @@ export enum Status {
   redeemed = "RUNNING",
   expired = "SUCCEEDED",
   stopped = "STOPPED",
+  queued = "QUEUED",
 }
 export enum ResourceType {
   cpu = "CPU",

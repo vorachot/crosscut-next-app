@@ -15,6 +15,8 @@ export const getStatusColor = (status: Status) => {
       return "success";
     case Status.redeemed:
       return "primary";
+    case Status.queued:
+      return "warning";
     case Status.cancelled:
     case Status.failed:
       return "default";
