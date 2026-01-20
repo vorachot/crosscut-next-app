@@ -166,14 +166,14 @@ const TaskAccordion = ({
               </>
             )}
 
-            {getStatusLabel(status) === Status.pending ||
-              (getStatusLabel(status) === Status.queued && (
-                <>
-                  <div className="flex justify-end items-center pt-2 px-5">
-                    <CancelButtonClient taskId={id!} />
-                  </div>
-                </>
-              ))}
+            {(getStatusLabel(status) === Status.pending ||
+              getStatusLabel(status) === Status.queued) && (
+              <>
+                <div className="flex justify-end items-center pt-2 px-5">
+                  <CancelButtonClient taskId={id!} />
+                </div>
+              </>
+            )}
           </div>
         </AccordionItem>
       </Accordion>
