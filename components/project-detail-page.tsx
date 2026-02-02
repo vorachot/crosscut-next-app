@@ -19,7 +19,7 @@ const ProjectDetailPage = () => {
   useBreadcrumbData({ projectId });
 
   const { data, error, isLoading } = useSWR(
-    ["project-usage"],
+    ["project-usage", projectId],
     () => getProjectUsageByProjectIdFromCH(projectId),
     {
       revalidateOnFocus: false,
