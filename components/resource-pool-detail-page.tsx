@@ -9,7 +9,8 @@ import {
   DropdownTrigger,
 } from "@heroui/dropdown";
 import { Button } from "@heroui/button";
-import { SVGProps } from "react";
+import { SVGProps, useState } from "react";
+import { Selection } from "@heroui/table";
 
 import ResourceCard from "./resource-card";
 import ButtonClient from "./button-client";
@@ -71,6 +72,7 @@ const ResourcePoolDetailPage = () => {
   useBreadcrumbData({ projectId, namespaceId, resourcePoolId });
 
   const { breadcrumbData } = useBreadcrumb();
+  const [statusFilter, setStatusFilter] = useState<Selection>(new Set(["all"]));
 
   const { data, error, isLoading } = useSWR(
     ["quota-usage", namespaceId, quotaId],
@@ -178,9 +180,9 @@ const ResourcePoolDetailPage = () => {
                   disallowEmptySelection
                   aria-label="Status"
                   closeOnSelect={false}
-                  // selectedKeys={statusFilter}
-                  // selectionMode="multiple"
-                  // onSelectionChange={setStatusFilter}
+                  selectedKeys={statusFilter}
+                  selectionMode="multiple"
+                  onSelectionChange={setStatusFilter}
                 >
                   {statusOptions.map((status) => (
                     <DropdownItem key={status.uid} className="capitalize">
@@ -201,6 +203,7 @@ const ResourcePoolDetailPage = () => {
             pathTemplate="resourcepool-to-ticket"
             resourcePoolId={resourcePoolId}
             selectionMode="none"
+            statusFilter={statusFilter}
           />
         </div>
       </div>
