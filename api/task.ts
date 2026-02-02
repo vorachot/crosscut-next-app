@@ -40,3 +40,15 @@ export async function cancelTask(taskId: string): Promise<any> {
 
   return response.data;
 }
+
+export async function deleteTasks(taskIds: string[]): Promise<any> {
+  const response = await apiClient.delete(`/ticket/tasks`, {
+    data: { task_ids: taskIds },
+  });
+
+  if (response.status !== 200) {
+    throw new Error("Failed to delete tasks");
+  }
+
+  return response.data;
+}

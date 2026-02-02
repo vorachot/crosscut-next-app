@@ -2,6 +2,7 @@
 
 import useSWR from "swr";
 import { Assignment as TaskIcon } from "@mui/icons-material";
+import { Checkbox } from "@heroui/checkbox";
 
 import TaskAccordion from "./task-accordion";
 
@@ -10,7 +11,17 @@ import Loading from "@/app/loading";
 import { getTasks } from "@/api/task";
 import { formatDate } from "@/utils/helper";
 
-const TaskList = () => {
+type TaskListProps = {
+  selectionMode?: boolean;
+  selectedTasks?: string[];
+  onSelectionChange?: (taskIds: string[]) => void;
+};
+
+const TaskList = ({
+  selectionMode = false,
+  selectedTasks = [],
+  onSelectionChange,
+}: TaskListProps) => {
   const { data, error, isLoading } = useSWR(["tasks"], () => getTasks(), {
     revalidateOnFocus: false,
     dedupingInterval: 5000,
@@ -32,18 +43,41 @@ const TaskList = () => {
     );
   }
 
+  const handleTaskSelection = (taskId: string, isSelected: boolean) => {
+    if (!onSelectionChange) return;
+
+    if (isSelected) {
+      onSelectionChange([...selectedTasks, taskId]);
+    } else {
+      onSelectionChange(selectedTasks.filter((id) => id !== taskId));
+    }
+  };
+
   return (
     <div className="flex flex-col gap-4">
       {tasks.map((task, index) => (
-        <TaskAccordion
-          key={index}
-          createdAt={formatDate(task.created_at)}
-          id={task.id}
-          status={task.status as Status}
-          tickets={task.tickets}
-          title={task.title}
-          estimatedStartTime={formatDate(task.estimated_start_time)}
-        />
+        <div key={index} className="flex items-start gap-3">
+          {selectionMode && (
+            <div className="pt-4">
+              <Checkbox
+                isSelected={selectedTasks.includes(task.id)}
+                onValueChange={(isSelected) =>
+                  handleTaskSelection(task.id, isSelected)
+                }
+              />
+            </div>
+          )}
+          <div className="flex-1">
+            <TaskAccordion
+              createdAt={formatDate(task.created_at)}
+              id={task.id}
+              status={task.status as Status}
+              tickets={task.tickets}
+              title={task.title}
+              estimatedStartTime={formatDate(task.estimated_start_time)}
+            />
+          </div>
+        </div>
       ))}
     </div>
   );
