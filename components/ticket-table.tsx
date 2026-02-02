@@ -7,6 +7,7 @@ import {
   TableColumn,
   TableHeader,
   TableRow,
+  Selection,
 } from "@heroui/table";
 import useSWR from "swr";
 import {
@@ -41,7 +42,7 @@ const defaultColumns = [
   { name: "ORGANIZATION", uid: "organization", sortable: true },
   { name: "STATUS", uid: "status", sortable: true },
   { name: "CREATED", uid: "created", sortable: true },
-  { name: "ALLOCATED RESOURCES", uid: "usage", sortable: true },
+  { name: "ALLOCATED RESOURCES", uid: "usage", sortable: false },
   { name: "", uid: "actions", sortable: false },
 ];
 
@@ -63,6 +64,7 @@ type TicketTableProps = {
   selectionMode?: "multiple" | "single" | "none";
   selectionBehavior?: "replace" | "toggle";
   isResourcePool?: boolean;
+  statusFilter?: Selection;
   // onRowClick?: (row: (typeof defaultRows)[number]) => void;
 };
 
@@ -73,6 +75,7 @@ const TicketTable = ({
   nsId,
   resourcePoolId,
   isResourcePool = false,
+  statusFilter,
 }: TicketTableProps) => {
   const shouldFetchByNs = Boolean(nsId);
 
@@ -374,7 +377,28 @@ const TicketTable = ({
       ? ticketsWithResourceDetails
       : (data ?? []);
 
-  const sortedTickets = [...tickets].sort(
+  // Apply status filter
+  const filteredTickets = tickets.filter(
+    (ticket: UserTicketResponse & { resourceDetails: ResourceDetail[] }) => {
+      // If statusFilter is "all" or empty, show all tickets
+      if (statusFilter === "all" || !statusFilter) {
+        return true;
+      }
+
+      // If statusFilter is a Set
+      if (statusFilter instanceof Set) {
+        // If "all" is in the set, show all tickets
+        if (statusFilter.has("all")) {
+          return true;
+        }
+        return statusFilter.has(getStatusLabel(ticket.status));
+      }
+
+      return true;
+    },
+  );
+
+  const sortedTickets = [...filteredTickets].sort(
     (
       a: UserTicketResponse & { resourceDetails: ResourceDetail[] },
       b: UserTicketResponse & { resourceDetails: ResourceDetail[] },
