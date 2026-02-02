@@ -12,6 +12,7 @@ type GliderTicket = {
   id: string;
   namespace_urn: string;
   namespace_name: string;
+  node_name: string;
   project_urn: string;
   project_name: string;
   glidelet_urn: string;
