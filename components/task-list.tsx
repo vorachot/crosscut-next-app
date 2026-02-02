@@ -53,12 +53,17 @@ const TaskList = ({
     }
   };
 
-  const isTaskDeletable = (status: Status) => {
-    return (
-      status === Status.stopped ||
-      status === Status.expired ||
-      status === Status.failed
-    );
+  const isTaskDeletable = (status: string) => {
+    const deletableStatuses = [
+      Status.stopped,
+      Status.expired,
+      Status.failed,
+      "STOPPED",
+      "SUCCEEDED",
+      "FAILED",
+    ];
+
+    return deletableStatuses.includes(status as Status);
   };
 
   return (
@@ -67,7 +72,7 @@ const TaskList = ({
         <div key={index} className="flex items-center gap-3">
           {selectionMode && (
             <Checkbox
-              isDisabled={!isTaskDeletable(task.status as Status)}
+              isDisabled={!isTaskDeletable(task.status)}
               isSelected={selectedTasks.includes(task.id)}
               onValueChange={(isSelected) =>
                 handleTaskSelection(task.id, isSelected)
