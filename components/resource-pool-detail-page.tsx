@@ -72,7 +72,7 @@ const ResourcePoolDetailPage = () => {
   useBreadcrumbData({ projectId, namespaceId, resourcePoolId });
 
   const { breadcrumbData } = useBreadcrumb();
-  const [statusFilter, setStatusFilter] = useState<Selection>(new Set(["all"]));
+  const [statusFilter, setStatusFilter] = useState<Selection>("all");
 
   const { data, error, isLoading } = useSWR(
     ["quota-usage", namespaceId, quotaId],
