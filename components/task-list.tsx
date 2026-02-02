@@ -9,9 +9,9 @@ import TaskAccordion from "./task-accordion";
 import { Status } from "@/types/enum";
 import Loading from "@/app/loading";
 import { getTasks } from "@/api/task";
-import { formatDate } from "@/utils/helper";
+import { formatDate, getStatusLabel } from "@/utils/helper";
 import { S } from "@heroui/slider/dist/use-slider-BxNnx6bI";
-
+import { get } from "http";
 type TaskListProps = {
   selectionMode?: boolean;
   selectedTasks?: string[];
@@ -67,7 +67,7 @@ const TaskList = ({
         <div key={index} className="flex items-center gap-3">
           {selectionMode && (
             <Checkbox
-              isDisabled={!isTaskDeletable(task.status as Status)}
+              isDisabled={!isTaskDeletable(getStatusLabel(task.status))}
               isSelected={selectedTasks.includes(task.id)}
               onValueChange={(isSelected) =>
                 handleTaskSelection(task.id, isSelected)
