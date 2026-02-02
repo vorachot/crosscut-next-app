@@ -37,6 +37,8 @@ const defaultColumns = [
   { name: "TICKET", uid: "name", sortable: true },
   { name: "PROJECT", uid: "project", sortable: true },
   { name: "NAMESPACE", uid: "namespace", sortable: true },
+  { name: "NODE", uid: "node", sortable: true },
+  { name: "ORGANIZATION", uid: "organization", sortable: true },
   { name: "STATUS", uid: "status", sortable: true },
   { name: "CREATED", uid: "created", sortable: true },
   { name: "ALLOCATED RESOURCES", uid: "usage", sortable: true },
@@ -45,7 +47,9 @@ const defaultColumns = [
 
 const resourcePoolColumns = [
   { name: "TICKET", uid: "name", sortable: true },
-  { name: "OWNER", uid: "owner", sortable: false },
+  { name: "OWNER", uid: "owner", sortable: true },
+  { name: "NODE", uid: "node", sortable: true },
+  { name: "ORGANIZATION", uid: "organization", sortable: true },
   { name: "STATUS", uid: "status", sortable: true },
   { name: "CREATED", uid: "created", sortable: true },
   { name: "ALLOCATED RESOURCES", uid: "usage", sortable: true },
@@ -83,6 +87,10 @@ const TicketTable = ({
     any[]
   >([]);
   const [resourceDetailsLoading, setResourceDetailsLoading] = useState(false);
+  const [sortDescriptor, setSortDescriptor] = useState<{
+    column: string;
+    direction: "ascending" | "descending";
+  }>({ column: "created", direction: "descending" });
 
   const handleCancelClick = (ticket: UserTicketResponse) => {
     setSelectedTicket(ticket);
@@ -100,7 +108,7 @@ const TicketTable = ({
     {
       revalidateOnFocus: false,
       dedupingInterval: 5000,
-    }
+    },
   );
 
   useEffect(() => {
@@ -121,20 +129,20 @@ const TicketTable = ({
             const resourceDetails = await Promise.all(
               ticket.ticket.spec.resource.map((resource) =>
                 getCachedOrFetch(resource.resource_id, () =>
-                  getResourceDetailByResourceIdFromCH(resource.resource_id)
-                )
-              )
+                  getResourceDetailByResourceIdFromCH(resource.resource_id),
+                ),
+              ),
             );
 
             const resourcesWithDetails = ticket.ticket.spec.resource.map(
               (resource, i) => ({
                 ...resource,
                 detail: resourceDetails[i],
-              })
+              }),
             );
 
             return { ...ticket, resourceDetails: resourcesWithDetails };
-          })
+          }),
         );
 
         setTicketsWithResourceDetails(ticketsWithDetails);
@@ -151,7 +159,7 @@ const TicketTable = ({
 
   const getResourceValueByType = (
     resourceDetails: any[],
-    resourceType: ResourceType
+    resourceType: ResourceType,
   ) => {
     if (!resourceDetails || resourceDetails.length === 0) return 0;
 
@@ -183,7 +191,7 @@ const TicketTable = ({
       ResourceType.memory,
     ].reduce(
       (sum, type) => sum + getResourceValueByType(ticket.resourceDetails, type),
-      0
+      0,
     );
 
     return totalResources > 0;
@@ -200,40 +208,40 @@ const TicketTable = ({
           <>
             {getResourceValueByType(
               ticket.resourceDetails || [],
-              ResourceType.cpu
+              ResourceType.cpu,
             ) > 0 && (
               <ResourceChip
                 size="sm"
                 type={ResourceType.cpu}
                 value={getResourceValueByType(
                   ticket.resourceDetails || [],
-                  ResourceType.cpu
+                  ResourceType.cpu,
                 )}
               />
             )}
             {getResourceValueByType(
               ticket.resourceDetails || [],
-              ResourceType.gpu
+              ResourceType.gpu,
             ) > 0 && (
               <ResourceChip
                 size="sm"
                 type={ResourceType.gpu}
                 value={getResourceValueByType(
                   ticket.resourceDetails || [],
-                  ResourceType.gpu
+                  ResourceType.gpu,
                 )}
               />
             )}
             {getResourceValueByType(
               ticket.resourceDetails || [],
-              ResourceType.memory
+              ResourceType.memory,
             ) > 0 && (
               <ResourceChip
                 size="sm"
                 type={ResourceType.memory}
                 value={getResourceValueByType(
                   ticket.resourceDetails || [],
-                  ResourceType.memory
+                  ResourceType.memory,
                 )}
               />
             )}
@@ -267,7 +275,7 @@ const TicketTable = ({
   );
 
   const renderTableRow = (
-    ticket: UserTicketResponse & { resourceDetails: ResourceDetail[] }
+    ticket: UserTicketResponse & { resourceDetails: ResourceDetail[] },
   ) => {
     if (isResourcePool) {
       return (
@@ -286,6 +294,18 @@ const TicketTable = ({
             title={ticket.owner_name}
           >
             {ticket.owner_name || "N/A"}
+          </TableCell>
+          <TableCell
+            className="pr-2 max-w-[180px] whitespace-nowrap overflow-hidden text-ellipsis"
+            title={ticket.ticket.node_name}
+          >
+            {ticket.ticket.node_name || "N/A"}
+          </TableCell>
+          <TableCell
+            className="pr-2 max-w-[180px] whitespace-nowrap overflow-hidden text-ellipsis"
+            title={ticket.ticket.organization_name}
+          >
+            {ticket.ticket.organization_name || "N/A"}
           </TableCell>
           <TableCell>
             <StatusChip status={getStatusLabel(ticket.status)} />
@@ -322,6 +342,18 @@ const TicketTable = ({
         >
           {ticket.ticket.namespace_name}
         </TableCell>
+        <TableCell
+          className="pr-2 max-w-[180px] whitespace-nowrap overflow-hidden text-ellipsis"
+          title={ticket.ticket.node_name}
+        >
+          {ticket.ticket.node_name || "N/A"}
+        </TableCell>
+        <TableCell
+          className="pr-2 max-w-[180px] whitespace-nowrap overflow-hidden text-ellipsis"
+          title={ticket.ticket.organization_name}
+        >
+          {ticket.ticket.organization_name || "N/A"}
+        </TableCell>
         <TableCell>
           <StatusChip status={getStatusLabel(ticket.status)} />
         </TableCell>
@@ -340,15 +372,54 @@ const TicketTable = ({
   const tickets =
     ticketsWithResourceDetails.length > 0
       ? ticketsWithResourceDetails
-      : data ?? [];
+      : (data ?? []);
 
-  tickets.sort(
+  const sortedTickets = [...tickets].sort(
     (
       a: UserTicketResponse & { resourceDetails: ResourceDetail[] },
-      b: UserTicketResponse & { resourceDetails: ResourceDetail[] }
-    ) =>
-      new Date(b.ticket.created_at).getTime() -
-      new Date(a.ticket.created_at).getTime()
+      b: UserTicketResponse & { resourceDetails: ResourceDetail[] },
+    ) => {
+      let first = a;
+      let second = b;
+
+      if (sortDescriptor.direction === "descending") {
+        [first, second] = [second, first];
+      }
+
+      switch (sortDescriptor.column) {
+        case "name":
+          return first.name.localeCompare(second.name);
+        case "project":
+          return first.ticket.project_name.localeCompare(
+            second.ticket.project_name,
+          );
+        case "namespace":
+          return first.ticket.namespace_name.localeCompare(
+            second.ticket.namespace_name,
+          );
+        case "node":
+          return (first.ticket.node_name || "").localeCompare(
+            second.ticket.node_name || "",
+          );
+        case "organization":
+          return (first.ticket.organization_name || "").localeCompare(
+            second.ticket.organization_name || "",
+          );
+        case "owner":
+          return (first.owner_name || "").localeCompare(
+            second.owner_name || "",
+          );
+        case "status":
+          return first.status.localeCompare(second.status);
+        case "created":
+          return (
+            new Date(first.ticket.created_at).getTime() -
+            new Date(second.ticket.created_at).getTime()
+          );
+        default:
+          return 0;
+      }
+    },
   );
 
   if (tickets.length === 0) {
@@ -370,49 +441,30 @@ const TicketTable = ({
         className="table-fixed"
         selectionBehavior={selectionBehavior}
         selectionMode={selectionMode}
+        sortDescriptor={sortDescriptor}
+        onSortChange={(descriptor: any) => setSortDescriptor(descriptor)}
       >
         <TableHeader className="bg-gray-100 dark:bg-gray-700">
           {tableColumns.map((column) => (
             <TableColumn
               key={column.uid}
+              allowsSorting={column.sortable}
               className={`
                 ${
                   column.uid === "name"
                     ? isResourcePool
-                      ? "w-1/6"
-                      : "w-1/12"
-                    : ""
-                }
-                ${
-                  column.uid === "owner"
-                    ? isResourcePool
-                      ? "w-1/6"
-                      : "w-1/12"
-                    : ""
-                }
-                ${column.uid === "project" ? "w-1/6" : ""}
-                ${column.uid === "namespace" ? "w-1/12" : ""}
-                ${
-                  column.uid === "status"
-                    ? isResourcePool
                       ? "w-32"
-                      : "w-24"
-                    : ""
-                }
-                ${
-                  column.uid === "created"
-                    ? isResourcePool
-                      ? "w-40"
                       : "w-32"
                     : ""
                 }
-                ${
-                  column.uid === "usage"
-                    ? isResourcePool
-                      ? "w-1/5"
-                      : "w-48"
-                    : ""
-                }
+                ${column.uid === "owner" ? "w-40" : ""}
+                ${column.uid === "project" ? "w-32" : ""}
+                ${column.uid === "namespace" ? "w-32" : ""}
+                ${column.uid === "node" ? "w-32" : ""}
+                ${column.uid === "organization" ? "w-32" : ""}
+                ${column.uid === "status" ? "w-28" : ""}
+                ${column.uid === "created" ? "w-36" : ""}
+                ${column.uid === "usage" ? "w-48" : ""}
                 ${column.uid === "actions" ? "w-16" : ""}
               `}
             >
@@ -421,12 +473,12 @@ const TicketTable = ({
           ))}
         </TableHeader>
         <TableBody>
-          {tickets.map(
+          {sortedTickets.map(
             (
               ticket: UserTicketResponse & {
                 resourceDetails: ResourceDetail[];
-              }
-            ) => renderTableRow(ticket)
+              },
+            ) => renderTableRow(ticket),
           )}
         </TableBody>
       </Table>
