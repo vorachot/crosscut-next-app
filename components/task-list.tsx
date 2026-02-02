@@ -10,6 +10,7 @@ import { Status } from "@/types/enum";
 import Loading from "@/app/loading";
 import { getTasks } from "@/api/task";
 import { formatDate } from "@/utils/helper";
+import { S } from "@heroui/slider/dist/use-slider-BxNnx6bI";
 
 type TaskListProps = {
   selectionMode?: boolean;
@@ -53,17 +54,11 @@ const TaskList = ({
     }
   };
 
-  const isTaskDeletable = (status: string) => {
-    const deletableStatuses = [
-      Status.stopped,
-      Status.expired,
-      Status.failed,
-      "STOPPED",
-      "SUCCEEDED",
-      "FAILED",
-    ];
+  const isTaskDeletable = (status: Status) => {
+    console.log("Checking deletable status for:", status);
+    const deletableStatuses = [Status.stopped, Status.expired, Status.failed];
 
-    return deletableStatuses.includes(status as Status);
+    return deletableStatuses.includes(status);
   };
 
   return (
@@ -72,7 +67,7 @@ const TaskList = ({
         <div key={index} className="flex items-center gap-3">
           {selectionMode && (
             <Checkbox
-              isDisabled={!isTaskDeletable(task.status)}
+              isDisabled={!isTaskDeletable(task.status as Status)}
               isSelected={selectedTasks.includes(task.id)}
               onValueChange={(isSelected) =>
                 handleTaskSelection(task.id, isSelected)
