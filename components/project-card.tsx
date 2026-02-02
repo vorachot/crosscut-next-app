@@ -20,7 +20,7 @@ const ProjectCard = ({
   title = "Default Title",
 }: ProjectCardProps) => {
   const { data, error, isLoading } = useSWR(
-    ["project-usage"],
+    ["project-usage", id],
     () => getProjectUsageByProjectIdFromCH(id),
     {
       revalidateOnFocus: false,
