@@ -53,19 +53,26 @@ const TaskList = ({
     }
   };
 
+  const isTaskDeletable = (status: Status) => {
+    return (
+      status === Status.stopped ||
+      status === Status.expired ||
+      status === Status.failed
+    );
+  };
+
   return (
     <div className="flex flex-col gap-4">
       {tasks.map((task, index) => (
-        <div key={index} className="flex items-start gap-3">
+        <div key={index} className="flex items-center gap-3">
           {selectionMode && (
-            <div className="pt-4">
-              <Checkbox
-                isSelected={selectedTasks.includes(task.id)}
-                onValueChange={(isSelected) =>
-                  handleTaskSelection(task.id, isSelected)
-                }
-              />
-            </div>
+            <Checkbox
+              isDisabled={!isTaskDeletable(task.status as Status)}
+              isSelected={selectedTasks.includes(task.id)}
+              onValueChange={(isSelected) =>
+                handleTaskSelection(task.id, isSelected)
+              }
+            />
           )}
           <div className="flex-1">
             <TaskAccordion

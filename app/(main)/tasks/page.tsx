@@ -2,7 +2,7 @@
 
 import AddIcon from "@mui/icons-material/Add";
 import DeleteIcon from "@mui/icons-material/Delete";
-import CheckBoxOutlineBlankIcon from "@mui/icons-material/CheckBoxOutlineBlank";
+import ChecklistRtlIcon from "@mui/icons-material/ChecklistRtl";
 import { useState } from "react";
 import { Button } from "@heroui/button";
 import { mutate } from "swr";
@@ -74,7 +74,7 @@ const Page = () => {
             ) : (
               <>
                 <Button
-                  startContent={<CheckBoxOutlineBlankIcon />}
+                  startContent={<ChecklistRtlIcon />}
                   variant="bordered"
                   onPress={() => setSelectionMode(true)}
                 >
