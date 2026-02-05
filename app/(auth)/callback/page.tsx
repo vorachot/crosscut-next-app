@@ -36,7 +36,11 @@ const CallbackPage = () => {
                 if (errorObj.error && typeof errorObj.error === "string") {
                   try {
                     const nestedError = JSON.parse(errorObj.error);
-                    errorMessage = nestedError.message || errorObj.error;
+                    // Prefer the nested error field over message
+                    errorMessage =
+                      nestedError.error ||
+                      nestedError.message ||
+                      errorObj.error;
                   } catch {
                     errorMessage = errorObj.error;
                   }
