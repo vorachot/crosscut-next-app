@@ -27,7 +27,27 @@ const CallbackPage = () => {
             let errorMessage = "Authentication failed";
             try {
               const errorData = await response.text();
-              errorMessage = errorData || response.statusText;
+
+              // Try to parse the error message
+              try {
+                const errorObj = JSON.parse(errorData);
+
+                // Check if error field contains another JSON string
+                if (errorObj.error && typeof errorObj.error === "string") {
+                  try {
+                    const nestedError = JSON.parse(errorObj.error);
+                    errorMessage = nestedError.message || errorObj.error;
+                  } catch {
+                    errorMessage = errorObj.error;
+                  }
+                } else if (errorObj.message) {
+                  errorMessage = errorObj.message;
+                } else {
+                  errorMessage = errorData;
+                }
+              } catch {
+                errorMessage = errorData;
+              }
             } catch {
               errorMessage = response.statusText;
             }
@@ -38,7 +58,7 @@ const CallbackPage = () => {
 
             if (state === "register" && response.status === 500) {
               // Registration failed, likely user already exists
-              setError(`Registration failed: ${errorMessage}`);
+              setError(errorMessage);
               setTimeout(
                 () => router.replace("/register?error=user_exists"),
                 2000,
