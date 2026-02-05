@@ -6,6 +6,7 @@ import ChecklistRtlIcon from "@mui/icons-material/ChecklistRtl";
 import { useState } from "react";
 import { Button } from "@heroui/button";
 import toast from "react-hot-toast";
+import { mutate } from "swr";
 
 import ButtonClient from "@/components/button-client";
 import TicketTableClient from "@/components/ticket-table-client";
@@ -31,6 +32,8 @@ const Page = () => {
     try {
       await deleteTickets(selectedTickets);
       toast.success("Tickets deleted successfully");
+      // Refresh ticket data
+      await mutate(["tickets-history"]);
       setSelectedTickets([]);
       setSelectionMode(false);
     } catch (error) {
