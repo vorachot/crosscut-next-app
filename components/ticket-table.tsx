@@ -266,7 +266,8 @@ const TicketTable = ({
       Status.failed,
       Status.cancelled,
     ];
-    return deletableStatuses.includes(status as Status);
+    const mappedStatus = getStatusLabel(status);
+    return deletableStatuses.includes(mappedStatus);
   };
 
   const handleDeleteClick = async (ticketId: string) => {
@@ -497,6 +498,10 @@ const TicketTable = ({
         removeWrapper
         aria-label="Ticket Table"
         className="table-fixed"
+        classNames={{
+          th: "first:w-8",
+          td: "first:w-8",
+        }}
         selectionBehavior={selectionBehavior}
         selectionMode={selectionMode}
         sortDescriptor={sortDescriptor}
