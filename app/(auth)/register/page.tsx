@@ -6,6 +6,7 @@ import { Input } from "@heroui/input";
 import { useRouter } from "next/navigation";
 import { useState } from "react";
 import Link from "next/link";
+import { Google } from "@mui/icons-material";
 
 import { registerUser } from "@/api/auth";
 import Loading from "@/app/loading";
@@ -95,6 +96,20 @@ const RegisterPage = () => {
           {isLoading ? "Signing up..." : "Sign Up"}
         </Button>
       </Form>
+      <div className="text-sm my-4">OR</div>
+      <Button
+        className="w-80 py-2 rounded bg-red-500 hover:bg-red-600 focus:outline-none focus:ring-2 focus:ring-red-500 focus:ring-opacity-50"
+        disabled={isLoading}
+        type="button"
+        onPress={() => {
+          router.push("https://onepointfive.life/auth/register/google");
+        }}
+      >
+        <div className="flex gap-3 items-center justify-center">
+          <Google />
+          Continue with Google
+        </div>
+      </Button>
       <div className="mt-6 text-sm text-center">
         Already have an account?{" "}
         <Link
