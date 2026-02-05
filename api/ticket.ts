@@ -42,3 +42,15 @@ export async function cancelTicket(ticketId: string): Promise<any> {
 
   return response.data;
 }
+
+export async function deleteTickets(ticketIds: string[]): Promise<any> {
+  const response = await apiClient.patch(`/ticket/delete`, {
+    ticket_ids: ticketIds,
+  });
+
+  if (response.status !== 200) {
+    throw new Error("Failed to delete tickets");
+  }
+
+  return response.data;
+}

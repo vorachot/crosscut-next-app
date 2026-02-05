@@ -42,8 +42,8 @@ export async function cancelTask(taskId: string): Promise<any> {
 }
 
 export async function deleteTasks(taskIds: string[]): Promise<any> {
-  const response = await apiClient.delete(`/ticket/tasks`, {
-    data: { task_ids: taskIds },
+  const response = await apiClient.patch(`/ticket/tasks/delete`, {
+    task_ids: taskIds,
   });
 
   if (response.status !== 200) {
