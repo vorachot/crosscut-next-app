@@ -25,7 +25,8 @@ import StatusChip from "./status-chip";
 import ResourceChip from "./resource-chip";
 import CancelTicketDialog from "./cancel-ticket-dialog";
 
-import { ResourceType } from "@/types/enum";
+import { ResourceType, Status } from "@/types/enum";
+import { deleteTickets } from "@/api/ticket";
 import Loading from "@/app/loading";
 import { getTicketByNamespaceId, getUserTickets } from "@/api/ticket";
 import { formatDate, getStatusLabel } from "@/utils/helper";
@@ -65,6 +66,8 @@ type TicketTableProps = {
   selectionBehavior?: "replace" | "toggle";
   isResourcePool?: boolean;
   statusFilter?: Selection;
+  selectedTickets?: string[];
+  onSelectionChange?: (tickets: string[]) => void;
   // onRowClick?: (row: (typeof defaultRows)[number]) => void;
 };
 
@@ -76,6 +79,8 @@ const TicketTable = ({
   resourcePoolId,
   isResourcePool = false,
   statusFilter,
+  selectedTickets = [],
+  onSelectionChange,
 }: TicketTableProps) => {
   const shouldFetchByNs = Boolean(nsId);
 
@@ -254,6 +259,28 @@ const TicketTable = ({
     </TableCell>
   );
 
+  const isDeletable = (status: string) => {
+    const deletableStatuses = [
+      Status.stopped,
+      Status.expired,
+      Status.failed,
+      Status.cancelled,
+    ];
+    return deletableStatuses.includes(status as Status);
+  };
+
+  const handleDeleteClick = async (ticketId: string) => {
+    if (!confirm("Are you sure you want to delete this ticket?")) {
+      return;
+    }
+    try {
+      await deleteTickets([ticketId]);
+      toast.success("Ticket deleted successfully");
+    } catch (error) {
+      toast.error("Failed to delete ticket");
+    }
+  };
+
   const renderActionsCell = (ticket: UserTicketResponse) => (
     <TableCell>
       <div className="relative flex gap-2">
@@ -264,12 +291,19 @@ const TicketTable = ({
             </div>
           </DropdownTrigger>
           <DropdownMenu>
-            <DropdownItem key="view">View</DropdownItem>
             <DropdownItem
               key="cancel"
               onPress={() => handleCancelClick(ticket)}
             >
               Cancel
+            </DropdownItem>
+            <DropdownItem
+              key="delete"
+              className={!isDeletable(ticket.status) ? "opacity-50" : ""}
+              isDisabled={!isDeletable(ticket.status)}
+              onPress={() => handleDeleteClick(ticket.ticket.id)}
+            >
+              Delete
             </DropdownItem>
           </DropdownMenu>
         </Dropdown>
@@ -466,6 +500,16 @@ const TicketTable = ({
         selectionBehavior={selectionBehavior}
         selectionMode={selectionMode}
         sortDescriptor={sortDescriptor}
+        selectedKeys={new Set(selectedTickets)}
+        onSelectionChange={(keys) => {
+          if (onSelectionChange) {
+            const selectedArray =
+              keys === "all"
+                ? sortedTickets.map((t: UserTicketResponse) => t.ticket.id)
+                : Array.from(keys as Set<string>);
+            onSelectionChange(selectedArray);
+          }
+        }}
         onSortChange={(descriptor: any) => setSortDescriptor(descriptor)}
       >
         <TableHeader className="bg-gray-100 dark:bg-gray-700">

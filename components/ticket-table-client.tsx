@@ -16,9 +16,10 @@ type TicketTableClientProps = {
   selectionMode?: "multiple" | "single" | "none";
   selectionBehavior?: "replace" | "toggle";
   selectedKeys?: Selection;
-  onSelectionChange?: (keys: Selection) => void;
+  onSelectionChange?: (keys: Selection | string[]) => void;
   onAllTicketIds?: (ids: string[]) => void;
   statusFilter?: Selection;
+  selectedTickets?: string[];
 };
 
 const TicketTableClient = ({
@@ -34,6 +35,7 @@ const TicketTableClient = ({
   isResourcePool = false,
   onAllTicketIds,
   statusFilter,
+  selectedTickets,
 }: TicketTableClientProps) => {
   return isDrawer ? (
     <TicketTableDrawer
@@ -54,6 +56,8 @@ const TicketTableClient = ({
       selectionBehavior={selectionBehavior}
       selectionMode={selectionMode}
       statusFilter={statusFilter}
+      selectedTickets={selectedTickets}
+      onSelectionChange={onSelectionChange as (tickets: string[]) => void}
     />
   );
 };
