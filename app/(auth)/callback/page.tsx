@@ -23,14 +23,36 @@ const CallbackPage = () => {
             // await checkAuthStatus();
             router.replace("/projects");
           } else {
-            throw new Error(`Authentication failed: ${response.statusText}`);
+            // Get error message from response
+            let errorMessage = "Authentication failed";
+            try {
+              const errorData = await response.text();
+              errorMessage = errorData || response.statusText;
+            } catch {
+              errorMessage = response.statusText;
+            }
+
+            // Check if this was a registration attempt
+            const urlParams = new URLSearchParams(queryString);
+            const state = urlParams.get("state");
+
+            if (state === "register" && response.status === 500) {
+              // Registration failed, likely user already exists
+              setError(`Registration failed: ${errorMessage}`);
+              setTimeout(
+                () => router.replace("/register?error=user_exists"),
+                2000,
+              );
+            } else {
+              throw new Error(`Authentication failed: ${errorMessage}`);
+            }
           }
         } else {
           setError("No authentication data received");
           setTimeout(() => router.replace("/login"), 2000);
         }
-      } catch {
-        setError("Authentication failed");
+      } catch (err) {
+        setError(err instanceof Error ? err.message : "Authentication failed");
         setTimeout(() => router.replace("/login?error=callback_failed"), 2000);
       } finally {
         setIsProcessing(false);
