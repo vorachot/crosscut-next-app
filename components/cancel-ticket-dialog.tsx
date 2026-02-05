@@ -25,6 +25,7 @@ const CancelTicketDialog = ({
       toast.success("Ticket cancelled successfully!");
       if (setOnClose) setOnClose();
       await mutate(["tickets", nsId], undefined, { revalidate: true });
+      await mutate(["tickets-history"], undefined, { revalidate: true });
       await mutate(["quota-usage", nsId, resourcePoolId], undefined, {
         revalidate: true,
       });
