@@ -5,6 +5,7 @@ export function middleware(request: NextRequest) {
   const accessToken = request.cookies.get("access_token")?.value;
 
   const isLoginPage = request.nextUrl.pathname === "/login";
+  const isRegisterPage = request.nextUrl.pathname === "/register";
   const isCallbackPath = request.nextUrl.pathname.startsWith("/callback");
   const isPublicPath =
     request.nextUrl.pathname.startsWith("/_next") ||
@@ -14,13 +15,13 @@ export function middleware(request: NextRequest) {
   if (isPublicPath) return NextResponse.next();
   if (isCallbackPath) return NextResponse.next();
 
-  if (!accessToken && !isLoginPage) {
+  if (!accessToken && !isLoginPage && !isRegisterPage) {
     // If no token and trying to access protected route -> redirect to /login
     return NextResponse.redirect(new URL("/login", request.url));
   }
 
-  if (accessToken && isLoginPage) {
-    // If already logged in, redirect away from login page
+  if (accessToken && (isLoginPage || isRegisterPage)) {
+    // If already logged in, redirect away from login/register page
     return NextResponse.redirect(new URL("/projects", request.url));
   }
 
