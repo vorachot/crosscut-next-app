@@ -322,7 +322,7 @@ const TicketTable = ({
     if (isResourcePool) {
       return (
         <TableRow
-          key={ticket.ticket.id}
+          key={ticket.id}
           className="dark:border-b dark:border-gray-700 hover:bg-gray-100 dark:hover:bg-gray-800 shadow-sm transition-colors duration-200"
         >
           <TableCell
@@ -363,7 +363,7 @@ const TicketTable = ({
 
     return (
       <TableRow
-        key={ticket.ticket.id}
+        key={ticket.id}
         className="dark:border-b dark:border-gray-700 hover:bg-gray-100 dark:hover:bg-gray-800 shadow-sm transition-colors duration-200"
       >
         <TableCell
@@ -514,7 +514,7 @@ const TicketTable = ({
           if (onSelectionChange) {
             const selectedArray =
               keys === "all"
-                ? sortedTickets.map((t: UserTicketResponse) => t.ticket.id)
+                ? sortedTickets.map((t: UserTicketResponse) => t.id)
                 : Array.from(keys as Set<string>);
             onSelectionChange(selectedArray);
           }
