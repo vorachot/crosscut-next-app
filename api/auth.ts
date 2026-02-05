@@ -22,7 +22,7 @@ export async function loginUser(
   return response;
 }
 export async function logoutUser() {
-  const response = await apiClient.get("/users/logout");
+  const response = await apiClient.get("/auth/logout");
 
   // Optionally redirect to login page after successful logout
   if (response.status === 200) {
