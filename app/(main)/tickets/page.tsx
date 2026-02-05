@@ -16,6 +16,7 @@ const Page = () => {
   const [selectionMode, setSelectionMode] = useState(false);
   const [selectedTickets, setSelectedTickets] = useState<string[]>([]);
   const [isDeleting, setIsDeleting] = useState(false);
+  const [refreshKey, setRefreshKey] = useState(0);
 
   const handleDeleteTickets = async () => {
     if (selectedTickets.length === 0) return;
@@ -36,6 +37,7 @@ const Page = () => {
       await mutate(["tickets-history"]);
       setSelectedTickets([]);
       setSelectionMode(false);
+      setRefreshKey((prev) => prev + 1);
     } catch (error) {
       console.error("Failed to delete tickets:", error);
       toast.error("Failed to delete tickets. Please try again.");
@@ -91,6 +93,7 @@ const Page = () => {
       </div>
       <div className="h-full">
         <TicketTableClient
+          key={refreshKey}
           pathTemplate="resourcepool-to-ticket"
           selectionMode={selectionMode ? "multiple" : "none"}
           selectedTickets={selectedTickets}
