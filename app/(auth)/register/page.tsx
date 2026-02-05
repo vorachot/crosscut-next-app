@@ -5,16 +5,13 @@ import { Form } from "@heroui/form";
 import { Input } from "@heroui/input";
 import { useRouter } from "next/navigation";
 import { useState } from "react";
-import { Google } from "@mui/icons-material";
 import Link from "next/link";
 
-import { loginUser } from "@/api/auth";
+import { registerUser } from "@/api/auth";
 import Loading from "@/app/loading";
-import { useUser } from "@/context/UserContext";
 
-const LoginPage = () => {
+const RegisterPage = () => {
   const router = useRouter();
-  const { fetchUser } = useUser();
   const [isLoading, setIsLoading] = useState(false);
   const [error, setError] = useState("");
 
@@ -25,19 +22,25 @@ const LoginPage = () => {
 
     const formData = new FormData(e.currentTarget);
     const username = formData.get("username") as string;
+    const email = formData.get("email") as string;
     const password = formData.get("password") as string;
+    const confirmPassword = formData.get("confirmPassword") as string;
+
+    if (password !== confirmPassword) {
+      setError("Passwords do not match");
+      setIsLoading(false);
+      return;
+    }
 
     try {
-      const response = await loginUser(username, password);
+      const response = await registerUser(username, email, password);
 
       if (response.ok) {
-        // Fetch user data after successful login
-        await fetchUser();
-        router.push("/projects");
+        router.push("/login");
       } else {
         const errorText = await response.text();
 
-        setError(errorText || "Sign in failed. Please check your credentials.");
+        setError(errorText || "Registration failed. Please try again.");
       }
     } catch (error) {
       setError(error instanceof Error ? error.message : String(error));
@@ -52,7 +55,7 @@ const LoginPage = () => {
 
   return (
     <div className="flex flex-col items-center justify-center h-screen">
-      <h1 className="text-2xl font-bold mb-6">Sign In</h1>
+      <h1 className="text-2xl font-bold mb-6">Sign Up</h1>
       <Form className="w-80 space-y-4" onSubmit={handleSubmit}>
         <Input
           required
@@ -63,8 +66,22 @@ const LoginPage = () => {
         <Input
           required
           disabled={isLoading}
+          name="email"
+          placeholder="Email"
+          type="email"
+        />
+        <Input
+          required
+          disabled={isLoading}
           name="password"
           placeholder="Password"
+          type="password"
+        />
+        <Input
+          required
+          disabled={isLoading}
+          name="confirmPassword"
+          placeholder="Confirm Password"
           type="password"
         />
         {error && (
@@ -75,34 +92,20 @@ const LoginPage = () => {
           disabled={isLoading}
           type="submit"
         >
-          {isLoading ? "Signing in..." : "Sign In"}
+          {isLoading ? "Signing up..." : "Sign Up"}
         </Button>
       </Form>
-      <div className="text-sm my-4">OR</div>
-      <Button
-        className="w-80 py-2 rounded bg-red-500 hover:bg-red-600 focus:outline-none focus:ring-2 focus:ring-red-500 focus:ring-opacity-50"
-        disabled={isLoading}
-        type="button"
-        onPress={() => {
-          router.push("https://onepointfive.life/auth/login/google");
-        }}
-      >
-        <div className="flex gap-3 items-center justify-center">
-          <Google />
-          Continue with Google
-        </div>
-      </Button>
       <div className="mt-6 text-sm text-center">
-        Don't have an account?{" "}
+        Already have an account?{" "}
         <Link
           className="text-blue-600 hover:text-blue-700 underline"
-          href="/register"
+          href="/login"
         >
-          Create account
+          Sign in
         </Link>
       </div>
     </div>
   );
 };
 
-export default LoginPage;
+export default RegisterPage;

@@ -49,3 +49,27 @@ export async function googleAuthWithCH(queryString: string): Promise<Response> {
 
   return response;
 }
+
+export async function registerUser(
+  username: string,
+  email: string,
+  password: string,
+): Promise<Response> {
+  const response = await fetch(
+    `${process.env.NEXT_PUBLIC_NAMESPACE_MANAGER_URL}/users/register`,
+    {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      credentials: "include",
+      body: JSON.stringify({
+        username,
+        email,
+        password,
+      }),
+    },
+  );
+
+  return response;
+}

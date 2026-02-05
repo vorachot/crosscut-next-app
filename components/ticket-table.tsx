@@ -9,7 +9,7 @@ import {
   TableRow,
   Selection,
 } from "@heroui/table";
-import useSWR from "swr";
+import useSWR, { mutate } from "swr";
 import {
   Dropdown,
   DropdownItem,
@@ -105,9 +105,11 @@ const TicketTable = ({
     setCancelDialogOpen(true);
   };
 
-  const handleCancelDialogClose = () => {
+  const handleCancelDialogClose = async () => {
     setCancelDialogOpen(false);
     setSelectedTicket(null);
+    // Refresh ticket data after cancel
+    await mutate(shouldFetchByNs ? ["tickets", nsId] : ["tickets-history"]);
   };
 
   const { data, error, isLoading } = useSWR(
@@ -277,6 +279,8 @@ const TicketTable = ({
     try {
       await deleteTickets([ticketId]);
       toast.success("Ticket deleted successfully");
+      // Refresh ticket data
+      await mutate(shouldFetchByNs ? ["tickets", nsId] : ["tickets-history"]);
     } catch (error) {
       toast.error("Failed to delete ticket");
     }
