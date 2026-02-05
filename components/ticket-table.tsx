@@ -291,7 +291,9 @@ const TicketTable = ({
               <MoreVert />
             </div>
           </DropdownTrigger>
-          <DropdownMenu>
+          <DropdownMenu
+            disabledKeys={!isDeletable(ticket.status) ? ["delete"] : []}
+          >
             <DropdownItem
               key="cancel"
               onPress={() => handleCancelClick(ticket)}
@@ -300,9 +302,7 @@ const TicketTable = ({
             </DropdownItem>
             <DropdownItem
               key="delete"
-              className={!isDeletable(ticket.status) ? "opacity-50" : ""}
-              isDisabled={!isDeletable(ticket.status)}
-              onPress={() => handleDeleteClick(ticket.ticket.id)}
+              onPress={() => handleDeleteClick(ticket.id)}
             >
               Delete
             </DropdownItem>
