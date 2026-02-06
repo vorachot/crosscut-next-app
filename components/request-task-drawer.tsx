@@ -37,7 +37,7 @@ const RequestTaskDrawer = ({ isOpen, onClose }: RequestTaskDrawerProps) => {
   const [taskName, setTaskName] = useState("");
   const [isCreating, setIsCreating] = useState(false);
   const [errors, setErrors] = useState<{ taskName?: string; tickets?: string }>(
-    {}
+    {},
   );
   const [allTicketIds, setAllTicketIds] = useState<string[]>([]);
   const handleAllTicketIds = useCallback((ids: string[]) => {
@@ -45,15 +45,18 @@ const RequestTaskDrawer = ({ isOpen, onClose }: RequestTaskDrawerProps) => {
   }, []);
 
   const handleSelectionChange = useCallback(
-    (keys: Selection) => {
+    (keys: string[] | Selection) => {
       if (keys === "all") {
         // Convert "all" to actual Set of all ticket IDs
         setSelectedKeys(new Set(allTicketIds));
+      } else if (Array.isArray(keys)) {
+        // Convert string[] to Set
+        setSelectedKeys(new Set(keys));
       } else {
         setSelectedKeys(keys);
       }
     },
-    [allTicketIds]
+    [allTicketIds],
   );
 
   const hasSelectedTickets = selectedKeys !== "all" && selectedKeys.size > 0;
