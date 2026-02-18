@@ -2,7 +2,7 @@
 
 import { Button } from "@heroui/button";
 import { Form } from "@heroui/form";
-import { useEffect, useState } from "react";
+import { useEffect, useState, useMemo } from "react";
 import { mutate } from "swr";
 import { Input } from "@heroui/input";
 import { Card, CardBody } from "@heroui/card";
@@ -35,12 +35,25 @@ const TicketForm = ({
 }: TicketFormProps) => {
   const [resourceDetails, setResourceDetails] = useState<any[]>([]);
   const [resourceValues, setResourceValues] = useState<Record<string, number>>(
-    {}
+    {},
   );
   const [ticketName, setTicketName] = useState<string>("");
   const [hours, setHours] = useState<number>(1);
   const [minutes, setMinutes] = useState<number>(30);
   const [isSubmitting, setIsSubmitting] = useState(false);
+
+  // Calculate total price (per unit * hour, minutes as fraction)
+  const totalHours = useMemo(() => {
+    return hours + minutes / 60;
+  }, [hours, minutes]);
+
+  const totalPrice = useMemo(() => {
+    return resourceDetails.reduce((sum, res) => {
+      const quantity = resourceValues[res.resource_prop.resource_id] || 0;
+      const price = res.resource_prop.price || 0;
+      return sum + quantity * price * totalHours;
+    }, 0);
+  }, [resourceDetails, resourceValues, totalHours]);
 
   const handleValueChange = (resource_id: string, value: number) => {
     setResourceValues((prev) => ({
@@ -78,7 +91,7 @@ const TicketForm = ({
         {
           duration: 4000,
           icon: "⚠️",
-        }
+        },
       );
 
       return;
@@ -93,7 +106,7 @@ const TicketForm = ({
         ([resource_id, quantity]) => ({
           resource_id,
           quantity,
-        })
+        }),
       ),
       duration: getTotalDurationMinutes() * 60, // Convert to seconds
     };
@@ -123,7 +136,7 @@ const TicketForm = ({
 
   const getAvailableQuantity = (
     resourceType: string,
-    originalQuantity: number
+    originalQuantity: number,
   ) => {
     if (!usageQuota) return originalQuantity;
 
@@ -166,7 +179,7 @@ const TicketForm = ({
           {
             duration: 4000,
             icon: "⚠️",
-          }
+          },
         );
       }
 
@@ -179,7 +192,7 @@ const TicketForm = ({
   // Helper function to get resource value by type
   const getResourceValueByType = (resourceType: string) => {
     const resource = resourceDetails.find(
-      (res) => res.detail?.resource?.resource_type?.name === resourceType
+      (res) => res.detail?.resource?.resource_type?.name === resourceType,
     );
 
     if (!resource) return 0;
@@ -193,8 +206,8 @@ const TicketForm = ({
 
       const details = await Promise.all(
         quota.resources.map((res) =>
-          getResourceDetailByResourceIdFromCH(res.resource_prop.resource_id)
-        )
+          getResourceDetailByResourceIdFromCH(res.resource_prop.resource_id),
+        ),
       );
 
       const merged = quota.resources.map((res, i) => ({
@@ -296,17 +309,28 @@ const TicketForm = ({
             {resourceDetails.map((res) => {
               const availableQuantity = getAvailableQuantity(
                 res.detail.resource.resource_type.name,
-                res.quantity
+                res.quantity,
               );
-
+              const price = res.resource_prop.price || 0;
+              const selectedQty =
+                resourceValues[res.resource_prop.resource_id] || 0;
               return (
                 <Card
                   key={res.resource_prop.resource_id}
                   className="border border-gray-200 dark:border-gray-700"
                 >
                   <CardBody className="p-4">
+                    <div className="flex justify-between items-center mb-2">
+                      <span className="font-medium text-gray-700 dark:text-gray-200">
+                        {res.detail.resource.resource_type.name}
+                      </span>
+                      <span className="text-xs text-gray-500">
+                        Price: {price} /{" "}
+                        {res.detail.resource.resource_type.unit} / hour
+                      </span>
+                    </div>
                     <SliderInput
-                      label={`${res.detail.resource.resource_type.name} (${res.detail.resource.name})`}
+                      label={undefined}
                       maxValue={availableQuantity}
                       onValueChange={(val) =>
                         handleValueChange(res.resource_prop.resource_id, val)
@@ -314,17 +338,28 @@ const TicketForm = ({
                     />
                     <div className="mt-1 flex justify-between text-xs text-gray-500">
                       <span>Available: {availableQuantity}</span>
-                      <span>
-                        {/* Selected:{" "}
-                        {resourceValues[res.resource_prop.resource_id] || 0}{" "} */}
-                        {res.detail.resource.resource_type.unit}
-                      </span>
+                      <span>{res.detail.resource.resource_type.unit}</span>
                     </div>
+                    {selectedQty > 0 && (
+                      <div className="mt-1 text-xs text-right text-gray-600 dark:text-gray-300">
+                        Subtotal:{" "}
+                        {(selectedQty * price * totalHours).toFixed(2)}
+                      </div>
+                    )}
                   </CardBody>
                 </Card>
               );
             })}
           </div>
+        </div>
+        {/* Total Price Section */}
+        <div className="w-full flex justify-between items-center mt-4">
+          <span className="text-base font-semibold text-gray-700 dark:text-gray-200">
+            Total Price:
+          </span>
+          <span className="text-lg font-bold text-primary-600 dark:text-primary-400">
+            {totalPrice.toFixed(2)}
+          </span>
         </div>
         {/* Submit Section */}
         <div className="w-full flex justify-end gap-2">

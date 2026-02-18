@@ -61,6 +61,7 @@ const resourcePoolColumns = [
 type TicketTableProps = {
   nsId?: string;
   resourcePoolId?: string;
+  nodeId?: string;
   columns?: typeof defaultColumns;
   selectionMode?: "multiple" | "single" | "none";
   selectionBehavior?: "replace" | "toggle";
@@ -77,6 +78,7 @@ const TicketTable = ({
   selectionBehavior = "replace",
   nsId,
   resourcePoolId,
+  nodeId,
   isResourcePool = false,
   statusFilter,
   selectedTickets = [],
@@ -113,8 +115,17 @@ const TicketTable = ({
   };
 
   const { data, error, isLoading } = useSWR(
-    shouldFetchByNs ? ["tickets", nsId] : ["tickets-history"],
-    () => (shouldFetchByNs ? getTicketByNamespaceId(nsId!) : getUserTickets()),
+    shouldFetchByNs && nodeId
+      ? ["tickets", nsId, nodeId]
+      : shouldFetchByNs
+        ? ["tickets", nsId]
+        : ["tickets-history"],
+    () =>
+      shouldFetchByNs && nodeId
+        ? require("@/api/ticket").getTicketByNamespaceIdAndNodeID(nsId!, nodeId)
+        : shouldFetchByNs
+          ? getTicketByNamespaceId(nsId!)
+          : getUserTickets(),
     {
       revalidateOnFocus: false,
       dedupingInterval: 5000,

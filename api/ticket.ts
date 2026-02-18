@@ -10,6 +10,17 @@ export async function getTicketByNamespaceId(nsId: string): Promise<any> {
 
   return response.data;
 }
+
+export async function getTicketByNamespaceIdAndNodeID(nsId: string, nodeId: string): Promise<any> {
+  const response = await apiClient.get(`/ticket/getTickets/${nsId}/${nodeId}`);
+
+  if (response.status !== 200) {
+    throw new Error("Failed to fetch ticket by namespace ID and node ID");
+  }
+
+  return response.data;
+}
+
 export async function getUserTickets(): Promise<any> {
   const response = await apiClient.get(`/ticket/getUserTickets`);
 

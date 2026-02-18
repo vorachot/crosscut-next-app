@@ -202,6 +202,7 @@ const ResourcePoolDetailPage = () => {
             nsId={namespaceId}
             pathTemplate="resourcepool-to-ticket"
             resourcePoolId={resourcePoolId}
+            nodeId={resourcePoolId}
             selectionMode="none"
             statusFilter={statusFilter}
           />

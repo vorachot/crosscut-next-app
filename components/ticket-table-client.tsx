@@ -10,6 +10,7 @@ type TicketTableClientProps = {
   // rows?: any[];
   nsId?: string;
   resourcePoolId?: string;
+  nodeId?: string;
   isDrawer?: boolean;
   isResourcePool?: boolean;
   pathTemplate?: "resourcepool-to-ticket" | "ticket-to-resourcepool";
@@ -32,6 +33,7 @@ const TicketTableClient = ({
   onSelectionChange,
   nsId,
   resourcePoolId,
+  nodeId,
   isResourcePool = false,
   onAllTicketIds,
   statusFilter,
@@ -53,6 +55,7 @@ const TicketTableClient = ({
       isResourcePool={isResourcePool}
       nsId={nsId}
       resourcePoolId={resourcePoolId}
+      nodeId={nodeId}
       selectionBehavior={selectionBehavior}
       selectionMode={selectionMode}
       statusFilter={statusFilter}
