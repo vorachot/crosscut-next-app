@@ -319,7 +319,7 @@ const TicketForm = ({
                   key={res.resource_prop.resource_id}
                   className="border border-gray-200 dark:border-gray-700"
                 >
-                  <CardBody className="p-4">
+                  <CardBody className="p-4 relative pb-8">
                     <div className="flex justify-between items-center mb-2">
                       <span className="font-medium text-gray-700 dark:text-gray-200">
                         {res.detail.resource.resource_type.name}
@@ -341,7 +341,7 @@ const TicketForm = ({
                       <span>{res.detail.resource.resource_type.unit}</span>
                     </div>
                     {selectedQty > 0 && (
-                      <div className="mt-1 text-xs text-right text-gray-600 dark:text-gray-300">
+                      <div className="absolute right-4 bottom-4 text-xs text-right text-gray-600 dark:text-gray-300 whitespace-nowrap">
                         Subtotal:{" "}
                         {(selectedQty * price * totalHours).toFixed(2)}
                       </div>
