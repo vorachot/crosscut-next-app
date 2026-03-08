@@ -81,10 +81,6 @@ const Page = () => {
               >
                 Select
               </Button>
-              <ButtonClient>
-                <AddIcon />
-                Ticket
-              </ButtonClient>
             </>
           )}
         </div>

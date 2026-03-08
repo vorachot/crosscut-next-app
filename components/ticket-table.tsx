@@ -110,8 +110,13 @@ const TicketTable = ({
   const handleCancelDialogClose = async () => {
     setCancelDialogOpen(false);
     setSelectedTicket(null);
-    // Refresh ticket data after cancel
-    await mutate(shouldFetchByNs ? ["tickets", nsId] : ["tickets-history"]);
+    const key =
+      shouldFetchByNs && nodeId
+        ? ["tickets", nsId, nodeId]
+        : shouldFetchByNs
+          ? ["tickets", nsId]
+          : ["tickets-history"];
+    await mutate(key);
   };
 
   const { data, error, isLoading } = useSWR(
@@ -290,8 +295,13 @@ const TicketTable = ({
     try {
       await deleteTickets([ticketId]);
       toast.success("Ticket deleted successfully");
-      // Refresh ticket data
-      await mutate(shouldFetchByNs ? ["tickets", nsId] : ["tickets-history"]);
+      const key =
+        shouldFetchByNs && nodeId
+          ? ["tickets", nsId, nodeId]
+          : shouldFetchByNs
+            ? ["tickets", nsId]
+            : ["tickets-history"];
+      await mutate(key);
     } catch (error) {
       toast.error("Failed to delete ticket");
     }
