@@ -113,7 +113,12 @@ const TicketTable = ({
     await refreshTickets();
   };
 
-  const { data, error, isLoading, mutate: refreshTickets } = useSWR(
+  const {
+    data,
+    error,
+    isLoading,
+    mutate: refreshTickets,
+  } = useSWR(
     shouldFetchByNs && nodeId
       ? ["tickets", nsId, nodeId]
       : shouldFetchByNs
@@ -285,6 +290,11 @@ const TicketTable = ({
     return deletableStatuses.includes(mappedStatus);
   };
 
+  const isCancellable = (status: string) => {
+    const mappedStatus = getStatusLabel(status);
+    return mappedStatus === Status.ready;
+  };
+
   const handleDeleteClick = async (ticketId: string) => {
     if (!confirm("Are you sure you want to delete this ticket?")) {
       return;
@@ -308,7 +318,10 @@ const TicketTable = ({
             </div>
           </DropdownTrigger>
           <DropdownMenu
-            disabledKeys={!isDeletable(ticket.status) ? ["delete"] : []}
+            disabledKeys={[
+              ...(!isCancellable(ticket.status) ? ["cancel"] : []),
+              ...(!isDeletable(ticket.status) ? ["delete"] : []),
+            ]}
           >
             <DropdownItem
               key="cancel"
