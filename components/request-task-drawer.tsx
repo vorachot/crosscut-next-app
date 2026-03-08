@@ -138,7 +138,13 @@ const RequestTaskDrawer = ({ isOpen, onClose }: RequestTaskDrawerProps) => {
           <DrawerBody className="px-6 py-5">
             {/* Task Configuration Section */}
             <div className="space-y-4 w-full">
-              <Form className="space-y-4 w-full">
+              <Form
+                className="space-y-4 w-full"
+                onSubmit={(e) => {
+                  e.preventDefault();
+                  handleCreateTask();
+                }}
+              >
                 <div>
                   <div className="space-y-2 w-full">
                     <Input
