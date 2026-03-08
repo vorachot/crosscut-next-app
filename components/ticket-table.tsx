@@ -9,7 +9,7 @@ import {
   TableRow,
   Selection,
 } from "@heroui/table";
-import useSWR, { mutate } from "swr";
+import useSWR from "swr";
 import {
   Dropdown,
   DropdownItem,
@@ -110,16 +110,10 @@ const TicketTable = ({
   const handleCancelDialogClose = async () => {
     setCancelDialogOpen(false);
     setSelectedTicket(null);
-    const key =
-      shouldFetchByNs && nodeId
-        ? ["tickets", nsId, nodeId]
-        : shouldFetchByNs
-          ? ["tickets", nsId]
-          : ["tickets-history"];
-    await mutate(key);
+    await refreshTickets();
   };
 
-  const { data, error, isLoading } = useSWR(
+  const { data, error, isLoading, mutate: refreshTickets } = useSWR(
     shouldFetchByNs && nodeId
       ? ["tickets", nsId, nodeId]
       : shouldFetchByNs
@@ -139,7 +133,10 @@ const TicketTable = ({
 
   useEffect(() => {
     const fetchResourceDetailsForTickets = async () => {
-      if (!data || data.length === 0) return;
+      if (!data || data.length === 0) {
+        setTicketsWithResourceDetails([]);
+        return;
+      }
 
       setResourceDetailsLoading(true);
       try {
@@ -295,13 +292,7 @@ const TicketTable = ({
     try {
       await deleteTickets([ticketId]);
       toast.success("Ticket deleted successfully");
-      const key =
-        shouldFetchByNs && nodeId
-          ? ["tickets", nsId, nodeId]
-          : shouldFetchByNs
-            ? ["tickets", nsId]
-            : ["tickets-history"];
-      await mutate(key);
+      await refreshTickets();
     } catch (error) {
       toast.error("Failed to delete ticket");
     }
