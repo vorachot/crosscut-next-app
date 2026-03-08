@@ -3,7 +3,6 @@
 import React from "react";
 import { usePathname } from "next/navigation";
 import Link from "next/link";
-import { SwitchAccessShortcut } from "@mui/icons-material";
 
 import { UserProfile } from "./user-profie";
 
@@ -81,12 +80,11 @@ const Breadcrumb = () => {
               className="flex items-center gap-2 no-underline"
               href="/"
             >
-              <span className="rounded-full bg-gradient-to-tr from-blue-500 to-purple-600 p-1 shadow-md">
-                <SwitchAccessShortcut className="!w-8 !h-8 text-white" />
-              </span>
-              <span className="ml-2 font-extrabold text-transparent text-3xl bg-clip-text bg-gradient-to-tr from-blue-600 to-purple-500 tracking-tight select-none logo-font">
-                CrossCut
-              </span>
+              <img
+                src="/logo.svg"
+                alt="CrossCut"
+                className="h-10 select-none brightness-0 dark:brightness-100 invert-0 dark:invert"
+              />
             </Link>
             {segments.length > 0 && (
               <svg
