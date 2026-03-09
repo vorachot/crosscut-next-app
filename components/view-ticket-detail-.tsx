@@ -1,6 +1,9 @@
+"use client";
+
 import { Button } from "@heroui/button";
 import { Card } from "@heroui/card";
 import { useState } from "react";
+import { createPortal } from "react-dom";
 import ContentCopyRoundedIcon from "@mui/icons-material/ContentCopyRounded";
 import { toast } from "react-hot-toast";
 
@@ -38,7 +41,7 @@ const ViewTicketDetail = ({
 
   if (!open) return null;
 
-  return (
+  return createPortal(
     <>
       <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50">
         <Card className="w-[400px] px-5 py-5 bg-white dark:bg-gray-800 shadow-md border border-gray-200 dark:border-gray-700 relative">
@@ -107,7 +110,8 @@ const ViewTicketDetail = ({
           </div>
         </Card>
       </div>
-    </>
+    </>,
+    document.body,
   );
 };
 

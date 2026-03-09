@@ -64,7 +64,11 @@ const TaskList = ({
   return (
     <div className="flex flex-col gap-4">
       {tasks.map((task, index) => (
-        <div key={index} className="flex items-center gap-3">
+        <div
+          key={index}
+          className="flex items-center gap-3 relative"
+          style={{ zIndex: tasks.length - index }}
+        >
           {selectionMode && (
             <Checkbox
               isDisabled={!isTaskDeletable(getStatusLabel(task.status))}
