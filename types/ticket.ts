@@ -7,13 +7,13 @@ export type UserTicketResponse = {
   url?: string;
   password?: string;
   owner_name: string;
+  node_display_name: string;
 };
 type GliderTicket = {
   id: string;
   namespace_urn: string;
   namespace_name: string;
   node_name: string;
-  node_display_name: string;
   project_urn: string;
   project_name: string;
   glidelet_urn: string;

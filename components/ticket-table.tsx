@@ -32,9 +32,8 @@ import { getTicketByNamespaceId, getUserTickets } from "@/api/ticket";
 import { formatDate, getStatusLabel } from "@/utils/helper";
 import { UserTicketResponse } from "@/types/ticket";
 import { getResourceDetailByResourceIdFromCH } from "@/api/resource";
-import { ResourceDetail, Quota } from "@/types/resource";
+import { ResourceDetail } from "@/types/resource";
 import { getCachedOrFetch } from "@/utils/resourceCache";
-import { getQuotasByNamespaceIdFromCH } from "@/api/quota";
 
 const defaultColumns = [
   { name: "TICKET", uid: "name", sortable: true },
@@ -99,26 +98,9 @@ const TicketTable = ({
   >([]);
   const [resourceDetailsLoading, setResourceDetailsLoading] = useState(false);
 
-  // Fetch quotas to resolve node_display_name from node_name
-  const { data: quotasData } = useSWR(
-    nsId ? ["quotas", nsId] : null,
-    nsId ? () => getQuotasByNamespaceIdFromCH(nsId) : null,
-    { revalidateOnFocus: false, dedupingInterval: 5000 },
-  );
-  const nodeDisplayNameMap: Record<string, string> = (quotasData ?? []).reduce(
-    (map: Record<string, string>, quota: Quota) => {
-      if (quota.node_display_name)
-        map[quota.node_name] = quota.node_display_name;
-      return map;
-    },
-    {},
-  );
-
   const resolveNodeName = (ticket: UserTicketResponse) =>
-    nodeDisplayNameMap[ticket.ticket.node_name] ||
-    ticket.ticket.node_display_name ||
-    ticket.ticket.node_name ||
-    "N/A";
+    ticket.node_display_name || ticket.ticket.node_name || "N/A";
+
   const [sortDescriptor, setSortDescriptor] = useState<{
     column: string;
     direction: "ascending" | "descending";
