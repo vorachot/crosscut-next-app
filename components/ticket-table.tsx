@@ -364,9 +364,11 @@ const TicketTable = ({
           </TableCell>
           <TableCell
             className="pr-2 max-w-[180px] whitespace-nowrap overflow-hidden text-ellipsis"
-            title={ticket.ticket.node_name}
+            title={ticket.ticket.node_display_name || ticket.ticket.node_name}
           >
-            {ticket.ticket.node_name || "N/A"}
+            {ticket.ticket.node_display_name ||
+              ticket.ticket.node_name ||
+              "N/A"}
           </TableCell>
           <TableCell
             className="pr-2 max-w-[180px] whitespace-nowrap overflow-hidden text-ellipsis"
@@ -411,9 +413,9 @@ const TicketTable = ({
         </TableCell>
         <TableCell
           className="pr-2 max-w-[180px] whitespace-nowrap overflow-hidden text-ellipsis"
-          title={ticket.ticket.node_name}
+          title={ticket.ticket.node_display_name || ticket.ticket.node_name}
         >
-          {ticket.ticket.node_name || "N/A"}
+          {ticket.ticket.node_display_name || ticket.ticket.node_name || "N/A"}
         </TableCell>
         <TableCell
           className="pr-2 max-w-[180px] whitespace-nowrap overflow-hidden text-ellipsis"
@@ -486,8 +488,12 @@ const TicketTable = ({
             second.ticket.namespace_name,
           );
         case "node":
-          return (first.ticket.node_name || "").localeCompare(
-            second.ticket.node_name || "",
+          return (
+            first.ticket.node_display_name ||
+            first.ticket.node_name ||
+            ""
+          ).localeCompare(
+            second.ticket.node_display_name || second.ticket.node_name || "",
           );
         case "organization":
           return (first.ticket.organization_name || "").localeCompare(
