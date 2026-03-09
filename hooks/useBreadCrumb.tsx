@@ -70,9 +70,7 @@ export const useBreadcrumbData = ({
 
           updateBreadcrumbItem(
             resourcePoolId,
-            resourcePool.node_display_name ||
-              resourcePool.node_name ||
-              resourcePool.name,
+            resourcePool.node_display_name || resourcePool.name,
           );
         }
       } catch (error) {

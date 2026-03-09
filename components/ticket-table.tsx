@@ -99,7 +99,7 @@ const TicketTable = ({
   const [resourceDetailsLoading, setResourceDetailsLoading] = useState(false);
 
   const resolveNodeName = (ticket: UserTicketResponse) =>
-    ticket.node_display_name || ticket.ticket.node_name || "N/A";
+    ticket.ticket.node_display_name || ticket.ticket.node_name || "N/A";
 
   const [sortDescriptor, setSortDescriptor] = useState<{
     column: string;
