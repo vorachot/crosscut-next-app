@@ -119,7 +119,7 @@ const ResourcePoolTable = ({
                   value={gpu?.usage ?? 0}
                 />
                 <UsageBar
-                  label="Memory"
+                  label="RAM"
                   maxValue={ram?.quota ?? 0}
                   value={ram?.usage ?? 0}
                 />
