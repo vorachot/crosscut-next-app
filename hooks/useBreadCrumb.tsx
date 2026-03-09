@@ -68,7 +68,12 @@ export const useBreadcrumbData = ({
           const { resourcePool } =
             await getResourcePoolDetailById(resourcePoolId);
 
-          updateBreadcrumbItem(resourcePoolId, resourcePool.name);
+          updateBreadcrumbItem(
+            resourcePoolId,
+            resourcePool.node_display_name ||
+              resourcePool.node_name ||
+              resourcePool.name,
+          );
         }
       } catch (error) {
         /* eslint-disable no-console */
