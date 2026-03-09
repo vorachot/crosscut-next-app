@@ -32,8 +32,9 @@ import { getTicketByNamespaceId, getUserTickets } from "@/api/ticket";
 import { formatDate, getStatusLabel } from "@/utils/helper";
 import { UserTicketResponse } from "@/types/ticket";
 import { getResourceDetailByResourceIdFromCH } from "@/api/resource";
-import { ResourceDetail } from "@/types/resource";
+import { ResourceDetail, Quota } from "@/types/resource";
 import { getCachedOrFetch } from "@/utils/resourceCache";
+import { getQuotasByNamespaceIdFromCH } from "@/api/quota";
 
 const defaultColumns = [
   { name: "TICKET", uid: "name", sortable: true },
@@ -97,6 +98,27 @@ const TicketTable = ({
     any[]
   >([]);
   const [resourceDetailsLoading, setResourceDetailsLoading] = useState(false);
+
+  // Fetch quotas to resolve node_display_name from node_name
+  const { data: quotasData } = useSWR(
+    nsId ? ["quotas", nsId] : null,
+    nsId ? () => getQuotasByNamespaceIdFromCH(nsId) : null,
+    { revalidateOnFocus: false, dedupingInterval: 5000 },
+  );
+  const nodeDisplayNameMap: Record<string, string> = (quotasData ?? []).reduce(
+    (map: Record<string, string>, quota: Quota) => {
+      if (quota.node_display_name)
+        map[quota.node_name] = quota.node_display_name;
+      return map;
+    },
+    {},
+  );
+
+  const resolveNodeName = (ticket: UserTicketResponse) =>
+    nodeDisplayNameMap[ticket.ticket.node_name] ||
+    ticket.ticket.node_display_name ||
+    ticket.ticket.node_name ||
+    "N/A";
   const [sortDescriptor, setSortDescriptor] = useState<{
     column: string;
     direction: "ascending" | "descending";
@@ -364,11 +386,9 @@ const TicketTable = ({
           </TableCell>
           <TableCell
             className="pr-2 max-w-[180px] whitespace-nowrap overflow-hidden text-ellipsis"
-            title={ticket.ticket.node_display_name || ticket.ticket.node_name}
+            title={resolveNodeName(ticket)}
           >
-            {ticket.ticket.node_display_name ||
-              ticket.ticket.node_name ||
-              "N/A"}
+            {resolveNodeName(ticket)}
           </TableCell>
           <TableCell
             className="pr-2 max-w-[180px] whitespace-nowrap overflow-hidden text-ellipsis"
@@ -413,9 +433,9 @@ const TicketTable = ({
         </TableCell>
         <TableCell
           className="pr-2 max-w-[180px] whitespace-nowrap overflow-hidden text-ellipsis"
-          title={ticket.ticket.node_display_name || ticket.ticket.node_name}
+          title={resolveNodeName(ticket)}
         >
-          {ticket.ticket.node_display_name || ticket.ticket.node_name || "N/A"}
+          {resolveNodeName(ticket)}
         </TableCell>
         <TableCell
           className="pr-2 max-w-[180px] whitespace-nowrap overflow-hidden text-ellipsis"
@@ -488,13 +508,7 @@ const TicketTable = ({
             second.ticket.namespace_name,
           );
         case "node":
-          return (
-            first.ticket.node_display_name ||
-            first.ticket.node_name ||
-            ""
-          ).localeCompare(
-            second.ticket.node_display_name || second.ticket.node_name || "",
-          );
+          return resolveNodeName(first).localeCompare(resolveNodeName(second));
         case "organization":
           return (first.ticket.organization_name || "").localeCompare(
             second.ticket.organization_name || "",
