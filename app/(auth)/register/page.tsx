@@ -112,7 +112,9 @@ const RegisterPage = () => {
         disabled={isLoading}
         type="button"
         onPress={() => {
-          router.push("https://onepointfive.life/auth/register/google");
+          router.push(
+            "https://onepointfive.life/auth/register/google?portal=admin",
+          );
         }}
       >
         <div className="flex gap-3 items-center justify-center">
