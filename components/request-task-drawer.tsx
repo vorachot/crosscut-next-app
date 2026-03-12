@@ -26,6 +26,7 @@ import toast from "react-hot-toast";
 import TicketTableClient from "./ticket-table-client";
 
 import { createTask } from "@/api/task";
+import { getAxiosErrorMessage } from "@/utils/helper";
 
 type RequestTaskDrawerProps = {
   isOpen: boolean;
@@ -104,7 +105,9 @@ const RequestTaskDrawer = ({ isOpen, onClose }: RequestTaskDrawerProps) => {
       await mutate(["tasks"], undefined, { revalidate: true });
     } catch (err) {
       setErrors({ tickets: "Failed to create task. Please try again." });
-      toast.error("Failed to create task. Please try again.: " + err);
+      toast.error(
+        getAxiosErrorMessage(err, "Failed to create task. Please try again."),
+      );
     } finally {
       setIsCreating(false);
     }

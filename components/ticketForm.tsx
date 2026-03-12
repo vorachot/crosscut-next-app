@@ -13,6 +13,7 @@ import SliderInput from "./slider-input";
 import { RequestTicketPayload } from "@/types/payload";
 import { Quota, ResourceUsage } from "@/types/resource";
 import { getResourceDetailByResourceIdFromCH } from "@/api/resource";
+import { getAxiosErrorMessage } from "@/utils/helper";
 
 type TicketFormProps = {
   namespace_id: string;
@@ -124,7 +125,12 @@ const TicketForm = ({
         revalidate: true,
       });
     } catch (error) {
-      toast.error("Failed to create ticket. Please try again: " + error);
+      toast.error(
+        getAxiosErrorMessage(
+          error,
+          "Failed to create ticket. Please try again.",
+        ),
+      );
     } finally {
       setIsSubmitting(false);
     }

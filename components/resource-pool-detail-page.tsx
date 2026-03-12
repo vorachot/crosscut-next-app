@@ -116,7 +116,10 @@ const ResourcePoolDetailPage = () => {
   if (error)
     return (
       <div className="text-red-500">
-        {error?.response?.data?.error ?? error?.message ?? "Error loading data"}
+        {error?.response?.data?.error ??
+          error?.response?.data?.message ??
+          error?.message ??
+          "Error loading data"}
       </div>
     );
   const usageData: ResourceUsage[] = data.quotaUsage.usage || [];

@@ -74,3 +74,12 @@ export const getDisplayName = (segment: string, breadcrumbData: any) => {
   // Check if this segment is an ID that we have a name for
   return breadcrumbData[segment] || decodeURIComponent(segment);
 };
+
+export const getAxiosErrorMessage = (
+  err: any,
+  fallback = "An error occurred. Please try again.",
+): string =>
+  err?.response?.data?.error ??
+  err?.response?.data?.message ??
+  err?.message ??
+  fallback;

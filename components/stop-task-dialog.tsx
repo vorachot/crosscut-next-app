@@ -4,6 +4,7 @@ import { mutate } from "swr";
 import { toast } from "react-hot-toast";
 
 import { stopTask } from "@/api/task";
+import { getAxiosErrorMessage } from "@/utils/helper";
 
 type StopTaskDialogProps = {
   setOnClose?: () => void;
@@ -17,7 +18,9 @@ const StopTaskDialog = ({ setOnClose, taskId }: StopTaskDialogProps) => {
       if (setOnClose) setOnClose();
       await mutate(["tasks"], undefined, { revalidate: true });
     } catch (err) {
-      toast.error("Failed to stop task. Please try again.: " + err);
+      toast.error(
+        getAxiosErrorMessage(err, "Failed to stop task. Please try again."),
+      );
     }
   };
   const handleCancel = () => {

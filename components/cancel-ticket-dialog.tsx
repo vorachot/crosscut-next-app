@@ -4,6 +4,7 @@ import { mutate } from "swr";
 import { toast } from "react-hot-toast";
 
 import { cancelTicket } from "@/api/ticket";
+import { getAxiosErrorMessage } from "@/utils/helper";
 
 type CancelTicketDialogProps = {
   setOnClose?: () => void;
@@ -33,21 +34,9 @@ const CancelTicketDialog = ({
           Array.isArray(key) && key[0] === "quota-usage" && key[1] === nsId,
       );
     } catch (err: any) {
-      // Extract the actual error message from the response
-      let errorMessage = "Failed to cancel ticket. Please try again.";
-
-      if (err?.response?.data?.message) {
-        // Server returned a specific error message
-        errorMessage = err.response.data.message;
-      } else if (err?.response?.data?.error) {
-        // Alternative error field
-        errorMessage = err.response.data.error;
-      } else if (err?.message) {
-        // Fallback to general error message
-        errorMessage = err.message;
-      }
-
-      toast.error(errorMessage);
+      toast.error(
+        getAxiosErrorMessage(err, "Failed to cancel ticket. Please try again."),
+      );
     }
   };
   const handleCancel = () => {

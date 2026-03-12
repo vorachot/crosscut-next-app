@@ -29,7 +29,11 @@ import { ResourceType, Status } from "@/types/enum";
 import { deleteTickets } from "@/api/ticket";
 import Loading from "@/app/loading";
 import { getTicketByNamespaceId, getUserTickets } from "@/api/ticket";
-import { formatDate, getStatusLabel } from "@/utils/helper";
+import {
+  formatDate,
+  getStatusLabel,
+  getAxiosErrorMessage,
+} from "@/utils/helper";
 import { UserTicketResponse } from "@/types/ticket";
 import { getResourceDetailByResourceIdFromCH } from "@/api/resource";
 import { ResourceDetail } from "@/types/resource";
@@ -179,7 +183,9 @@ const TicketTable = ({
 
         setTicketsWithResourceDetails(ticketsWithDetails);
       } catch (error) {
-        toast.error("Error fetching resource details:" + error);
+        toast.error(
+          getAxiosErrorMessage(error, "Error fetching resource details."),
+        );
         setTicketsWithResourceDetails(data || []);
       } finally {
         setResourceDetailsLoading(false);
