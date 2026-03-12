@@ -30,9 +30,7 @@ const CancelTicketDialog = ({
       await mutate(["tickets-history"]);
       await mutate(
         (key: any) =>
-          Array.isArray(key) &&
-          key[0] === "quota-usage" &&
-          key[1] === nsId,
+          Array.isArray(key) && key[0] === "quota-usage" && key[1] === nsId,
       );
     } catch (err: any) {
       // Extract the actual error message from the response
