@@ -16,7 +16,6 @@ const CancelTicketDialog = ({
   setOnClose,
   ticketId,
   nsId,
-  resourcePoolId,
   open,
 }: CancelTicketDialogProps) => {
   const handleCancelTicket = async () => {
@@ -24,11 +23,17 @@ const CancelTicketDialog = ({
       await cancelTicket(ticketId);
       toast.success("Ticket cancelled successfully!");
       if (setOnClose) setOnClose();
-      await mutate(["tickets", nsId], undefined, { revalidate: true });
-      await mutate(["tickets-history"], undefined, { revalidate: true });
-      await mutate(["quota-usage", nsId, resourcePoolId], undefined, {
-        revalidate: true,
-      });
+      await mutate(
+        (key: any) =>
+          Array.isArray(key) && key[0] === "tickets" && key[1] === nsId,
+      );
+      await mutate(["tickets-history"]);
+      await mutate(
+        (key: any) =>
+          Array.isArray(key) &&
+          key[0] === "quota-usage" &&
+          key[1] === nsId,
+      );
     } catch (err: any) {
       // Extract the actual error message from the response
       let errorMessage = "Failed to cancel ticket. Please try again.";

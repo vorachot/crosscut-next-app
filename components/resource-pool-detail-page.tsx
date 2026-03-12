@@ -113,7 +113,12 @@ const ResourcePoolDetailPage = () => {
     !breadcrumbData?.[projectId];
 
   if (isLoading) return <Loading />;
-  if (error) return <div>Error loading tickets</div>;
+  if (error)
+    return (
+      <div className="text-red-500">
+        {error?.response?.data?.error ?? error?.message ?? "Error loading data"}
+      </div>
+    );
   const usageData: ResourceUsage[] = data.quotaUsage.usage || [];
 
   return (
