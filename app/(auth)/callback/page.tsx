@@ -1,6 +1,7 @@
 "use client";
 import { useRouter, useSearchParams } from "next/navigation";
 import { useEffect, useState } from "react";
+import { Button } from "@heroui/button";
 
 import { googleAuthWithCH } from "@/api/auth";
 
@@ -93,18 +94,22 @@ const CallbackPage = () => {
           <div className="text-red-500 text-xl mb-4">⚠️ {error}</div>
           {/* <p className="text-gray-600">Redirecting to login...</p>
            */}
-          <button
-            onClick={() => router.push("/login")}
-            className="px-4 py-2 bg-blue-500 text-white rounded hover:bg-blue-600 transition"
-          >
-            Go to Login
-          </button>
-          <button
-            onClick={() => router.push("/register")}
-            className="px-4 py-2 bg-green-500 text-white rounded hover:bg-green-600 transition"
-          >
-            Go to Register
-          </button>
+          <div className="flex gap-3 justify-center">
+            <Button
+              color="primary"
+              onPress={() => router.push("/login")}
+              radius="md"
+            >
+              Go to Login
+            </Button>
+            <Button
+              color="secondary"
+              onPress={() => router.push("/register")}
+              radius="md"
+            >
+              Go to Register
+            </Button>
+          </div>
         </div>
       </div>
     );
