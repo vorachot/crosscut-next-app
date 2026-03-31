@@ -77,7 +77,7 @@ const CallbackPage = () => {
         }
       } catch (err) {
         setError(err instanceof Error ? err.message : "Authentication failed");
-        setTimeout(() => router.replace("/login?error=callback_failed"), 2000);
+        // setTimeout(() => router.replace("/login?error=callback_failed"), 2000);
       } finally {
         setIsProcessing(false);
       }
@@ -91,7 +91,20 @@ const CallbackPage = () => {
       <div className="flex items-center justify-center min-h-screen">
         <div className="text-center">
           <div className="text-red-500 text-xl mb-4">⚠️ {error}</div>
-          <p className="text-gray-600">Redirecting to login...</p>
+          {/* <p className="text-gray-600">Redirecting to login...</p>
+           */}
+          <button
+            onClick={() => router.push("/login")}
+            className="px-4 py-2 bg-blue-500 text-white rounded hover:bg-blue-600 transition"
+          >
+            Go to Login
+          </button>
+          <button
+            onClick={() => router.push("/register")}
+            className="px-4 py-2 bg-green-500 text-white rounded hover:bg-green-600 transition"
+          >
+            Go to Register
+          </button>
         </div>
       </div>
     );
