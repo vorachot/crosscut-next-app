@@ -30,7 +30,7 @@ const RegisterPage = () => {
         className="w-80 py-2 rounded bg-red-500 hover:bg-red-600 focus:outline-none focus:ring-2 focus:ring-red-500 focus:ring-opacity-50"
         type="button"
         onPress={() => {
-          router.push("https://onepointfive.life/auth/register/google");
+          router.push(`${process.env.NEXT_PUBLIC_CH_URL}/auth/register/google`);
         }}
       >
         <div className="flex gap-3 items-center justify-center">

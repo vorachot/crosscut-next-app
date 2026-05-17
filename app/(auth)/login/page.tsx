@@ -84,7 +84,7 @@ const LoginPage = () => {
         disabled={isLoading}
         type="button"
         onPress={() => {
-          router.push("https://onepointfive.life/auth/login/google");
+          router.push(`${process.env.NEXT_PUBLIC_CH_URL}/auth/login/google`);
         }}
       >
         <div className="flex gap-3 items-center justify-center">
